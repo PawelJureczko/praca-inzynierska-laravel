@@ -35,9 +35,7 @@ Route::get('/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
-
-Route::resource('/test', \App\Http\Controllers\TestController::class);
+Route::resource('/test', \App\Http\Controllers\TestController::class)->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
