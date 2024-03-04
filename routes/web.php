@@ -17,13 +17,13 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
+    return Inertia::render('Dashboard', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
     ]);
-});
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/dashboard', function () {
     $userId = 1; // Przykładowe ID użytkownika, zastąp to odpowiednim ID
@@ -38,6 +38,8 @@ Route::get('/dashboard', function () {
 Route::resource('/test', \App\Http\Controllers\TestController::class)->middleware(['auth', 'verified']);
 
 Route::resource('/students', \App\Http\Controllers\StudentsController::class)->middleware(['auth', 'verified', 'checkAdmin']);
+
+Route::resource('/schedule', \App\Http\Controllers\ScheduleController::class)->middleware(['auth', 'verified']);
 
 
 Route::middleware('auth')->group(function () {

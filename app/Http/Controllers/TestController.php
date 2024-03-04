@@ -17,7 +17,7 @@ use Inertia\Response;
 class TestController extends Controller
 {
     public function index() {
-        $testData = DB::select('SELECT * FROM test'); // Zastąp 'your_table' nazwą rzeczywistej tabeli w bazie danych
+        $testData = DB::select('SELECT * FROM users'); // Zastąp 'your_table' nazwą rzeczywistej tabeli w bazie danych
 
         return Inertia::render('Test', [
             'event' => 'elo',

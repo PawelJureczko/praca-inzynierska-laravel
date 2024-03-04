@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <header>
-            <Navigation />
+            <Navigation :isLogged="isLogged" :userType="userType"/>
         </header>
         <main>
             <slot/>
@@ -15,6 +15,16 @@
 <script setup>
 
 import Navigation from "@/Navigation/Navigation.vue";
+const props = defineProps({
+    isLogged: {
+        type: Boolean,
+        default: true,
+    },
+    userType: {
+        type: String,
+        default: null
+    }
+})
 </script>
 
 <style scoped>
