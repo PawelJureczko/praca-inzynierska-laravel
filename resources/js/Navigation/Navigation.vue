@@ -10,13 +10,13 @@
                 <li class="cursor-pointer" @click="handleElemClicked('students.index')" v-if="userType==='admin'">
                     <span>Moi uczniowie</span>
                 </li>
-                <li>
+                <li class="cursor-pointer" @click="handleElemClicked('messages.index')">
                     <span>Wiadomości</span>
                 </li>
-                <li>
+                <li class="cursor-pointer" @click="handleElemClicked('reports.index')">
                     <span>Raporty i statystyki</span>
                 </li>
-                <li>
+                <li class="cursor-pointer" @click="handleElemClicked('profile.edit')">
                     <span>Mój profil</span>
                 </li>
             </ul>

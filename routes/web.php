@@ -41,6 +41,10 @@ Route::resource('/students', \App\Http\Controllers\StudentsController::class)->m
 
 Route::resource('/schedule', \App\Http\Controllers\ScheduleController::class)->middleware(['auth', 'verified']);
 
+Route::resource('/messages', \App\Http\Controllers\MessagesController::class)->middleware(['auth', 'verified']);
+
+Route::resource('/reports', \App\Http\Controllers\ReportsController::class)->middleware(['auth', 'verified']);
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
