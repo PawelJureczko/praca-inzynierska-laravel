@@ -37,6 +37,9 @@ Route::get('/dashboard', function () {
 
 Route::resource('/test', \App\Http\Controllers\TestController::class)->middleware(['auth', 'verified']);
 
+Route::resource('/students', \App\Http\Controllers\StudentsController::class)->middleware(['auth', 'verified', 'checkAdmin']);
+
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
