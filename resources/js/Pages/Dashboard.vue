@@ -6,7 +6,7 @@ import Layout from "@/Layouts/Layout.vue";
 
 <template>
     <Head title="Dashboard"/>
-    <Layout :isLogged="$page.props.auth.user!==null" :userType="$page.props.auth.user.role">
+    <Layout :user="$page.props.auth.user" :isLogged="$page.props.auth.user!==null" :userType="$page.props.auth.user.role">
 
     </Layout>
     <!--    <AuthenticatedLayout>-->

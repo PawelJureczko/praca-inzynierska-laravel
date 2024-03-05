@@ -7,7 +7,7 @@
                 <li class="cursor-pointer" @click="handleElemClicked('schedule.index')">
                     <span>Mój terminarz</span>
                 </li>
-                <li class="cursor-pointer" @click="handleElemClicked('students.index')" v-if="user.role==='admin'">
+                <li class="cursor-pointer" @click="handleElemClicked('students.index')" v-if="user.role==='teacher'">
                     <span>Moi uczniowie</span>
                 </li>
                 <li class="cursor-pointer" @click="handleElemClicked('messages.index')">

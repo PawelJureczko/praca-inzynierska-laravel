@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,7 +38,14 @@ Route::get('/dashboard', function () {
 
 Route::resource('/test', \App\Http\Controllers\TestController::class)->middleware(['auth', 'verified']);
 
-Route::resource('/students', \App\Http\Controllers\StudentsController::class)->middleware(['auth', 'verified', 'checkAdmin']);
+
+Route::middleware(['auth', 'verified', 'checkAdmin'])->group(function () {
+    Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
+    Route::post('/students', [StudentsController::class, 'inviteStudent'])->name('students.invite');
+});
+
+//
+//Route::resource('/students', \App\Http\Controllers\StudentsController::class)->middleware(['auth', 'verified', 'checkAdmin']);
 
 Route::resource('/schedule', \App\Http\Controllers\ScheduleController::class)->middleware(['auth', 'verified']);
 

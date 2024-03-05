@@ -45,4 +45,10 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function students()
+    {
+        return $this->belongsToMany(User::class, 'teachers_students_pivot', 'teacher_id', 'student_id')
+            ->withPivot('isAccepted'); // Jeśli chcesz dostęp do kolumny isAccepted w relacji
+    }
 }
