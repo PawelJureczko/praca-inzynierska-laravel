@@ -7,7 +7,7 @@
                 <li class="cursor-pointer" @click="handleElemClicked('schedule.index')">
                     <span>Mój terminarz</span>
                 </li>
-                <li class="cursor-pointer" @click="handleElemClicked('students.index')" v-if="userType==='admin'">
+                <li class="cursor-pointer" @click="handleElemClicked('students.index')" v-if="user.role==='admin'">
                     <span>Moi uczniowie</span>
                 </li>
                 <li class="cursor-pointer" @click="handleElemClicked('messages.index')">
@@ -20,10 +20,14 @@
                     <span>Mój profil</span>
                 </li>
             </ul>
-            <Link :href="route('logout')" method="post">Wyloguj</Link>
+            <div>
+                <p>{{user.first_name + ' ' + user.last_name}}</p>
+                <p>{{roles[user.role]}}</p>
+            </div>
+            <Link :href="route('logout')" method="post" as="button">Wyloguj</Link>
         </template>
         <template v-else>
-            <Link :href="route('login')">Zaloguj</Link>
+            <Link :href="route('login')" as="button">Zaloguj</Link>
         </template>
 
     </nav>
@@ -32,16 +36,22 @@
 <script setup>
 import LogoIcon from "@/Components/Icons/LogoIcon.vue";
 import {Link, router} from "@inertiajs/vue3";
+import {ref} from "vue";
 
 const props = defineProps({
     isLogged: {
         type: Boolean,
         default: false
     },
-    userType: {
-        type: String,
-        default: ''
+    user: {
+        type: Object,
+        default: null
     }
+})
+
+const roles = ref({
+    'admin': 'Nauczyciel',
+    'user': 'Uczeń'
 })
 
 function handleElemClicked(path) {

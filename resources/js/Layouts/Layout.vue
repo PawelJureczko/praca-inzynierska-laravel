@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <header>
-            <Navigation :isLogged="isLogged" :userType="userType"/>
+            <Navigation :isLogged="isLogged" :user="user"/>
         </header>
         <main>
             <slot/>
@@ -22,6 +22,10 @@ const props = defineProps({
     },
     userType: {
         type: String,
+        default: null
+    },
+    user: {
+        type: Object,
         default: null
     }
 })

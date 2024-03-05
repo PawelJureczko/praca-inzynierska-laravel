@@ -1,5 +1,5 @@
 <template>
-    <Layout :isLogged="$page.props.auth.user!==null" :userType="$page.props.auth.user.role">
+    <Layout :isLogged="$page.props.auth.user!==null" :user="$page.props.auth.user">
         <p>Wiadomości</p>
     </Layout>
 </template>
