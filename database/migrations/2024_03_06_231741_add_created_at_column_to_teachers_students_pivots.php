@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('teachers_students_pivot', function (Blueprint $table) {
             // Dodaj nową kolumnę timestamp
-            $table->timestamp('accepted_at')->nullable();
+            $table->timestamp('created_at')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ return new class extends Migration
     {
         Schema::table('your_table', function (Blueprint $table) {
             // Usuń istniejącą kolumnę timestamp
-            $table->dropColumn('accepted_at');
+            $table->dropColumn('created_at');
         });
     }
 };

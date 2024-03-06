@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentsController;
+use App\Http\Controllers\NotificationsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -37,6 +38,13 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::resource('/test', \App\Http\Controllers\TestController::class)->middleware(['auth', 'verified']);
+
+
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
+});
+
 
 
 Route::middleware(['auth', 'verified', 'checkAdmin'])->group(function () {

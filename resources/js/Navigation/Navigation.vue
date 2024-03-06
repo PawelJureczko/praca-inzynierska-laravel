@@ -19,6 +19,10 @@
                 <li class="cursor-pointer" @click="handleElemClicked('profile.edit')">
                     <span>Mój profil</span>
                 </li>
+                <li class="cursor-pointer" @click="handleElemClicked('notifications.index')">
+                    <span>Powiadomienia</span>
+                </li>
+
             </ul>
             <div>
                 <p>{{user.first_name + ' ' + user.last_name}}</p>
