@@ -43,6 +43,7 @@ Route::resource('/test', \App\Http\Controllers\TestController::class)->middlewar
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
+    Route::put('/notifications', [NotificationsController::class, 'acceptInvitation'])->name('notification.accept');
 });
 
 

@@ -23,7 +23,7 @@ class NotificationsController extends Controller
     FROM teachers_students_pivot
     JOIN users ON teachers_students_pivot.teacher_id = users.id
     JOIN users AS teachers ON teachers_students_pivot.student_id = teachers.id
-    WHERE teachers_students_pivot.student_id = ?
+WHERE teachers_students_pivot.student_id = ? AND teachers_students_pivot.accepted_at IS NULL
 ', [$userId]);
 
         $invitationsMapped = [];
@@ -40,7 +40,8 @@ class NotificationsController extends Controller
 
             $invitationMapped = [
                 'teacher' => $teacher,
-                'created_at' => $invitation->created_at
+                'created_at' => $invitation->created_at,
+                'id' => $invitation->id
             ];
 
             $invitationsMapped[] = $invitationMapped;
@@ -49,5 +50,21 @@ class NotificationsController extends Controller
         return Inertia::render('Notifications/Notifications', [
             'invitations' => $invitationsMapped
         ]);
+    }
+
+    public function acceptInvitation(Request $request)
+    {
+        $invitationId = $request->request->get('id');
+        $user = $request->user();
+
+        if ($user) {
+            DB::update('UPDATE teachers_students_pivot
+                SET accepted_at = NOW()
+                WHERE id = ?', [$invitationId]);
+
+            return response()->json(['message' => 'Zaproszenie zostało zaakceptowane'], 200);
+        } else {
+            return response()->json(['error' => 'Brak autoryzacji'], 401);
+        }
     }
 }

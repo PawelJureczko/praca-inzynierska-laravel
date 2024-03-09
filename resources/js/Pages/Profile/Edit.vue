@@ -19,7 +19,7 @@ defineProps({
 <template>
     <Head title="Profile" />
 
-    <Layout :isLogged="$page.props.auth.user!==null" :userType="$page.props.auth.user.role">
+    <Layout :user="$page.props.auth.user" :isLogged="$page.props.auth.user!==null" :userType="$page.props.auth.user.role">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Profile</h2>
         </template>

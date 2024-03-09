@@ -3,8 +3,8 @@
         <p>Powiadomienia</p>
 
         <div>
-            <p v-for="invitation in invitations">
-                {{invitation}}
+            <p v-for="invitation in invitations" @click="accept(invitation.id)">
+                {{ invitation }}
             </p>
         </div>
     </Layout>
@@ -19,6 +19,20 @@ const props = defineProps({
         default: null
     }
 })
+
+function accept(id) {
+    axios.put(route('notification.accept'), {
+        id: id
+    })
+        .then(response => {
+            // Obsługa odpowiedzi z backendu
+            console.log(response.data);
+        })
+        .catch(error => {
+            // Obsługa błędu
+            // console.error(error);
+        });
+}
 </script>
 
 <style scoped>
