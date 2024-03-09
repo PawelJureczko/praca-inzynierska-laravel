@@ -22,15 +22,8 @@ const props = defineProps({
     }
 })
 
-function test() {
-    store.setIsLock(true);
-    console.log(store.getIsLock.value);
-    console.log('asd')
-}
-
 function accept(id) {
-    if (store.getIsLock.value === false) {
-        console.log('test')
+    if (store.getIsLock === false) {
         store.setIsLock(true);
         axios.put(route('notification.accept'), {
             id: id

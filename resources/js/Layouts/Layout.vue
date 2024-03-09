@@ -9,12 +9,16 @@
         <footer>
 
         </footer>
+        <Loader  v-if="store.getIsLock"/>
     </div>
 </template>
 
 <script setup>
-
 import Navigation from "@/Navigation/Navigation.vue";
+import {useMainStore} from "@/Store/mainStore.js";
+import Loader from "@/Components/Universal/Loader.vue";
+const store = useMainStore();
+
 const props = defineProps({
     isLogged: {
         type: Boolean,

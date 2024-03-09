@@ -8,6 +8,8 @@
 
 <script setup>
 import {ref} from "vue";
+import {useMainStore} from "@/Store/mainStore.js";
+const store = useMainStore();
 
 const props = defineProps({
     record: {
@@ -21,15 +23,20 @@ const form = ref({
 })
 
 function update() {
-    axios.put(route('test.update', props.record.id), form.value)
-        .then(response => {
-            // Obsługa odpowiedzi z backendu
-            console.log(response.data);
-        })
-        .catch(error => {
-            // Obsługa błędu
-            console.error(error);
+    if (store.getIsLock === false) {
+        store.setIsLock(true);
+        axios.put(route('test.update', props.record.id), form.value)
+            .then(response => {
+                // Obsługa odpowiedzi z backendu
+                console.log(response.data);
+            })
+            .catch(error => {
+                // Obsługa błędu
+                console.error(error);
+            }).finally(() => {
+                store.setIsLock(false);
         });
+    }
 }
 </script>
 
