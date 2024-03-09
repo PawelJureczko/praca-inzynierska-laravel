@@ -10,6 +10,7 @@
 
         </footer>
         <Loader  v-if="store.getIsLock"/>
+        <Snackbar />
     </div>
 </template>
 
@@ -17,6 +18,7 @@
 import Navigation from "@/Navigation/Navigation.vue";
 import {useMainStore} from "@/Store/mainStore.js";
 import Loader from "@/Components/Universal/Loader.vue";
+import Snackbar from "@/Components/Universal/Snackbar.vue";
 const store = useMainStore();
 
 const props = defineProps({

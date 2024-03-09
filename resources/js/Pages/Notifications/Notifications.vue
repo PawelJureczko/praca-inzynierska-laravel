@@ -2,7 +2,7 @@
     <Layout :isLogged="$page.props.auth.user!==null" :user="$page.props.auth.user">
         <p>Powiadomienia</p>
         <div>
-            <p v-for="invitation in invitations" @click="accept(invitation.id)">
+            <p v-for="invitation in localInvitations" @click="accept(invitation.id)" :key="invitation.id">
                 {{ invitation }}
             </p>
         </div>
@@ -12,6 +12,7 @@
 <script setup>
 import Layout from "@/Layouts/Layout.vue";
 import {useMainStore} from "@/Store/mainStore.js";
+import {ref} from "vue";
 
 const store = useMainStore();
 
@@ -22,6 +23,8 @@ const props = defineProps({
     }
 })
 
+const localInvitations = ref(props.invitations);
+
 function accept(id) {
     if (store.getIsLock === false) {
         store.setIsLock(true);
@@ -29,12 +32,12 @@ function accept(id) {
             id: id
         })
             .then(response => {
-                // Obsługa odpowiedzi z backendu
-                console.log(response.data);
+                store.showSnackbar(response.data.message, 'success');
+                localInvitations.value = response.data.invitations;
             })
             .catch(error => {
-                // Obsługa błędu
-                // console.error(error);
+                store.showSnackbar(error.response.data.error, 'error');
+                console.error(error.response.data.error);
             }).finally(() => {
                 store.setIsLock(false);
         })

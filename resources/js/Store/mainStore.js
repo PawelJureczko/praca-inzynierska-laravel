@@ -5,6 +5,11 @@ export const useMainStore = defineStore('mainStore', () => {
     //variables
     let isLoader = ref(false);
     let isLock = ref(false);
+    let snackbar = ref({
+        isVisible: false,
+        snackbarMessage: '',
+        snackbarType: 'success'
+    })
 
     //getters
     const getIsLoader = computed(() => {
@@ -13,12 +18,35 @@ export const useMainStore = defineStore('mainStore', () => {
     const getIsLock = computed(() => {
         return isLock.value;
     })
+    const getSnackbar = computed(() => {
+        return snackbar.value
+    })
 
-    //setters
+    //actions
     function setIsLock(value, showLoader = true) {
         isLock.value = value;
         if (showLoader) {
             isLoader.value = value
+        }
+    }
+
+    function showSnackbar(message, type='success', timeout=3000) {
+        if (!snackbar.value.isVisible) {
+            snackbar.value = {
+                isVisible: true,
+                snackbarMessage: message,
+                snackbarType: type
+            }
+
+            setTimeout(() => {
+                hideSnackbar()
+            }, timeout)
+        }
+    }
+
+    function hideSnackbar() {
+        snackbar.value = {
+            isVisible: false,
         }
     }
 
@@ -30,8 +58,11 @@ export const useMainStore = defineStore('mainStore', () => {
         //getters
         getIsLoader,
         getIsLock,
+        getSnackbar,
 
-        //setters
-        setIsLock
+        //actions
+        hideSnackbar,
+        setIsLock,
+        showSnackbar,
     }
 })

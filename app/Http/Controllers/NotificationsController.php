@@ -9,22 +9,19 @@ use Illuminate\Support\Facades\DB;
 
 class NotificationsController extends Controller
 {
-    public function index(Request $request)
-    {
-        $userId = $request->user()->id;
-
+    private function getInvitations($id) {
         $invitations = DB::select('
-    SELECT teachers_students_pivot.*,
-           users.id AS teacher_id,
-           users.first_name AS teacher_first_name,
-           users.last_name AS teacher_last_name,
-           users.role AS teacher_role,
-           users.email AS teacher_email
-    FROM teachers_students_pivot
-    JOIN users ON teachers_students_pivot.teacher_id = users.id
-    JOIN users AS teachers ON teachers_students_pivot.student_id = teachers.id
-WHERE teachers_students_pivot.student_id = ? AND teachers_students_pivot.accepted_at IS NULL
-', [$userId]);
+            SELECT teachers_students_pivot.*,
+                   users.id AS teacher_id,
+                   users.first_name AS teacher_first_name,
+                   users.last_name AS teacher_last_name,
+                   users.role AS teacher_role,
+                   users.email AS teacher_email
+            FROM teachers_students_pivot
+            JOIN users ON teachers_students_pivot.teacher_id = users.id
+            JOIN users AS teachers ON teachers_students_pivot.student_id = teachers.id
+        WHERE teachers_students_pivot.student_id = ? AND teachers_students_pivot.accepted_at IS NULL
+        ', [$id]);
 
         $invitationsMapped = [];
 
@@ -47,6 +44,15 @@ WHERE teachers_students_pivot.student_id = ? AND teachers_students_pivot.accepte
             $invitationsMapped[] = $invitationMapped;
 
         }
+
+        return $invitationsMapped;
+    }
+
+    public function index(Request $request)
+    {
+        $userId = $request->user()->id;
+        $invitationsMapped = $this->getInvitations($userId);
+
         return Inertia::render('Notifications/Notifications', [
             'invitations' => $invitationsMapped
         ]);
@@ -62,7 +68,13 @@ WHERE teachers_students_pivot.student_id = ? AND teachers_students_pivot.accepte
                 SET accepted_at = NOW()
                 WHERE id = ?', [$invitationId]);
 
-            return response()->json(['message' => 'Zaproszenie zostało zaakceptowane'], 200);
+            $userId = $request->user()->id;
+            $invitationsMapped = $this->getInvitations($userId);
+
+            return response()->json([
+                'message' => 'Zaproszenie zostało zaakceptowane',
+                'invitations' => $invitationsMapped
+            ], 200);
         } else {
             return response()->json(['error' => 'Brak autoryzacji'], 401);
         }

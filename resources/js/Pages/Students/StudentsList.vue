@@ -1,6 +1,7 @@
 <template>
     <Layout :isLogged="$page.props.auth.user!==null" :user="$page.props.auth.user">
         <p>Lista uczniów</p>
+        <p @click="test">asdasd</p>
 
         <div class="flex gap-4" v-for="(student, index) in students">
             <p>{{ index + 1 }}</p>
@@ -19,6 +20,10 @@ import {ref} from "vue";
 import {useMainStore} from "@/Store/mainStore.js";
 
 const store = useMainStore();
+
+function test() {
+    store.showSnackbar('test', 'info');
+}
 
 const props = defineProps({
     users: {
@@ -39,13 +44,16 @@ function addStudent(id) {
         })
             .then(response => {
                 // Obsługa sukcesu
+                console.log(response);
                 console.log(response.data);
+                store.showSnackbar(response.data.message, 'success');
                 students.value = response.data.students;
 
             })
             .catch(error => {
                 // Obsługa błędu
                 console.error(error);
+                store.showSnackbar(error.response.data.error, 'error');
             }).finally(() => {
             store.setIsLock(false);
         });

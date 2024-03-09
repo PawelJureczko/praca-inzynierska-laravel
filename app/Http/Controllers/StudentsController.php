@@ -10,7 +10,6 @@ use Inertia\Inertia;
 
 class StudentsController extends Controller
 {
-
     //zapytanie do bazy o wylistowanie wszystkich studentów, którzy nie zostali jeszcze zaproszeni przez danego nauczyciela
     private function getNotInvitedStudents()
     {
@@ -48,9 +47,12 @@ class StudentsController extends Controller
 
 //                $updatedStudents = $user->students;
 
-                return response()->json(['students' => $this->getNotInvitedStudents()], 200);
+                return response()->json([
+                    'students' => $this->getNotInvitedStudents(),
+                    'message' => 'Zaproszenie wysłane pomyślnie!'
+                ], 200);
             } else {
-                return response()->json(['error' => 'Wpis już istnieje'], 422);
+                return response()->json(['error' => 'Zaproszenie zostało już wcześniej wysłane'], 422);
             }
         } else {
             return response()->json(['error' => 'Błędne dane wejściowe'], 422);
