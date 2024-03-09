@@ -1,10 +1,11 @@
 <template>
     <Layout :isLogged="$page.props.auth.user!==null" :user="$page.props.auth.user">
-        <p>Lista uczniów</p>
+        <TitleComponent desc="Lista wszystkich uczniów" v-model="searchValue"/>
+        <p>{{searchValue}}</p>
         <CustomTable :headers="headers" :dimensions="dimensions">
             <div v-for="(student, index) in students" class="p-4 flex flex-col gap-2 lg:gap-0 lg:flex-row lg:items-center" :class="[index%2===0 ? 'bg-[#f7f6f2]' : 'bg-[#FFFFFF]']">
                 <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="dimensions[0]">
-                    <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{headers[0]}}: </span>{{ index + 1 }}</p>
+                    <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{headers[0]}}: </span>{{ student.id }}</p>
                 </div>
                 <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="dimensions[1]">
                     <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{headers[1]}}: </span>{{ student.first_name }}</p>
@@ -13,10 +14,10 @@
                     <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{headers[2]}}: </span>{{ student.last_name }}</p>
                 </div>
                 <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="dimensions[3]">
-                    <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{headers[3]}}: </span>{{ student.email }}</p>
+                    <a :href="'mailto:'+student.email" class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{headers[3]}}: </span>{{ student.email }}</a>
                 </div>
                 <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="dimensions[4]">
-                    <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{headers[4]}}: </span>{{ student.phone_number }}</p>
+                    <a :href="'tel:'+student.phone_number" class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{headers[4]}}: </span>{{ student.phone_number }}</a>
                 </div>
                 <div class="flex xl:justify-center xl:px-4 lg:py-2" :class="dimensions[5]">
                     <Btn btnType="primary" @click="addStudent(student.id)">Zaproś</Btn>
@@ -25,29 +26,13 @@
         </CustomTable>
     </Layout>
 </template>
-
-<!--<tr class="bg-[#D3D3D3]">&ndash;&gt;-->
-<!--                <th>LP</th>-->
-<!--                <th>Imię</th>-->
-<!--                <th>Nazwisko</th>-->
-<!--                <th>Email</th>-->
-<!--                <th>Numer Telefonu</th>-->
-<!--                <th>Dodaj</th>-->
-<!--            </tr>-->
-<!--            <tr v-for="(student, index) in students" :class="[index%2===0 ? 'bg-[#f7f6f2]' : 'bg-[#FFFFFF]']">-->
-<!--                <td>-->
-<!--                    <div class="flex justify-center px-4 py-2">-->
-<!--                        <p>{{ index + 1 }}</p>-->
-<!--                    </div>-->
-<!--                </td>-->
-<!--                <td>-->
-
 <script setup>
 import Layout from "@/Layouts/Layout.vue";
 import {ref} from "vue";
 import {useMainStore} from "@/Store/mainStore.js";
 import Btn from "@/Components/Buttons/Btn.vue";
 import CustomTable from "@/Components/Universal/CustomTable.vue";
+import TitleComponent from "@/Components/Views/TitleComponent.vue";
 
 const store = useMainStore();
 
@@ -59,6 +44,8 @@ const props = defineProps({
         }
     }
 })
+
+const searchValue = ref('');
 
 const students = ref(props.users);
 

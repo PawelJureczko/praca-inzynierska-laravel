@@ -1,7 +1,7 @@
 <template>
     <div class="text_field relative" :class="{'pointer-events-none': inactive}">
         <label :for="uuid" class="text-base" :class="{'opacity-[0.5]': inactive}">{{ label }}</label>
-        <p class="absolute top-[10px] pointer-events-none text-textfield-placeholder"
+        <p class="absolute top-[10px] pointer-events-none text-textfield-placeholder z-[1]"
                 :class="{'left-10': isSearchField}"
                 v-if="placeholder!=='' && value===''">{{ placeholder }}</p>
         <div class="relative" :class="[inputHeight]">

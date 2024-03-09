@@ -56,6 +56,7 @@ export default {
                     'inputText': '#0E051B',
                     'placeholder': '#6B7280'
                 },
+                'black': '#000000',
                 'main': '#ff7400',
                 'main_hover': '#ff4d00',
                 'tint': '#00000099',

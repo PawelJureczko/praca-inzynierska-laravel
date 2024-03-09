@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="container pt-[64px]">
         <header>
             <Navigation :isLogged="isLogged" :user="user"/>
         </header>
