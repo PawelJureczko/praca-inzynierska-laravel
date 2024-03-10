@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-        <div class="hidden lg:flex lg:px-4  bg-[#D3D3D3]">
+        <div class="hidden lg:flex lg:px-4  bg-dark_grey">
             <div class="py-4" v-for="(header, index) in headers" :class="dimensions[index]">
                 <p class="text-center">{{header}}</p>
             </div>

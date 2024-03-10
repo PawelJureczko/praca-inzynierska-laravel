@@ -57,6 +57,8 @@ export default {
                     'placeholder': '#6B7280'
                 },
                 'black': '#000000',
+                'dark_grey': '#D3D3D3',
+                'light_grey': '#f7f6f2',
                 'main': '#ff7400',
                 'main_hover': '#ff4d00',
                 'tint': '#00000099',
@@ -72,7 +74,7 @@ export default {
                 'xl': '1366px',
                 // => @media (min-width: 1280px) { ... }
 
-                '2xl': '1920px',
+                'xxl': '1920px',
                 // => @media (min-width: 1536px) { ... }
             }
         },
