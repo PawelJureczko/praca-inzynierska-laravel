@@ -36,7 +36,7 @@
                 </li>
                 <li class="flex items-center gap-2  cursor-pointer border-b border-[#DDDDDD] xl:border-none w-full py-6 xl:py-0" @click="handleElemClicked('students.index')" v-if="user.role==='teacher'">
                     <StudentsIcon />
-                    <span class="whitespace-nowrap">Moi uczniowie</span>
+                    <span class="whitespace-nowrap">Uczniowie</span>
                 </li>
                 <li class="flex items-center gap-2 cursor-pointer border-b border-[#DDDDDD] xl:border-none w-full py-6 xl:py-0" @click="handleElemClicked('reports.index')">
                     <StatisticsIcon />

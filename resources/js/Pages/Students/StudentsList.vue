@@ -79,8 +79,15 @@ const pageType = {
     }
 }
 
+function isIncluding(val) {
+    return val.toLowerCase().includes(searchValue.value.toLowerCase());
+}
+
 const studentsCp = computed(() => {
-    return students.value;
+    console.log(students.value)
+    return students.value.filter(item => {
+        return isIncluding(item.email) || isIncluding(item.first_name) || isIncluding(item.last_name) || isIncluding(item.phone_number)
+    });
 })
 
 const links = [
