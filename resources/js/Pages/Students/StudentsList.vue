@@ -1,8 +1,8 @@
 <template>
     <Layout :isLogged="$page.props.auth.user!==null" :user="$page.props.auth.user">
-        <TitleComponent desc="Lista wszystkich uczniów" v-model="searchValue"/>
-        <p>{{searchValue}}</p>
-        <CustomTable :headers="headers" :dimensions="dimensions">
+        <TitleComponent :desc="title" v-model="searchValue"/>
+        <TabComponent class="ml-auto mr-0" :links="links" :current="title"/>
+        <CustomTable class="mt-6" :headers="headers" :dimensions="dimensions">
             <div v-for="(student, index) in students" class="p-4 flex flex-col gap-2 lg:gap-0 lg:flex-row lg:items-center" :class="[index%2===0 ? 'bg-[#f7f6f2]' : 'bg-[#FFFFFF]']">
                 <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="dimensions[0]">
                     <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{headers[0]}}: </span>{{ student.id }}</p>
@@ -33,16 +33,21 @@ import {useMainStore} from "@/Store/mainStore.js";
 import Btn from "@/Components/Buttons/Btn.vue";
 import CustomTable from "@/Components/Universal/CustomTable.vue";
 import TitleComponent from "@/Components/Views/TitleComponent.vue";
+import TabComponent from "@/Components/Views/TabComponent.vue";
 
 const store = useMainStore();
 
 const props = defineProps({
+    title: {
+        type: String,
+        default: ''
+    },
     users: {
         type: Array,
         default() {
             return []
         }
-    }
+    },
 })
 
 const searchValue = ref('');
@@ -53,8 +58,23 @@ const dimensions = ref(
     ['lg:w-[10%]', 'lg:w-[20%]', 'lg:w-[20%]', 'lg:w-[20%]', 'lg:w-[20%]', 'lg:w-[10%]']
 )
 const headers = ref(
-    ['LP', 'Imię', 'Nazwisko', 'Email', 'Numer telefonu', 'Dodaj']
+    ['LP', 'Imię', 'Nazwisko', 'Email', 'Numer telefonu', '']
 )
+
+const links = [
+    {
+        desc: 'Moja grupa',
+        route: 'students.index'
+    },
+    {
+        desc: 'Zaproszeni',
+        route: 'students.invited'
+    },
+    {
+        desc: 'Pozostali',
+        route: 'students.other'
+    },
+]
 
 function addStudent(id) {
     if (store.getIsLock === false) {

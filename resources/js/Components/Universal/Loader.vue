@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed left-0 top-0 w-screen h-screen bg-tint">
+    <div class="fixed left-0 top-0 w-screen h-screen bg-tint z-[999]">
         <div class="spinner_wrapper">
             <div class="spinner">
                 <div class="react1"></div>

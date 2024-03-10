@@ -49,7 +49,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 Route::middleware(['auth', 'verified', 'checkAdmin'])->group(function () {
-    Route::get('/students', [StudentsController::class, 'index'])->name('students.index');
+    //moi uczniowie
+    Route::get('/students', [StudentsController::class, 'getMyStudents'])->name('students.index');
+    //zaproszeni uczniowie
+    Route::get('/students/invited', [StudentsController::class, 'getInvitedStudents'])->name('students.invited');
+    //pozostali uczniowie
+    Route::get('/students/other', [StudentsController::class, 'getOtherStudents'])->name('students.other');
     Route::post('/students', [StudentsController::class, 'inviteStudent'])->name('students.invite');
 });
 
