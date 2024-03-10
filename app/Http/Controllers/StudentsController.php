@@ -32,7 +32,8 @@ class StudentsController extends Controller
 
         return Inertia::render('Students/StudentsList', [
             'users' => $users,
-            'title' => 'Pozostali'
+            'title' => 'Pozostali',
+            'type' => 'other'
         ]);
     }
 
@@ -59,7 +60,8 @@ class StudentsController extends Controller
 
         return Inertia::render('Students/StudentsList', [
             'users' => $users,
-            'title' => 'Moja grupa'
+            'title' => 'Moja grupa',
+            'type' => 'myGroup'
         ]);
     }
 
@@ -86,7 +88,8 @@ class StudentsController extends Controller
 
         return Inertia::render('Students/StudentsList', [
             'users' => $users,
-            'title' => 'Zaproszeni'
+            'title' => 'Zaproszeni',
+            'type' => 'invited'
         ]);
     }
 
