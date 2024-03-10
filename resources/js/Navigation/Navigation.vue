@@ -52,7 +52,7 @@
             <div class="w-10 h-10 flex items-center justify-center rounded-full border border-dark_grey cursor-pointer transition-[background-color] xl:hover:bg-light_grey" @click="handleElemClicked('messages.index')">
                 <MessageIcon />
             </div>
-            <div class="w-10 h-10 flex items-center justify-center rounded-full border border-dark_grey cursor-pointer transition-[background-color] xl:hover:bg-light_grey" @click="handleElemClicked('notifications.index')">
+            <div class="w-10 h-10 flex items-center justify-center rounded-full border border-dark_grey cursor-pointer transition-[background-color] xl:hover:bg-light_grey" @click="handleElemClicked('notifications.invitations')">
                 <NotificationIcon />
             </div>
             <Hamburger class="xl:hidden" v-model="isMobileOpen"/>

@@ -108,9 +108,7 @@ class StudentsController extends Controller
             // Sprawdź, czy wpis nie istnieje przed dodaniem
             if (!$user->students()->where('student_id', $studentId)->exists()) {
                 // Dodaj wpis do tabeli teacher_students_pivot
-                $user->students()->attach($studentId, ['accepted_at' => null]);
-
-//                $updatedStudents = $user->students;
+                $user->students()->attach($studentId, ['accepted_at' => null, 'created_at' => now()]);
 
                 return response()->json([
                     'students' => $this->queryNotInvitedStudents($request->user()->id),

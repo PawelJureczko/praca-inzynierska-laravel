@@ -1,7 +1,7 @@
 <template>
     <div class="my-4 xl:my-8 flex flex-col md:flex-row justify-between items-center">
         <h2 class="text-[32px] heading-[40px] xl:text-[48px] xl:leading-[56px] font-bold">{{desc}}</h2>
-        <TextField class="w-full md:max-w-[328px]" v-model="searchValue" isSearchField placeholder="Szukaj..."/>
+        <TextField class="w-full md:max-w-[328px]" v-model="searchValue" isSearchField placeholder="Szukaj..." v-if="isSearch"/>
     </div>
 </template>
 
@@ -13,6 +13,10 @@ const props = defineProps({
     desc: {
         type: String,
         default: ''
+    },
+    isSearch: {
+        type: Boolean,
+        default: true
     }
 })
 

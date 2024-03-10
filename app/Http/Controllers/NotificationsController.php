@@ -48,13 +48,27 @@ class NotificationsController extends Controller
         return $invitationsMapped;
     }
 
-    public function index(Request $request)
+    //przychodzące zaproszenia
+    public function invitations(Request $request)
     {
         $userId = $request->user()->id;
         $invitationsMapped = $this->getInvitations($userId);
 
         return Inertia::render('Notifications/Notifications', [
-            'invitations' => $invitationsMapped
+            'invitations' => $invitationsMapped,
+            'type' => 'invitations'
+        ]);
+    }
+
+    //zadania domowe
+    public function homeworks(Request $request)
+    {
+        $userId = $request->user()->id;
+        $invitationsMapped = $this->getInvitations($userId);
+
+        return Inertia::render('Notifications/Notifications', [
+            'invitations' => $invitationsMapped,
+            'type' => 'homeworks'
         ]);
     }
 

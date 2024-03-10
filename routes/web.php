@@ -42,8 +42,9 @@ Route::resource('/test', \App\Http\Controllers\TestController::class)->middlewar
 
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/notifications', [NotificationsController::class, 'index'])->name('notifications.index');
-    Route::put('/notifications', [NotificationsController::class, 'acceptInvitation'])->name('notification.accept');
+    Route::get('/notifications/invitations', [NotificationsController::class, 'invitations'])->name('notifications.invitations');
+    Route::get('/notifications/homeworks', [NotificationsController::class, 'homeworks'])->name('notifications.homeworks');
+    Route::put('/notifications/invitations', [NotificationsController::class, 'acceptInvitation'])->name('notification.accept');
 });
 
 
