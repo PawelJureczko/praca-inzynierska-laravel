@@ -33,6 +33,8 @@ export default {
                     'primaryHover': '#ff4d00',
                     'secondary': '#EDE9FE',
                     'secondaryHover': '#DBCFFF',
+                    'danger': '#e60000',
+                    'dangerHover': '#D10000',
                     'textPrimary': '#FFFFFF',
                     'textSecondary': '#4C1D95'
                 },

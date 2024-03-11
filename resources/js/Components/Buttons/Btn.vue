@@ -5,6 +5,7 @@
                 disabled && 'opacity-[0.7] pointer-events-none',
                 btnType==='primary' && 'bg-btn-primary xl:hover:bg-btn-primaryHover',
                 btnType==='secondary' && 'bg-btn-secondary xl:hover:bg-btn-secondaryHover',
+                btnType==='danger' && 'bg-btn-danger xl:hover:bg-btn-dangerHover'
 
             ]">
         <div class="animate-spin w-max absolute" v-if="isLoader">
@@ -18,6 +19,7 @@
         <p class="text-text-base-small font-medium" :class="[
             btnType==='primary' && 'text-btn-textPrimary',
             btnType==='secondary' && 'text-btn-textSecondary',
+            btnType === 'danger' && 'text-btn-textPrimary',
             isLoader && 'opacity-0'
         ]">
             <slot/>
