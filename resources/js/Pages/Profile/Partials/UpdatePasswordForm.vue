@@ -1,13 +1,50 @@
+<template>
+    <div class="w-[calc(100%_-_32px)] max-w-[500px] mx-auto flex flex-col gap-4">
+        <SubtitleComponent desc="Zmiana hasła" />
+
+        <input type="password" tabindex="-1" class="hidden"/>
+        <TextField
+            v-model="userForm.current_password"
+            type="password"
+            label="Hasło"
+            errorName="current_password"
+        />
+        <TextField
+            v-model="userForm.password"
+            type="password"
+            label="Nowe hasło"
+            errorName="password"
+        />
+        <TextField
+            v-model="userForm.password_confirmation"
+            type="password"
+            label="Powtórz hasło"
+            errorName="password_repeat"
+        />
+
+        <div>
+            <Btn class="mx-auto mt-6 w-[calc(100%_-_64px)]" btnType="primary" @click="submit" :isLoader="isBtnLoader">
+                Zmień hasło
+            </Btn>
+        </div>
+    </div>
+</template>
 <script setup>
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { useForm } from '@inertiajs/vue3';
 import { ref } from 'vue';
+import TextField from "@/Components/Inputs/TextField.vue";
+import Btn from "@/Components/Buttons/Btn.vue";
+import {useMainStore} from "@/Store/mainStore.js";
+import SubtitleComponent from "@/Components/Views/SubtitleComponent.vue";
 
 const passwordInput = ref(null);
 const currentPasswordInput = ref(null);
+
+const userForm = ref({
+    current_password: '',
+    password: '',
+    password_confirmation: '',
+})
 
 const form = useForm({
     current_password: '',
@@ -15,91 +52,34 @@ const form = useForm({
     password_confirmation: '',
 });
 
-const updatePassword = () => {
-    form.put(route('password.update'), {
-        preserveScroll: true,
-        onSuccess: () => form.reset(),
-        onError: () => {
-            if (form.errors.password) {
-                form.reset('password', 'password_confirmation');
-                passwordInput.value.focus();
-            }
-            if (form.errors.current_password) {
-                form.reset('current_password');
-                currentPasswordInput.value.focus();
-            }
-        },
-    });
-};
+const store = useMainStore()
+const isBtnLoader = ref(false);
+
+function submit() {
+    if (store.getIsLock === false) {
+        store.setIsLock(true);
+        isBtnLoader.value = true;
+        store.clearErrors();
+        axios.put(route('password.update'), userForm.value)
+            .then(response => {
+                store.showSnackbar(response.data.message, 'success');
+                userForm.value = {
+                    current_password: '',
+                    password: '',
+                    password_confirmation: '',
+                }
+            })
+            .catch(error => {
+                // Obsługa błędu
+                if (error.response.status === 422) {
+                    store.setErrors(error.response.data.errors);
+                } else {
+                    console.log(error)
+                }
+            }).finally(() => {
+            store.setIsLock(false);
+            isBtnLoader.value = false;
+        })
+    }
+}
 </script>
-
-<template>
-    <section>
-        <header>
-            <h2 class="text-lg font-medium text-gray-900">Update Password</h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                Ensure your account is using a long, random password to stay secure.
-            </p>
-        </header>
-
-        <form @submit.prevent="updatePassword" class="mt-6 space-y-6">
-            <div>
-                <InputLabel for="current_password" value="Current Password" />
-
-                <TextInput
-                    id="current_password"
-                    ref="currentPasswordInput"
-                    v-model="form.current_password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="current-password"
-                />
-
-                <InputError :message="form.errors.current_password" class="mt-2" />
-            </div>
-
-            <div>
-                <InputLabel for="password" value="New Password" />
-
-                <TextInput
-                    id="password"
-                    ref="passwordInput"
-                    v-model="form.password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
-
-                <InputError :message="form.errors.password" class="mt-2" />
-            </div>
-
-            <div>
-                <InputLabel for="password_confirmation" value="Confirm Password" />
-
-                <TextInput
-                    id="password_confirmation"
-                    v-model="form.password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    autocomplete="new-password"
-                />
-
-                <InputError :message="form.errors.password_confirmation" class="mt-2" />
-            </div>
-
-            <div class="flex items-center gap-4">
-                <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
-
-                <Transition
-                    enter-active-class="transition ease-in-out"
-                    enter-from-class="opacity-0"
-                    leave-active-class="transition ease-in-out"
-                    leave-to-class="opacity-0"
-                >
-                    <p v-if="form.recentlySuccessful" class="text-sm text-gray-600">Saved.</p>
-                </Transition>
-            </div>
-        </form>
-    </section>
-</template>

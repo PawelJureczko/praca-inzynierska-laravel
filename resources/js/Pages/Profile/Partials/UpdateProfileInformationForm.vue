@@ -10,6 +10,7 @@ import TextField from "@/Components/Inputs/TextField.vue";
 import {ref} from "vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import {useMainStore} from "@/Store/mainStore.js";
+import SubtitleComponent from "@/Components/Views/SubtitleComponent.vue";
 
 defineProps({
     mustVerifyEmail: {
@@ -51,45 +52,52 @@ function submit() {
             .catch(error => {
                 // Obsługa błędu
                 console.log(error.response.data.errors)
-                store.setErrors(error.response.data.errors);
+                if (error.response.status === 422) {
+                    store.setErrors(error.response.data.errors);
+                } else {
+                    console.log(error)
+                }
             }).finally(() => {
             store.setIsLock(false);
-            isBtnLoader.value=false;
-        })}
+            isBtnLoader.value = false;
+        })
+    }
 }
 </script>
 
 <template>
-        <div class="w-[calc(100%_-_32px)] max-w-[500px] mx-auto flex flex-col gap-4">
-            <TextField
-                v-model="userForm.first_name"
-                type="text"
-                label="Imię"
-                errorName="first_name"
-            />
-            <TextField
-                v-model="userForm.last_name"
-                type="text"
-                label="Nazwisko"
-                errorName="last_name"
-            />
-            <TextField
-                v-model="userForm.email"
-                type="email"
-                label="Email"
-                errorName="email"
-            />
-            <TextField
-                v-model="userForm.phone_number"
-                type="phone"
-                label="Numer telefonu"
-                errorName="phone_number"
-            />
+    <div class="w-[calc(100%_-_32px)] max-w-[500px] mx-auto flex flex-col gap-4">
+        <SubtitleComponent desc="Zmiana danych" />
 
-            <div>
-                <Btn class="mx-auto mt-6 w-[calc(100%_-_64px)]" btnType="primary" @click="submit" :isLoader="isBtnLoader">
-                    Potwierdź
-                </Btn>
-            </div>
+        <TextField
+            v-model="userForm.first_name"
+            type="text"
+            label="Imię"
+            errorName="first_name"
+        />
+        <TextField
+            v-model="userForm.last_name"
+            type="text"
+            label="Nazwisko"
+            errorName="last_name"
+        />
+        <TextField
+            v-model="userForm.email"
+            type="email"
+            label="Email"
+            errorName="email"
+        />
+        <TextField
+            v-model="userForm.phone_number"
+            type="phone"
+            label="Numer telefonu"
+            errorName="phone_number"
+        />
+
+        <div>
+            <Btn class="mx-auto mt-6 w-[calc(100%_-_64px)]" btnType="primary" @click="submit" :isLoader="isBtnLoader">
+                Potwierdź
+            </Btn>
         </div>
+    </div>
 </template>

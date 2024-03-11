@@ -42,7 +42,11 @@ function submit() {
             .catch(error => {
                 // Obsługa błędu
                 console.log(error.response.data.errors)
-                store.setErrors(error.response.data.errors);
+                if (error.response.status === 422) {
+                    store.setErrors(error.response.data.errors);
+                } else {
+                    console.log(error)
+                }
             }).finally(() => {
             store.setIsLock(false);
             isBtnLoader.value=false;
