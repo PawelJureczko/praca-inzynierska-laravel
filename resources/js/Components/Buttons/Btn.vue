@@ -7,7 +7,7 @@
                 btnType==='secondary' && 'bg-btn-secondary xl:hover:bg-btn-secondaryHover',
 
             ]">
-        <div class="animate-spin w-max" v-if="isLoader">
+        <div class="animate-spin w-max absolute" v-if="isLoader">
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24">
                 <path stroke="#FFFFFF"
                         stroke-linecap="round"
@@ -17,8 +17,9 @@
         </div>
         <p class="text-text-base-small font-medium" :class="[
             btnType==='primary' && 'text-btn-textPrimary',
-            btnType==='secondary' && 'text-btn-textSecondary'
-        ]" v-else>
+            btnType==='secondary' && 'text-btn-textSecondary',
+            isLoader && 'opacity-0'
+        ]">
             <slot/>
         </p>
     </button>
