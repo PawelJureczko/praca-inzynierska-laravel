@@ -45,10 +45,12 @@
             </ul>
         </template>
         <template v-else>
-            <Link :href="route('login')" as="button">
-                Zaloguj</Link>
+            <Link class="max-w-max flex items-center gap-2 cursor-pointer border-b border-[#DDDDDD] xl:border-none w-full py-6 xl:py-0 ml-auto mr-0" :href="route('login')" as="button">
+                <LoginIcon />
+                <span class="whitespace-nowrap">Zaloguj</span>
+            </Link>
         </template>
-        <div class="flex items-center gap-4 xl:mr-[56px]">
+        <div class="flex items-center gap-4 xl:mr-[56px]" v-if="isLogged">
             <div class="w-10 h-10 flex items-center justify-center rounded-full border border-dark_grey cursor-pointer transition-[background-color] xl:hover:bg-light_grey" @click="handleElemClicked('messages.index')">
                 <MessageIcon />
             </div>
@@ -74,6 +76,7 @@ import AvatarIcon from "@/Components/Icons/AvatarIcon.vue";
 import CalendarIcon from "@/Components/Icons/CalendarIcon.vue";
 import StudentsIcon from "@/Components/Icons/StudentsIcon.vue";
 import StatisticsIcon from "@/Components/Icons/StatisticsIcon.vue";
+import LoginIcon from "@/Components/Icons/LoginIcon.vue";
 
 const props = defineProps({
     isLogged: {

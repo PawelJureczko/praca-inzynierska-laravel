@@ -39,7 +39,7 @@ export default {
                 'inputBox': {
                     'background': '#FFFFFF',
                     'border': '#A78BFA',
-                    'fill': '#4C1D95',
+                    'fill': '#ff7400',
                 },
                 'general': {
                     'error': '#B91C1C'

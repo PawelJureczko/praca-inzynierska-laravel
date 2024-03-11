@@ -10,6 +10,7 @@ export const useMainStore = defineStore('mainStore', () => {
         snackbarMessage: '',
         snackbarType: 'success'
     })
+    let errors = ref({});
 
     //getters
     const getIsLoader = computed(() => {
@@ -21,6 +22,9 @@ export const useMainStore = defineStore('mainStore', () => {
     const getSnackbar = computed(() => {
         return snackbar.value
     })
+    const getErrors = computed(() => {
+        return errors.value;
+    })
 
     //actions
     function setIsLock(value, showLoader = true) {
@@ -28,6 +32,14 @@ export const useMainStore = defineStore('mainStore', () => {
         if (showLoader) {
             isLoader.value = value
         }
+    }
+
+    function setErrors(val) {
+        errors.value = val;
+    }
+
+    function clearErrors() {
+        errors.value = {}
     }
 
     function showSnackbar(message, type='success', timeout=3000) {
@@ -56,12 +68,15 @@ export const useMainStore = defineStore('mainStore', () => {
 
 
         //getters
+        getErrors,
         getIsLoader,
         getIsLock,
         getSnackbar,
 
         //actions
+        clearErrors,
         hideSnackbar,
+        setErrors,
         setIsLock,
         showSnackbar,
     }

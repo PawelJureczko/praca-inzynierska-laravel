@@ -5,10 +5,10 @@
                 :class="{'left-10': isSearchField}"
                 v-if="placeholder!=='' && value===''">{{ placeholder }}</p>
         <div class="relative" :class="[inputHeight]">
-            <input class="border border-textfield-border px-3 rounded-md text-textfield-inputText w-full"
+            <input class="border px-3 rounded-md text-textfield-inputText w-full"
                     spellcheck="false"
                     :class="[
-                        errorMessage!==undefined && errorMessage!=='' && 'error border-general-error focus:outline-none',
+                        errorMessage!==undefined && errorMessage!=='' ? 'error border-general-error focus:outline-none' : 'border-textfield-border',
                         isSearchField && 'pl-10',
                         inactive && 'opacity-[0.5]',
                         hideValue && 'text-transparent',
@@ -18,7 +18,7 @@
                         inputHeight,
 
                     ]"
-                    type="text"
+                    :type="type"
                     :id="uuid"
                     v-model="value"
                     @keyup="handleKeyUp($event)"
@@ -74,16 +74,13 @@
 </template>
 
 <script setup>
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
+import {useMainStore} from "@/Store/mainStore.js";
 
 const props = defineProps({
     copiedMessage: {
         type: String,
         default: 'Skopiowano'
-    },
-    errorMessage: {
-        type: String,
-        default: '',
     },
     id: String,
     inactive: {
@@ -138,6 +135,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    type: {
+        type: String,
+        default: 'text'
+    },
 });
 
 const emit = defineEmits(['enter', 'esc', 'keyupPressed', 'handleKeyUp', 'update:modelValue'])
@@ -145,6 +146,12 @@ const emit = defineEmits(['enter', 'esc', 'keyupPressed', 'handleKeyUp', 'update
 let uuid = ref(props.id ? props.id : getUuid())
 let value = ref(props.modelValue);
 let showCopiedMessage = ref(false);
+
+const store = useMainStore();
+
+const errorMessage = computed(() => {
+    return store.getErrors[props.errorName] && store.getErrors[props.errorName].length ? store.getErrors[props.errorName][0] : ''
+})
 
 function handleClearBtnClicked() {
     value.value = '';

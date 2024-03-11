@@ -1,12 +1,13 @@
 <script setup>
-import Checkbox from '@/Components/Checkbox.vue';
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import {Head, router} from '@inertiajs/vue3';
 import Layout from "@/Layouts/Layout.vue";
+import TextField from "@/Components/Inputs/TextField.vue";
+import Btn from "@/Components/Buttons/Btn.vue";
+import Checkbox from "@/Components/Inputs/Checkbox.vue";
+import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
+import TitleComponent from "@/Components/Views/TitleComponent.vue";
+import {ref} from "vue";
+import {useMainStore} from "@/Store/mainStore.js";
 
 defineProps({
     canResetPassword: {
@@ -17,17 +18,36 @@ defineProps({
     },
 });
 
-const form = useForm({
+const store = useMainStore();
+
+const form = ref({
     email: '',
     password: '',
     remember: false,
-});
+})
 
-const submit = () => {
-    form.post(route('login'), {
-        onFinish: () => form.reset('password'),
-    });
-};
+const isBtnLoader = ref(false);
+
+function submit() {
+    if (store.getIsLock === false) {
+        store.setIsLock(true);
+        isBtnLoader.value = true;
+        store.clearErrors();
+        axios.post(route('login'), form.value)
+            .then(response => {
+                if (response.data.status === 'ok') {
+                    router.visit(route('dashboard'));
+                }
+            })
+            .catch(error => {
+                // Obsługa błędu
+                console.log(error.response.data.errors)
+                store.setErrors(error.response.data.errors);
+            }).finally(() => {
+            store.setIsLock(false);
+            isBtnLoader.value=false;
+        })}
+}
 </script>
 
 <template>
@@ -38,58 +58,43 @@ const submit = () => {
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
+        <div class="max-w-[500px] mx-auto">
+            <TitleComponent desc="Logowanie" :isSearch="false" />
+                <div>
+                    <TextField
+                        type="email"
+                        errorName="email"
+                        v-model="form.email"
+                        label="Adres email"
+                        />
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autofocus
-                    autocomplete="username"
-                />
+                </div>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+                <div class="mt-4">
+                    <TextField
+                        type="password"
+                        errorName="password"
+                        v-model="form.password"
+                        label="Hasło"/>
+                </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+                <div class="block mt-4">
+                    <label class="flex items-center">
+                        <Checkbox v-model="form.remember" label="Zapamiętaj mnie"/>
+                    </label>
+                </div>
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="current-password"
-                />
+                <div class="flex items-center justify-end mt-4">
+                    <BorderBottomBtn v-if="canResetPassword" desc="Przypomnij hasło" @click="$inertia.visit(route('password.request'))"/>
 
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="block mt-4">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600">Remember me</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-end mt-4">
-                <Link
-                    v-if="canResetPassword"
-                    :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                >
-                    Forgot your password?
-                </Link>
-
-                <PrimaryButton class="ms-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                    Log in
-                </PrimaryButton>
-            </div>
-        </form>
+                    <Btn btnType="primary" class="ml-4" @click="submit" :isLoader="isBtnLoader">
+                        Zaloguj
+                    </Btn>
+                </div>
+        </div>
     </Layout>
 </template>
+
+<styles scoped>
+
+</styles>
