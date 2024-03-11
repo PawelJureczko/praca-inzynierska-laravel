@@ -5,6 +5,7 @@ import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
 import { Head } from '@inertiajs/vue3';
 import Layout from "@/Layouts/Layout.vue";
+import TitleComponent from "@/Components/Views/TitleComponent.vue";
 
 defineProps({
     mustVerifyEmail: {
@@ -20,28 +21,13 @@ defineProps({
     <Head title="Profile" />
 
     <Layout :user="$page.props.auth.user" :isLogged="$page.props.auth.user!==null" :userType="$page.props.auth.user.role">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Profile</h2>
-        </template>
-
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <UpdateProfileInformationForm
-                        :must-verify-email="mustVerifyEmail"
-                        :status="status"
-                        class="max-w-xl"
-                    />
-                </div>
-
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <UpdatePasswordForm class="max-w-xl" />
-                </div>
-
-                <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                    <DeleteUserForm class="max-w-xl" />
-                </div>
-            </div>
-        </div>
+        <TitleComponent :isSearch="false" desc="Ustawienia konta"/>
+        <UpdateProfileInformationForm
+            :must-verify-email="mustVerifyEmail"
+            :status="status"
+            class="max-w-xl"
+        />
+        <UpdatePasswordForm class="max-w-xl" />
+        <DeleteUserForm class="max-w-xl" />
     </Layout>
 </template>

@@ -3,27 +3,31 @@
         <TitleComponent :desc="title" v-model="searchValue"/>
         <TabComponent class="ml-auto mr-0" :links="links" :current="title" :type="type"/>
         <CustomTable class="mt-6" :headers="pageType[type].headers" :dimensions="pageType[type].dimensions">
-            <div v-for="(student, index) in studentsCp" class="p-4 flex flex-col gap-2 lg:gap-0 lg:flex-row lg:items-center" :class="[index%2===0 ? 'bg-[#f7f6f2]' : 'bg-[#FFFFFF]']">
-                <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[0]">
-                    <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[0]}}: </span>{{ student.id }}</p>
+            <template v-if="studentsCp.length>0">
+                <div v-for="(student, index) in studentsCp" class="p-4 flex flex-col gap-2 lg:gap-0 lg:flex-row lg:items-center" :class="[index%2===0 ? 'bg-[#f7f6f2]' : 'bg-[#FFFFFF]']">
+                    <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[0]">
+                        <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[0]}}: </span>{{ student.id }}</p>
+                    </div>
+                    <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[1]">
+                        <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[1]}}: </span>{{ student.first_name }}</p>
+                    </div>
+                    <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[2]">
+                        <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[2]}}: </span>{{ student.last_name }}</p>
+                    </div>
+                    <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[3]">
+                        <a :href="'mailto:'+student.email" class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[3]}}: </span>{{ student.email }}</a>
+                    </div>
+                    <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[4]">
+                        <a :href="'tel:'+student.phone_number" class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[4]}}: </span>{{ student.phone_number }}</a>
+                    </div>
+                    <div class="flex xl:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[5]" >
+                        <Btn class="min-w-max" btnType="primary" @click="handleButtonClicked(student.id)" v-if="type!=='invited'">{{pageType[type].btnDesc}}</Btn>
+                        <p class="text-[12px] xl:text-base leading-[16px]" v-if="type==='invited'"><span class="font-bold lg:hidden">{{pageType[type].headers[5]}}: </span>{{ getStringFromDate(new Date(student.created_at)) }}</p>
+                    </div>
                 </div>
-                <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[1]">
-                    <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[1]}}: </span>{{ student.first_name }}</p>
-                </div>
-                <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[2]">
-                    <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[2]}}: </span>{{ student.last_name }}</p>
-                </div>
-                <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[3]">
-                    <a :href="'mailto:'+student.email" class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[3]}}: </span>{{ student.email }}</a>
-                </div>
-                <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[4]">
-                    <a :href="'tel:'+student.phone_number" class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[4]}}: </span>{{ student.phone_number }}</a>
-                </div>
-                <div class="flex xl:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[5]" >
-                    <Btn class="min-w-max" btnType="primary" @click="handleButtonClicked(student.id)" v-if="type!=='invited'">{{pageType[type].btnDesc}}</Btn>
-                    <p class="text-[12px] xl:text-base leading-[16px]" v-if="type==='invited'"><span class="font-bold lg:hidden">{{pageType[type].headers[5]}}: </span>{{ getStringFromDate(new Date(student.created_at)) }}</p>
-                </div>
-            </div>
+            </template>
+            <EmptyStateView class="mt-12" :desc="pageType[type].emptyStateDesc" v-else/>
+
         </CustomTable>
     </Layout>
 </template>
@@ -37,6 +41,7 @@ import TitleComponent from "@/Components/Views/TitleComponent.vue";
 import TabComponent from "@/Components/Views/TabComponent.vue";
 
 import {getStringFromDate} from "@/Helpers/helpers.js";
+import EmptyStateView from "@/Components/Views/EmptyStateView.vue";
 
 const store = useMainStore();
 
@@ -65,17 +70,20 @@ const pageType = {
     'other': {
         'dimensions': ['lg:w-[10%]', 'lg:w-[20%]', 'lg:w-[20%]', 'lg:w-[20%]', 'lg:w-[15%]', 'lg:w-[15%]'],
         'headers': ['LP', 'Imię', 'Nazwisko', 'Email', 'Numer telefonu', ''],
-        'btnDesc': 'Zaproś'
+        'btnDesc': 'Zaproś',
+        'emptyStateDesc': 'Brak wyników wyszukiwania'
     },
     'invited': {
         'dimensions': ['lg:w-[10%]', 'lg:w-[20%]', 'lg:w-[20%]', 'lg:w-[20%]', 'lg:w-[15%]', 'lg:w-[15%]'],
         'headers': ['LP', 'Imię', 'Nazwisko', 'Email', 'Numer telefonu', 'Data zaproszenia'],
-        'btnDesc': 'Zaproś'
+        'btnDesc': 'Zaproś',
+        'emptyStateDesc': 'Brak wysłanych zaproszeń'
     },
     'myGroup': {
         'dimensions': ['lg:w-[10%]', 'lg:w-[20%]', 'lg:w-[20%]', 'lg:w-[20%]', 'lg:w-[15%]', 'lg:w-[15%]'],
         'headers': ['LP', 'Imię', 'Nazwisko', 'Email', 'Numer telefonu', ''],
-        'btnDesc': 'Szczegóły'
+        'btnDesc': 'Szczegóły',
+        'emptyStateDesc': 'Brak uczniów w grupie'
     }
 }
 
