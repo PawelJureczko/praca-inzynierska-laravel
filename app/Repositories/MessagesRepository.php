@@ -71,6 +71,16 @@ class MessagesRepository
         WHERE sender_id IN (?, ?) AND receiver_id IN (?, ?)
     ', [$interlocutorId, $userId, $interlocutorId, $userId]);
     }
+
+    public function updateAllMessages($interlocutorId, $userId)
+    {
+        DB::statement("
+            UPDATE messages
+            SET read_at = NOW()
+            WHERE (sender_id = ? OR sender_id = ?)
+                AND (receiver_id = ? OR receiver_id = ?)
+        ", [$interlocutorId, $userId, $interlocutorId, $userId]);
+    }
 }
 
 ;

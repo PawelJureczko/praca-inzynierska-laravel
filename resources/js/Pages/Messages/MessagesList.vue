@@ -4,9 +4,9 @@
             <TitleComponent :isSearch="false" desc="Wiadomości"/>
             <Btn>Nowa konwersacja</Btn>
         </div>
-        <div>
-            <div v-for="message in usersWithMessage" :key="message.sender_id">
-
+        <div class="flex flex-col gap-4">
+            <div v-for="message in usersWithMessage" :key="message.id">
+                <SingleMessageLink :message="message" />
             </div>
         </div>
     </Layout>
@@ -16,6 +16,7 @@
 import Layout from "@/Layouts/Layout.vue";
 import TitleComponent from "@/Components/Views/TitleComponent.vue";
 import Btn from "@/Components/Buttons/Btn.vue";
+import SingleMessageLink from "@/Components/Views/Messages/SingleMessageLink.vue";
 
 const props = defineProps({
     usersWithMessage: {

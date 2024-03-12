@@ -27,8 +27,9 @@ class MessagesController extends Controller
 
     public function messagesSingle(Request $request) {
         $interlocutorId = $request->route('id');
-        $userData = $this->messagesRepository->getUserData($interlocutorId);
         $userId = $request->user()->id;;
+        $this->messagesRepository->updateAllMessages($interlocutorId, $userId);
+        $userData = $this->messagesRepository->getUserData($interlocutorId);
         $messages = $this->messagesRepository->getAllMessages($interlocutorId, $userId);
 
         return Inertia::render('Messages/MessagesSingle', [
