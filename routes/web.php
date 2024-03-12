@@ -59,12 +59,14 @@ Route::middleware(['auth', 'verified', 'checkAdmin'])->group(function () {
     Route::post('/students', [StudentsController::class, 'inviteStudent'])->name('students.invite');
 });
 
-//
-//Route::resource('/students', \App\Http\Controllers\StudentsController::class)->middleware(['auth', 'verified', 'checkAdmin']);
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/messages', [\App\Http\Controllers\MessagesController::class, 'messagesList'])->name('messages.index');
+    Route::get('/messages/t/{id}', [\App\Http\Controllers\MessagesController::class, 'messagesSingle'])->name('messages.single');
+    Route::get('/messages/new', [\App\Http\Controllers\MessagesController::class, 'messageNew'])->name('messages.new');
+});
 
 Route::resource('/schedule', \App\Http\Controllers\ScheduleController::class)->middleware(['auth', 'verified']);
 
-Route::resource('/messages', \App\Http\Controllers\MessagesController::class)->middleware(['auth', 'verified']);
 
 Route::resource('/reports', \App\Http\Controllers\ReportsController::class)->middleware(['auth', 'verified']);
 
