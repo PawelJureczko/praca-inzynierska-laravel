@@ -5,7 +5,7 @@
             <Btn>Nowa konwersacja</Btn>
         </div>
         <div class="flex flex-col gap-4">
-            <div v-for="message in usersWithMessage" :key="message.id">
+            <div v-for="message in Object.values(usersWithMessage)" :key="message.id">
                 <SingleMessageLink :message="message" />
             </div>
         </div>
@@ -20,9 +20,11 @@ import SingleMessageLink from "@/Components/Views/Messages/SingleMessageLink.vue
 
 const props = defineProps({
     usersWithMessage: {
-        type: Array,
+        type: Object,
         default() {
-            return []
+            return {
+
+            }
         }
     }
 })

@@ -46,6 +46,10 @@ export default {
                 'general': {
                     'error': '#B91C1C'
                 },
+                'messages': {
+                    'primaryBg': '#e5ac7d',
+                    'secondaryBg': '#7db6e5',
+                },
                 'modal': {
                     'contentBackground': '#FFFFFF',
                     'tint': '#000C',

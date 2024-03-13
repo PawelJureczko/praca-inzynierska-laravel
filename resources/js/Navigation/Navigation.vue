@@ -45,9 +45,9 @@
             </ul>
         </template>
         <template v-else>
-            <Link class="max-w-max flex items-center gap-2 cursor-pointer border-b border-[#DDDDDD] xl:border-none w-full py-6 xl:py-0 ml-auto mr-0" :href="route('login')" as="button">
+            <Link class="max-w-max h-max flex items-center gap-2 cursor-pointer border-b border-[#DDDDDD] xl:border-none w-full py-2 xl:py-0 ml-auto mr-0" :href="route('login')" as="button">
                 <LoginIcon />
-                <span class="whitespace-nowrap">Zaloguj</span>
+                <span class="whitespace-nowrap my-0 py-0">Zaloguj</span>
             </Link>
         </template>
         <div class="flex items-center gap-4 xl:mr-[56px]" v-if="isLogged">
