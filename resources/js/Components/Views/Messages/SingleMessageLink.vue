@@ -1,5 +1,5 @@
 <template>
-    <div class="single_message_link p-4 border border-dark_grey rounded-lg cursor-pointer" :class="[message.read_at===null && 'unread']" @click="handleLinkClicked">
+    <div class="single_message_link p-4 border border-dark_grey rounded-lg cursor-pointer" :class="[(message.read_at===null && message.user_type === 'receiver') && 'unread']" @click="handleLinkClicked">
         <div>
             <p class="font-bold">{{message.last_name}} {{message.first_name}}</p>
         </div>

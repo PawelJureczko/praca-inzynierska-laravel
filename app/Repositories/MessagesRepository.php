@@ -28,6 +28,7 @@ class MessagesRepository
                 WHERE sender_id = ? OR receiver_id = ?
                 GROUP BY sender_id, receiver_id
             )
+            ORDER BY messages.created_at DESC
         ', [$id, $id, $id, $id]);
 
 //        dd($firstMessages);
@@ -35,13 +36,13 @@ class MessagesRepository
 //        dd($firstMessages);
         $filteredMessages = [];
         foreach ($firstMessages as $message) {
-            $userType = $id === $message->sender_id ? 'receiver' : 'sender';
-            $userId = $userType==='sender' ? $message->sender_id : $message->receiver_id;
+            $userType = $id === $message->sender_id ? 'sender' : 'receiver';
+            $userId = $userType==='receiver' ? $message->sender_id : $message->receiver_id;
             if (!isset($filteredMessages[$userId])) {
                 $filteredMessage = [
                     'id' => $userId,
-                    'first_name' => $userType === 'sender' ? $message->sender_first_name : $message->receiver_first_name,
-                    'last_name' => $userType === 'sender' ? $message->sender_last_name : $message->receiver_last_name,
+                    'first_name' => $userType === 'receiver' ? $message->sender_first_name : $message->receiver_first_name,
+                    'last_name' => $userType === 'receiver' ? $message->sender_last_name : $message->receiver_last_name,
                     'content' => $message->content,
                     'read_at' => $message->read_at,
                     'created_at' => $message->created_at,

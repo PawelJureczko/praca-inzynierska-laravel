@@ -5,7 +5,7 @@
         </div>
         <div>
             <div class="flex flex-col gap-4 max-h-[50vh] overflow-auto border border-dark_grey p-8">
-                <SingleMessage v-for="message in messages" :accountOwnerId="id" :message="message" :id="message.id" :receiverData="userData[0].first_name + ' ' +userData[0].last_name"/>
+                <SingleMessage v-for="message in messages" :accountOwnerId="$page.props.auth.user.id" :message="message" :id="message.id" :receiverData="userData[0].first_name + ' ' +userData[0].last_name"/>
             </div>
         </div>
     </Layout>
