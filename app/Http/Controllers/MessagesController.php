@@ -31,8 +31,6 @@ class MessagesController extends Controller
         $userData = $this->messagesRepository->getUserData($interlocutorId);
         $messages = $this->messagesRepository->getAllMessages($interlocutorId, $userId);
 
-//        dd(end($messages)->receiver_id . ' ' .$userId);
-
         if (end($messages)->receiver_id === $userId) {
             $this->messagesRepository->updateAllMessages($interlocutorId, $userId);
         }
@@ -50,5 +48,19 @@ class MessagesController extends Controller
         return Inertia::render('Messages/MessagesSingle', [
             'type'=>'new'
         ]);
+    }
+
+    public function sendMessage(Request $request) {
+        $senderId = $request->user()->id;;
+        $receiverId = $request->input('receiver_id');
+        $message = $request->input('message');
+
+        $this->messagesRepository->sendMessage($senderId, $receiverId, $message);
+
+        $allMessages = $this->messagesRepository->getAllMessages($receiverId, $senderId);
+
+        return response()->json([
+            'messages' =>$allMessages,
+        ], 200);
     }
 }

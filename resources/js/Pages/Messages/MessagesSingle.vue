@@ -5,7 +5,7 @@
         </div>
         <div>
             <div class="flex flex-col gap-4 max-h-[50vh] overflow-auto border border-dark_grey p-8" ref="messagesWrapperRef">
-                <SingleMessage v-for="message in messages" :accountOwnerId="$page.props.auth.user.id" :message="message" :id="message.id" :receiverData="userData[0].first_name + ' ' +userData[0].last_name"/>
+                <SingleMessage v-for="message in localMessages" :accountOwnerId="$page.props.auth.user.id" :message="message" :id="message.id" :receiverData="userData[0].first_name + ' ' +userData[0].last_name"/>
             </div>
         </div>
         <div class="w-full h-max bg-light_greyrounded-[8px] mt-4 relative">
@@ -22,6 +22,7 @@ import SingleMessage from "@/Components/Views/Messages/SingleMessage.vue";
 import {onMounted, ref} from "vue";
 import TextField from "@/Components/Inputs/TextField.vue";
 import SendIcon from "@/Components/Icons/SendIcon.vue";
+import {useMainStore} from "@/Store/mainStore.js";
 
 const props = defineProps({
     id: {
@@ -48,16 +49,42 @@ const props = defineProps({
     }
 })
 
+const store = useMainStore();
+
 const messagesWrapperRef = ref(null);
 const message = ref('');
+const localMessages = ref(props.messages);
 
 function sendMessage() {
-    alert(message.value)
+    if (store.getIsLock === false && message.value!=='') {
+        store.setIsLock(true);
+        axios.post(route('messages.send'), {
+            receiver_id: props.id,
+            message: message.value
+        })
+            .then(response => {
+                localMessages.value = [];
+                localMessages.value = response.data.messages;
+                message.value = '';
+                setTimeout(() => {
+                    scrollToMessagesEnd();
+                }, 1)
+            })
+            .catch(error => {
+                store.showSnackbar('Wystąpił niespodziewany błąd', 'error');
+            }).finally(() => {
+            store.setIsLock(false);
+        });
+    }
+}
+
+function scrollToMessagesEnd() {
+    messagesWrapperRef.value.scrollTop =  messagesWrapperRef.value.scrollHeight - messagesWrapperRef.value.clientHeight;
 }
 
 onMounted(() => {
     //zawsze po zalogowaniu zescrlluj do dołu strony
-    messagesWrapperRef.value.scrollTop =  messagesWrapperRef.value.scrollHeight - messagesWrapperRef.value.clientHeight;
+    scrollToMessagesEnd()
 })
 
 </script>

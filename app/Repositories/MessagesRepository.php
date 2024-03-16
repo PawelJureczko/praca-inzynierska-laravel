@@ -57,6 +57,8 @@ class MessagesRepository
 
     public function getAllMessages($interlocutorId, $userId)
     {
+//       $interlocutorId - osoba z którą rozmawiam
+//       $userId - osoba, która jest zalogowana
         return DB::select('
         SELECT *
         FROM messages
@@ -73,6 +75,13 @@ class MessagesRepository
             WHERE (sender_id = ? OR sender_id = ?)
                 AND (receiver_id = ? OR receiver_id = ?)
         ", [$interlocutorId, $userId, $interlocutorId, $userId]);
+    }
+
+    public function sendMessage($senderId, $receiverId, $message) {
+        DB::statement("
+        INSERT INTO messages (sender_id, receiver_id, content, created_at)
+        VALUES (?, ?, ?, NOW())
+    ", [$senderId, $receiverId, $message]);
     }
 }
 

@@ -63,6 +63,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/messages', [\App\Http\Controllers\MessagesController::class, 'messagesList'])->name('messages.index');
     Route::get('/messages/t/{id}', [\App\Http\Controllers\MessagesController::class, 'messagesSingle'])->name('messages.single');
     Route::get('/messages/new', [\App\Http\Controllers\MessagesController::class, 'messageNew'])->name('messages.new');
+
+    Route::post('/messages', [\App\Http\Controllers\MessagesController::class, 'sendMessage'])->name('messages.send');
 });
 
 Route::resource('/schedule', \App\Http\Controllers\ScheduleController::class)->middleware(['auth', 'verified']);
