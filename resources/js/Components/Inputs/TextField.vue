@@ -1,7 +1,7 @@
 <template>
     <div class="text_field relative" :class="{'pointer-events-none': inactive}">
         <label :for="uuid" class="text-base" :class="{'opacity-[0.5]': inactive}">{{ label }}</label>
-        <p class="absolute top-[10px] pointer-events-none text-textfield-placeholder z-[1]"
+        <p class="absolute top-1/2 left-3 -translate-y-1/2 pointer-events-none text-textfield-placeholder z-[1]"
                 :class="{'left-10': isSearchField}"
                 v-if="placeholder!=='' && value===''">{{ placeholder }}</p>
         <div class="relative" :class="[inputHeight]">
@@ -16,6 +16,7 @@
                         (isUnitVisible || isClearable) && 'pr-8',
                         isCopyable && 'pr-12',
                         inputHeight,
+                        additionalInputClasses,
 
                     ]"
                     :type="type"
@@ -78,6 +79,10 @@ import {computed, ref, watch} from "vue";
 import {useMainStore} from "@/Store/mainStore.js";
 
 const props = defineProps({
+    additionalInputClasses: {
+        type: String,
+        default: ''
+    },
     copiedMessage: {
         type: String,
         default: 'Skopiowano'

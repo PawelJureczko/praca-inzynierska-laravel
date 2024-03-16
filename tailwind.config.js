@@ -39,7 +39,7 @@ export default {
                     'textSecondary': '#4C1D95'
                 },
                 'inputBox': {
-                    'background': '#FFFFFF',
+                    'background': 'transparent',
                     'border': '#A78BFA',
                     'fill': '#ff7400',
                 },

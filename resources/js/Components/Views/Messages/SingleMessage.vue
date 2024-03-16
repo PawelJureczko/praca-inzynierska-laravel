@@ -15,8 +15,8 @@ import {getStringFromDate} from "@/Helpers/helpers.js";
 
 const props = defineProps({
     accountOwnerId: {
-        type: String,
-        default: ''
+        type: Number,
+        default: 0
     },
     message: {
         type: Object,

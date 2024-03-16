@@ -17,6 +17,7 @@ import Layout from "@/Layouts/Layout.vue";
 import TitleComponent from "@/Components/Views/TitleComponent.vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import SingleMessageLink from "@/Components/Views/Messages/SingleMessageLink.vue";
+import {onMounted, ref} from "vue";
 
 const props = defineProps({
     usersWithMessage: {
@@ -28,6 +29,7 @@ const props = defineProps({
         }
     }
 })
+
 </script>
 
 <style scoped>
