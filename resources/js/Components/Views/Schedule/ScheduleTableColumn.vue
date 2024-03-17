@@ -1,7 +1,10 @@
 <template>
     <div class="w-[12.5%] min-w-[200px]">
         <SingleScheduleCeil class="bg-[#ffcda3]">
-            <p class="font-bold">{{ day }}</p>
+            <div>
+                <p class="font-bold">{{ day }}</p>
+                <p>{{date}}</p>
+            </div>
         </SingleScheduleCeil>
         <SingleScheduleCeil v-for="i in columnLength">
 
@@ -20,6 +23,10 @@ const props = defineProps({
     columnLength: {
         type: Number,
         default: 0
+    },
+    date: {
+        type: String,
+        default: ''
     }
 })
 </script>

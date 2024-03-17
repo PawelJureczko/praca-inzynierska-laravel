@@ -1,14 +1,21 @@
 <template>
-    <div class="flex">
+    <div>
         <div>
-            <div class="w-[12.5%] min-w-[100px]">
-                <SingleScheduleCeil v-for="time in timeInterval" class="bg-[#ffcda3]">
-                    <p class="font-bold">{{ time }}</p>
-                </SingleScheduleCeil>
-            </div>
+            <p @click="handleIteratorClicked('dec')">Wstecz</p>
+            <p>{{dates[0]}} - {{dates[6]}}</p>
+            <p @click="handleIteratorClicked('inc')">Dalej</p>
         </div>
-        <div class="flex max-w-full overflow-auto">
-            <ScheduleTableColumn v-for="(day, index) in days" :day="day" :columnLength="timeInterval.length-1" class="last-of-type:border-r last-of-type:border-r-main_hover" :class="[currentWeekDay-1 === index && 'bg-[#f7dcc6]']"/>
+        <div class="flex">
+            <div>
+                <div class="w-[12.5%] min-w-[100px]">
+                    <SingleScheduleCeil v-for="time in timeInterval" class="bg-[#ffcda3]">
+                        <p class="font-bold">{{ time }}</p>
+                    </SingleScheduleCeil>
+                </div>
+            </div>
+            <div class="flex max-w-full overflow-auto">
+                <ScheduleTableColumn v-for="(day, index) in days" :date="dates[index]" :day="day" :columnLength="timeInterval.length-1" class="last-of-type:border-r last-of-type:border-r-main_hover" :class="[currentWeekDay-1 === index && weekIterator===0 && 'bg-[#f7dcc6]']"/>
+            </div>
         </div>
     </div>
 </template>
@@ -16,7 +23,8 @@
 <script setup>
 import SingleScheduleCeil from "@/Components/Views/Schedule/SingleScheduleCeil.vue";
 import ScheduleTableColumn from "@/Components/Views/Schedule/ScheduleTableColumn.vue";
-import {computed} from "vue";
+import { onBeforeMount, ref} from "vue";
+import {getStringFromDate} from "@/Helpers/helpers";
 
 const timeInterval = [
     '', '8:00', '8:30', '9:00', '9:30', '10:00', '10:30',
@@ -30,10 +38,41 @@ const days = [
     'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'
 ];
 
-const currentWeekDay = computed(() => {
-    const currentDay = new Date();
-    return currentDay.getDay() === 0 ? 7 : currentDay.getDay();
-});
+const dates = ref([]);
+
+const currentWeekDay = ref(10);
+
+const weekIterator = ref(0); //0 oznacza obecny tydzien, wartość dodatnia to wartość x 7 dni do przodu, ujemna analogicznie wartość x 7 do tyłu
+
+function prepareDates(iterator) {
+    let currentDay = new Date();
+    currentWeekDay.value = currentDay.getDay() === 0 ? 7 : currentDay.getDay();
+    dates.value = [];
+
+    for (let i = 1; i<8; i++) {
+        let today = new Date();
+        let iteratedDate = new Date(today);
+        iteratedDate.setDate(today.getDate() + (i - currentWeekDay.value) + (7*iterator));
+        dates.value.push(getStringFromDate(iteratedDate).split(',')[0])
+    }
+    console.log('asd')
+}
+
+function handleIteratorClicked(type) {
+    if (type === 'dec') {
+        weekIterator.value = weekIterator.value-1;
+    }
+
+    if (type === 'inc') {
+        weekIterator.value = weekIterator.value+1;
+    }
+
+    prepareDates(weekIterator.value)
+}
+
+onBeforeMount(() => {
+    prepareDates(weekIterator.value);
+})
 
 </script>
 
