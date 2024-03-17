@@ -27,15 +27,15 @@ Route::get('/', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', function () {
-    $userId = 1; // Przykładowe ID użytkownika, zastąp to odpowiednim ID
-
-    $user = \App\Models\User::find($userId);
-
-    return Inertia::render('Dashboard', [
-        'user' => $user,
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
+//Route::get('/dashboard', function () {
+//    $userId = 1; // Przykładowe ID użytkownika, zastąp to odpowiednim ID
+//
+//    $user = \App\Models\User::find($userId);
+//
+//    return Inertia::render('Dashboard', [
+//        'user' => $user,
+//    ]);
+//})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::resource('/test', \App\Http\Controllers\TestController::class)->middleware(['auth', 'verified']);
 
@@ -68,8 +68,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/messages', [\App\Http\Controllers\MessagesController::class, 'sendMessage'])->name('messages.send');
 });
 
-Route::resource('/schedule', \App\Http\Controllers\ScheduleController::class)->middleware(['auth', 'verified']);
 
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])->name('schedule.index');
+});
 
 Route::resource('/reports', \App\Http\Controllers\ReportsController::class)->middleware(['auth', 'verified']);
 

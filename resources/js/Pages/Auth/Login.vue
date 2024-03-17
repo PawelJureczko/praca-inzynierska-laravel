@@ -36,7 +36,7 @@ function submit() {
         axios.post(route('login'), form.value)
             .then(response => {
                 if (response.data.status === 'ok') {
-                    router.visit(route('dashboard'));
+                    router.visit(route('schedule.index'));
                 }
             })
             .catch(error => {

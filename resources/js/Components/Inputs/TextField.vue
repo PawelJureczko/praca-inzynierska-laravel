@@ -1,8 +1,8 @@
 <template>
     <div class="text_field relative" :class="{'pointer-events-none': inactive}">
         <label :for="uuid" class="text-base" :class="{'opacity-[0.5]': inactive}">{{ label }}</label>
-        <p class="absolute top-1/2 left-3 -translate-y-1/2 pointer-events-none text-textfield-placeholder z-[1]"
-                :class="{'left-10': isSearchField}"
+        <p class="absolute top-1/2 -translate-y-1/2 pointer-events-none text-textfield-placeholder z-[1]"
+                :class="[isSearchField ? 'left-10' : 'left-3']"
                 v-if="placeholder!=='' && value===''">{{ placeholder }}</p>
         <div class="relative" :class="[inputHeight]">
             <input class="border px-3 rounded-md text-textfield-inputText w-full"
