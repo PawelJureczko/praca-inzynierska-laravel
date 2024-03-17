@@ -19,7 +19,7 @@
 import Layout from "@/Layouts/Layout.vue";
 import TitleComponent from "@/Components/Views/TitleComponent.vue";
 import SingleMessage from "@/Components/Views/Messages/SingleMessage.vue";
-import {onMounted, ref} from "vue";
+import {onBeforeUnmount, onMounted, ref} from "vue";
 import TextField from "@/Components/Inputs/TextField.vue";
 import SendIcon from "@/Components/Icons/SendIcon.vue";
 import {useMainStore} from "@/Store/mainStore.js";
@@ -54,6 +54,7 @@ const store = useMainStore();
 const messagesWrapperRef = ref(null);
 const message = ref('');
 const localMessages = ref(props.messages);
+const messageInterval = ref(null);
 
 function sendMessage() {
     if (store.getIsLock === false && message.value!=='') {
@@ -78,13 +79,55 @@ function sendMessage() {
     }
 }
 
+const reloadMessagesInterval = () => {
+    setInterval(() => {
+        axios.get(route('messages.reload'), {
+            params: {
+                id: props.id
+            }
+        })
+            .then(response => {
+                localMessages.value = response.data.messages;
+            })
+            .catch(error => {
+                store.showSnackbar('Wystąpił niespodziewany błąd, odśwież stronę', 'error');
+            }).finally(() => {
+        });
+    }, 3000)
+}
+
 function scrollToMessagesEnd() {
-    messagesWrapperRef.value.scrollTop =  messagesWrapperRef.value.scrollHeight - messagesWrapperRef.value.clientHeight;
+    messagesWrapperRef.value.scrollTop = (messagesWrapperRef.value.scrollHeight - messagesWrapperRef.value.clientHeight);
+    console.log(messagesWrapperRef.value.scrollTop)
 }
 
 onMounted(() => {
     //zawsze po zalogowaniu zescrlluj do dołu strony
     scrollToMessagesEnd()
+    messageInterval.value = setInterval(() => {
+        axios.get(route('messages.reload'), {
+            params: {
+                id: props.id
+            }
+        })
+            .then(response => {
+                const prevMessagesLength = localMessages.value.length;
+                localMessages.value = response.data.messages;
+
+                if (prevMessagesLength!==response.data.messages.length) {
+                    scrollToMessagesEnd()
+                }
+
+            })
+            .catch(error => {
+                store.showSnackbar('Wystąpił niespodziewany błąd, odśwież stronę', 'error');
+            }).finally(() => {
+        });
+    }, 3000);
+})
+
+onBeforeUnmount(() => {
+    clearInterval(messageInterval.value);
 })
 
 </script>

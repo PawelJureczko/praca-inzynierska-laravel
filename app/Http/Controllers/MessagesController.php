@@ -44,6 +44,16 @@ class MessagesController extends Controller
         ]);
     }
 
+    public function reloadMessages(Request $request) {
+        $interlocutorId = $request->query('id');
+        $userId = $request->user()->id;;
+        $messages = $this->messagesRepository->getAllMessages($interlocutorId, $userId);
+
+        return response()->json([
+            'messages' =>$messages,
+        ], 200);
+    }
+
     public function messageNew() {
         return Inertia::render('Messages/MessagesSingle', [
             'type'=>'new'
