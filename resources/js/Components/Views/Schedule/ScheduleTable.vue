@@ -8,7 +8,7 @@
             </div>
         </div>
         <div class="flex max-w-full overflow-auto">
-            <ScheduleTableColumn v-for="day in days" :day="day" :columnLength="timeInterval.length-1"/>
+            <ScheduleTableColumn v-for="(day, index) in days" :day="day" :columnLength="timeInterval.length-1" class="last-of-type:border-r last-of-type:border-r-main_hover" :class="[currentWeekDay-1 === index && 'bg-[#f7dcc6]']"/>
         </div>
     </div>
 </template>
@@ -16,6 +16,7 @@
 <script setup>
 import SingleScheduleCeil from "@/Components/Views/Schedule/SingleScheduleCeil.vue";
 import ScheduleTableColumn from "@/Components/Views/Schedule/ScheduleTableColumn.vue";
+import {computed} from "vue";
 
 const timeInterval = [
     '', '8:00', '8:30', '9:00', '9:30', '10:00', '10:30',
@@ -28,6 +29,12 @@ const timeInterval = [
 const days = [
     'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'
 ];
+
+const currentWeekDay = computed(() => {
+    const currentDay = new Date();
+    return currentDay.getDay() === 0 ? 7 : currentDay.getDay();
+});
+
 </script>
 
 <style scoped>
