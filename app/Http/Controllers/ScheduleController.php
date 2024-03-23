@@ -9,10 +9,14 @@ use Inertia\Inertia;
 class ScheduleController extends Controller
 {
     public function index() {
-        $users = DB::select('SELECT * FROM users'); // Zastąp 'your_table' nazwą rzeczywistej tabeli w bazie danych
-
         return Inertia::render('Schedule/Schedule', [
-            'users'=>$users
+            'test'=>'test'
+        ]);
+    }
+
+    public function create() {
+        return Inertia::render('Schedule/ScheduleCreate', [
+            'test' => 'test'
         ]);
     }
 }

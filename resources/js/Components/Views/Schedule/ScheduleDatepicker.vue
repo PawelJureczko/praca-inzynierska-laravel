@@ -1,12 +1,12 @@
 <template>
-    <div class="flex items-center justify-start gap-3">
-        <VueDatePicker v-model="date" :enable-time-picker="false"></VueDatePicker>
+    <div class="flex items-center justify-start gap-3 h-max">
+        <VueDatePicker class="flex-shrink-0" v-model="date" :enable-time-picker="false"></VueDatePicker>
         <div class="flex items-center justify-start gap-3 border border-dark_grey px-4 py-2 rounded rounded-lg w-max">
             <div @click="$emit('iteratorClicked', 'dec')" class="w-8 h-8 flex items-center justify-center cursor-pointer hover:xl:bg-light_grey transition-[background-color] duration-300 rounded-[2px]">
                 <ArrowHeadIcon/>
             </div>
             <div class="p-2 border border-light_grey">
-                <p class="text-[11px] leading-[15px]">{{ dates[0] }} - {{ dates[6] }}</p>
+                <p class="text-[11px] leading-[15px] whitespace-nowrap">{{ dates[0] }} - {{ dates[6] }}</p>
             </div>
             <div @click="$emit('iteratorClicked', 'inc')" class="w-8 h-8 flex items-center justify-center cursor-pointer hover:xl:bg-light_grey transition-[background-color] duration-300 rounded-[2px]">
                 <ArrowHeadIcon class="rotate-180"/>
@@ -48,12 +48,17 @@ watch(date, () => {
         height: 38px;
         padding: 0;
 
+        .dp__clear_icon {
+            display: none;
+        }
+
         .dp__input_icon_pad {
             padding-inline-start: 0;
         }
 
         .dp__pointer {
             height: 38px;
+            font-size: 0;
         }
     }
 }

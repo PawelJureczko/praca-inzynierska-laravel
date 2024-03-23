@@ -1,6 +1,9 @@
 <template>
     <div>
-        <ScheduleDatepicker :dates="dates" @iteratorClicked="handleIteratorClicked" @dateChanged="handleDateChanged"/>
+        <div class="flex justify-between items-center flex-wrap gap-2">
+            <ScheduleDatepicker class="flex-shrink-0" :dates="dates" @iteratorClicked="handleIteratorClicked" @dateChanged="handleDateChanged"/>
+            <Btn @click="$inertia.visit(route('schedule.create'))">Dodaj zajęcia</Btn>
+        </div>
         <div class="flex mt-4">
             <div>
                 <div class="w-[12.5%] min-w-[100px]">
@@ -22,6 +25,7 @@ import ScheduleTableColumn from "@/Components/Views/Schedule/ScheduleTableColumn
 import { onBeforeMount, ref} from "vue";
 import {getStringFromDate} from "@/Helpers/helpers";
 import ScheduleDatepicker from "@/Components/Views/Schedule/ScheduleDatepicker.vue";
+import Btn from "@/Components/Buttons/Btn.vue";
 
 const timeInterval = [
     '', '8:00', '8:30', '9:00', '9:30', '10:00', '10:30',

@@ -71,6 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])->name('schedule.index');
+    Route::get('/schedule/new', [\App\Http\Controllers\ScheduleController::class, 'create'])->name('schedule.create');
 });
 
 Route::resource('/reports', \App\Http\Controllers\ReportsController::class)->middleware(['auth', 'verified']);
