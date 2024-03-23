@@ -16,7 +16,7 @@
                 <p v-if="!value">{{timePicker ? 'Wybierz godzinę' : 'Wybierz datę'}}</p>
                 <template v-else>
                     <p v-if="timePicker">{{(value.hours<10?'0':'')+(value.hours)}}:{{(value.minutes<10?'0':'')+(value.minutes)}}</p>
-                    <p v-else>{{getStringFromDate(date)}}</p>
+                    <p v-else>{{getStringFromDate(value).split(', ')[0]}}</p>
                 </template>
             </div>
             <div class="absolute w-full h-full bg-transparent inset-0" v-if="isOpen"></div>
@@ -40,7 +40,9 @@ const props = defineProps({
     },
     minDate: {
         type: Date,
-        default: null
+        default() {
+            return new Date()
+        }
     },
     timePicker: {
         type: Boolean,

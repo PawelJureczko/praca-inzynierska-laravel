@@ -4,8 +4,6 @@
         <TitleComponent desc="Dodaj nowe zajęcia" :isSearch="false"/>
 
         <div class="max-w-[428px] mx-auto flex flex-col gap-6">
-            <Datepicker v-model="test" :enableTimePicker="false" :timePicker="true"/>
-
             <div>
                 <p>Wybierz ucznia:</p>
                 <Select :options="preparedOptions" placeholder="Wybór ucznia"
@@ -14,18 +12,13 @@
 
             <div>
                 <p>Data rozpoczęcia zajęć:</p>
-                <VueDatePicker
-                    v-model="form.date_begin"
-                    :min-date="new Date()"
-                    :enable-time-picker="false"/>
+                <Datepicker v-model="form.date_begin" :enableTimePicker="false" :minDate="minDate"/>
             </div>
 
             <div>
                 <p>Data zakończenia zajęć (opcjonalnie):</p>
-                <VueDatePicker
-                    v-model="form.date_end"
-                    :min-date="form.date_begin"
-                    :enable-time-picker="false"/>
+                <Datepicker v-model="form.date_end" :enableTimePicker="false" :minDate="form.date_begin"/>
+
             </div>
 
             <div>
@@ -36,12 +29,12 @@
 
             <div>
                 <p>Godzina rozpoczęcia zajęć:</p>
-                <VueDatePicker v-model="form.class_time_start" time-picker />
+                <Datepicker v-model="form.class_time_start" :timePicker="true" />
             </div>
 
             <div>
                 <p>Godzina zakończenia zajęć:</p>
-                <VueDatePicker v-model="form.class_time_end" time-picker />
+                <Datepicker v-model="form.class_time_end" :timePicker="true" />
             </div>
 
             <div class="flex items-center justify-between mt-6">
@@ -81,6 +74,8 @@ const form = ref({
     class_time_start: null,
     class_time_end: null
 })
+
+const minDate = new Date();
 
 const weekdays = ref([
     {
