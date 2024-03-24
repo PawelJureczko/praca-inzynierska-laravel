@@ -9,7 +9,7 @@
             @open="isOpen=true"
             @closed="isOpen=false"
         />
-        <div class="border border-dark_grey relative">
+        <div class="border border-dark_grey relative rounded-md" :class="[store.getErrors[errorName] && 'border-general-error']">
             <div @click="handleDatepickerClicked" class="flex items-center gap-2 px-3 py-2 min-h-[44px]">
                 <ClockIcon v-if="timePicker"/>
                 <CalendarIcon v-else/>
@@ -20,6 +20,7 @@
                 </template>
             </div>
             <div class="absolute w-full h-full bg-transparent inset-0" v-if="isOpen"></div>
+            <p class="absolute text-[11px] leading-[14px] -bottom-[14px] text-general-error whitespace-nowrap">{{ store.getErrors[errorName] }}</p>
         </div>
     </div>
 </template>
@@ -29,14 +30,20 @@ import {getStringFromDate} from "@/Helpers/helpers.js";
 import {ref} from "vue";
 import ClockIcon from "@/Components/Icons/ClockIcon.vue";
 import CalendarIcon from "@/Components/Icons/CalendarIcon.vue";
+import {useMainStore} from "@/Store/mainStore.js";
 
 const value = defineModel();
 const datepicker = ref(null);
+const store = useMainStore();
 
 const props = defineProps({
     enableTimePicker: {
         type: Boolean,
         default: false,
+    },
+    errorName: {
+        type: String,
+        default: ''
     },
     minDate: {
         type: Date,
@@ -53,12 +60,9 @@ const props = defineProps({
 function handleDatepickerClicked() {
     if (isOpen.value) {
         datepicker.value.closeMenu();
-        console.log('test')
     } else {
         datepicker.value.openMenu();
-        console.log('test2')
     }
-    // }
 }
 
 const isOpen = ref(false);

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\StudentRepository;
+use App\Repositories\ScheduleRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -11,10 +12,12 @@ class ScheduleController extends Controller
 {
 
     private $studentRepository;
+    private $scheduleRepository;
 
-    public function __construct(StudentRepository $studentRepository)
+    public function __construct(StudentRepository $studentRepository, ScheduleRepository $scheduleRepository)
     {
         $this->studentRepository = $studentRepository;
+        $this->scheduleRepository = $scheduleRepository;
     }
 
     public function index() {
@@ -31,5 +34,22 @@ class ScheduleController extends Controller
             'students' => $users,
 
         ]);
+    }
+
+    public function save(Request $request) {
+        $formData = $request->all();
+        $errors = [];
+
+        $errors = $this->scheduleRepository->checkIsNull($formData);
+        $errors += $this->scheduleRepository->validateTime($formData['class_time_start'], $formData['class_time_end']);
+
+        if (count($errors) > 0) {
+            return response()->json([
+                'errors' =>$errors,
+            ], 422);
+        }
+        return response()->json([
+            'test' =>$formData['class_time_start'],
+        ], 200);
     }
 }

@@ -59,3 +59,13 @@ export function getStringFromDate(value, withDots = true) {
 export function customReplaceAll(sentence, str1, str2, ignore) {
     return sentence.replace(new RegExp(str1.replace(/([\/\,\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g, "\\$&"), (ignore ? "gi" : "g")), (typeof (str2) == "string") ? str2.replace(/\$/g, "$$$$") : str2);
 }
+
+export function addLeadingZero(val) {
+    return val<10 ? ('0'+val) : val;
+}
+
+export function scrollToError() {
+    setTimeout(() => {
+        document.querySelector('.error').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+    }, 1);
+}

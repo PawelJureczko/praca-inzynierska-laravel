@@ -36,6 +36,11 @@ export const useMainStore = defineStore('mainStore', () => {
 
     function setErrors(val) {
         errors.value = val;
+        setTimeout(() => {
+            if (document.querySelector('.error')) {
+                document.querySelector('.error').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+            }
+        }, 1);
     }
 
     function clearErrors() {

@@ -7,39 +7,39 @@
             <div>
                 <p>Wybierz ucznia:</p>
                 <Select :options="preparedOptions" placeholder="Wybór ucznia"
-                        v-model="form.student_id"/>
+                        v-model="form.student_id" errorName="student_id"/>
             </div>
 
             <div>
                 <p>Data rozpoczęcia zajęć:</p>
-                <Datepicker v-model="form.date_begin" :enableTimePicker="false" :minDate="minDate"/>
+                <Datepicker v-model="form.date_begin" :enableTimePicker="false" :minDate="minDate" errorName="date_begin"/>
             </div>
 
             <div>
                 <p>Data zakończenia zajęć (opcjonalnie):</p>
-                <Datepicker v-model="form.date_end" :enableTimePicker="false" :minDate="form.date_begin"/>
+                <Datepicker v-model="form.date_end" :enableTimePicker="false" :minDate="form.date_begin" errorName="date_end"/>
 
             </div>
 
             <div>
                 <p>Dzień zajęć:</p>
                 <Select :options="weekdays" placeholder="Wybierz dzień zajęć"
-                        v-model="form.class_weekday"/>
+                        v-model="form.class_weekday" errorName="class_weekday"/>
             </div>
 
             <div>
                 <p>Godzina rozpoczęcia zajęć:</p>
-                <Datepicker v-model="form.class_time_start" :timePicker="true" />
+                <Datepicker v-model="form.class_time_start" :timePicker="true" errorName="class_time_start"/>
             </div>
 
             <div>
                 <p>Godzina zakończenia zajęć:</p>
-                <Datepicker v-model="form.class_time_end" :timePicker="true" />
+                <Datepicker v-model="form.class_time_end" :timePicker="true" errorName="class_time_end"/>
             </div>
 
             <div class="flex items-center justify-between mt-6">
-                <Btn class="w-[calc(50%_-_8px)]">Zapisz</Btn>
-                <Btn class="w-[calc(50%_-_8px)]" btnType="secondary">Wróć</Btn>
+                <Btn class="w-[calc(50%_-_8px)]" @click="save">Zapisz</Btn>
+                <Btn class="w-[calc(50%_-_8px)]" btnType="secondary" @click="$inertia.visit(route('schedule.index'))">Wróć</Btn>
             </div>
         </div>
 
@@ -51,9 +51,12 @@
 import TitleComponent from "@/Components/Views/TitleComponent.vue";
 import Layout from "@/Layouts/Layout.vue";
 import Select from "@/Components/Inputs/Select.vue";
-import {ref} from "vue";
+import {computed, ref, watch} from "vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import Datepicker from "@/Components/Inputs/Datepicker.vue";
+import {addLeadingZero, getDateFromString, getStringFromDate, scrollToError} from "@/Helpers/helpers.js";
+import {useMainStore} from "@/Store/mainStore.js";
+const store = useMainStore();
 
 const props = defineProps({
     students: {
@@ -64,8 +67,6 @@ const props = defineProps({
     }
 })
 
-const test = ref();
-
 const form = ref({
     student_id: null,
     date_begin: new Date(),
@@ -73,6 +74,18 @@ const form = ref({
     class_weekday: null,
     class_time_start: null,
     class_time_end: null
+})
+
+const dateBeginCp = computed(() => {
+    return form.value.date_begin;
+})
+
+watch(dateBeginCp, () => {
+    if (form.value.date_end && (form.value.date_begin > form.value.date_end)) {
+        const date = getDateFromString(getStringFromDate(form.value.date_begin));
+        date.setDate(date.getDate() + 1);
+        form.value.date_end = date;
+    }
 })
 
 const minDate = new Date();
@@ -114,6 +127,38 @@ const preparedOptions = ref(props.students.map(item => {
         value: item.first_name + ' ' + item.last_name
     }
 }));
+
+function save() {
+    const preparedForm = {
+        student_id: form.value.student_id,
+        date_begin: getStringFromDate(form.value.date_begin).split(', ')[0],
+        date_end: form.value.date_end ? getStringFromDate(form.value.date_begin).split(', ')[0] : null,
+        class_weekday: form.value.class_weekday,
+        class_time_start: form.value.class_time_start ? (addLeadingZero(form.value.class_time_start.hours) + ':' + addLeadingZero(form.value.class_time_start.minutes)) : null,
+        class_time_end: form.value.class_time_end ? (addLeadingZero(form.value.class_time_end.hours) + ':' + addLeadingZero(form.value.class_time_end.minutes)) : null,
+    }
+    if (store.getIsLock === false) {
+        store.setIsLock(true);
+        store.clearErrors();
+        axios.post(route('schedule.save'), preparedForm)
+            .then(response => {
+                // if (response.data.status === 'ok') {
+                //     router.visit(route('schedule.index'));
+                // }
+            })
+            .catch(error => {
+                // Obsługa błędu
+                console.log(error.response.data.errors)
+                if (error.response.status === 422) {
+                    store.setErrors(error.response.data.errors);
+                    scrollToError();
+                } else {
+                    console.log(error.data)
+                }
+            }).finally(() => {
+            store.setIsLock(false);
+        })}
+}
 
 
 </script>
