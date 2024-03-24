@@ -134,8 +134,8 @@ function save() {
         date_begin: prepareDateForRequest(getStringFromDate(form.value.date_begin).split(', ')[0]),
         date_end: form.value.date_end ? prepareDateForRequest(getStringFromDate(form.value.date_begin).split(', ')[0]) : null,
         class_weekday: form.value.class_weekday ? parseInt(form.value.class_weekday) : null,
-        class_time_start: form.value.class_time_start ? (addLeadingZero(form.value.class_time_start.hours) + ':' + addLeadingZero(form.value.class_time_start.minutes)) : null,
-        class_time_end: form.value.class_time_end ? (addLeadingZero(form.value.class_time_end.hours) + ':' + addLeadingZero(form.value.class_time_end.minutes)) : null,
+        class_time_start: form.value.class_time_start ? (addLeadingZero(form.value.class_time_start.hours) + ':' + addLeadingZero(form.value.class_time_start.minutes)) + ':' + '00' : null,
+        class_time_end: form.value.class_time_end ? (addLeadingZero(form.value.class_time_end.hours) + ':' + addLeadingZero(form.value.class_time_end.minutes)) + ':' + '00' : null,
     }
     if (store.getIsLock === false) {
         store.setIsLock(true);

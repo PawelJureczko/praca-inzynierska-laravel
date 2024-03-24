@@ -66,7 +66,9 @@ export function addLeadingZero(val) {
 
 export function scrollToError() {
     setTimeout(() => {
-        document.querySelector('.error').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        if (document.querySelector('.error')) {
+            document.querySelector('.error').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+        }
     }, 1);
 }
 
@@ -74,6 +76,6 @@ export function prepareDateForRequest(date) {
     if (date.split(', ').length>1) {
         return date.split(', ')[0].split('.').reverse().join('-')+' '+date.split(', ')[1]
     } else {
-        return date.split(', ')[0].split('.').reverse().join('-')+ ' '+'00:00:00';
+        return date.split(', ')[0].split('.').reverse().join('-');
     }
 }

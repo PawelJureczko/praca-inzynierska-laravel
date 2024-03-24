@@ -43,7 +43,9 @@ class ScheduleController extends Controller
 
         $errors += $this->scheduleRepository->checkIsNull($formData);
         $errors += $this->scheduleRepository->validateTime($formData['class_time_start'], $formData['class_time_end']);
-
+        if (count($errors) === 0) {
+            $errors += $this->scheduleRepository->validateSchedule($request, $teacherId);
+        }
         if (count($errors) > 0) {
             return response()->json([
                 'errors' =>$errors,
