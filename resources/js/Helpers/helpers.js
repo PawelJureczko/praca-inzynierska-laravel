@@ -69,3 +69,11 @@ export function scrollToError() {
         document.querySelector('.error').scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
     }, 1);
 }
+
+export function prepareDateForRequest(date) {
+    if (date.split(', ').length>1) {
+        return date.split(', ')[0].split('.').reverse().join('-')+' '+date.split(', ')[1]
+    } else {
+        return date.split(', ')[0].split('.').reverse().join('-')+ ' '+'00:00:00';
+    }
+}

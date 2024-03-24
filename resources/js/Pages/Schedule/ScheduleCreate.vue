@@ -54,7 +54,7 @@ import Select from "@/Components/Inputs/Select.vue";
 import {computed, ref, watch} from "vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import Datepicker from "@/Components/Inputs/Datepicker.vue";
-import {addLeadingZero, getDateFromString, getStringFromDate, scrollToError} from "@/Helpers/helpers.js";
+import {addLeadingZero, getDateFromString, getStringFromDate, scrollToError, prepareDateForRequest} from "@/Helpers/helpers.js";
 import {useMainStore} from "@/Store/mainStore.js";
 const store = useMainStore();
 
@@ -130,10 +130,10 @@ const preparedOptions = ref(props.students.map(item => {
 
 function save() {
     const preparedForm = {
-        student_id: form.value.student_id,
-        date_begin: getStringFromDate(form.value.date_begin).split(', ')[0],
-        date_end: form.value.date_end ? getStringFromDate(form.value.date_begin).split(', ')[0] : null,
-        class_weekday: form.value.class_weekday,
+        student_id: form.value.student_id ? parseInt(form.value.student_id) : null,
+        date_begin: prepareDateForRequest(getStringFromDate(form.value.date_begin).split(', ')[0]),
+        date_end: form.value.date_end ? prepareDateForRequest(getStringFromDate(form.value.date_begin).split(', ')[0]) : null,
+        class_weekday: form.value.class_weekday ? parseInt(form.value.class_weekday) : null,
         class_time_start: form.value.class_time_start ? (addLeadingZero(form.value.class_time_start.hours) + ':' + addLeadingZero(form.value.class_time_start.minutes)) : null,
         class_time_end: form.value.class_time_end ? (addLeadingZero(form.value.class_time_end.hours) + ':' + addLeadingZero(form.value.class_time_end.minutes)) : null,
     }

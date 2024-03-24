@@ -38,15 +38,18 @@ class ScheduleController extends Controller
 
     public function save(Request $request) {
         $formData = $request->all();
+        $teacherId = $request->user()->id;
         $errors = [];
 
-        $errors = $this->scheduleRepository->checkIsNull($formData);
+        $errors += $this->scheduleRepository->checkIsNull($formData);
         $errors += $this->scheduleRepository->validateTime($formData['class_time_start'], $formData['class_time_end']);
 
         if (count($errors) > 0) {
             return response()->json([
                 'errors' =>$errors,
             ], 422);
+        } else {
+            $this->scheduleRepository->saveScheduleElem($formData, $teacherId);
         }
         return response()->json([
             'test' =>$formData['class_time_start'],
