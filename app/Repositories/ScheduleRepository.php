@@ -15,6 +15,7 @@ class ScheduleRepository {
 
         return $errors;
     }
+
     public function validateTime($beginTime, $endTime) {
         $errors = [];
 

@@ -2,7 +2,7 @@
     <Layout :isLogged="$page.props.auth.user!==null" :user="$page.props.auth.user">
         <div class="flex flex-wrap items-center w-full justify-between">
             <TitleComponent :isSearch="false" desc="Wiadomości"/>
-            <Btn>Nowa konwersacja</Btn>
+            <Btn class="w-max">Nowa konwersacja</Btn>
         </div>
         <div class="flex flex-col gap-4">
             <div v-for="message in Object.values(usersWithMessage)" :key="message.id">

@@ -4,28 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Repositories\MessagesRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
 
 class MessagesController extends Controller
 {
 
-    private $messagesRepository;
 
-    public function __construct(MessagesRepository $messagesRepository)
+    public function __construct(private readonly MessagesRepository $messagesRepository)
     {
-        $this->messagesRepository = $messagesRepository;
     }
 
-    public function messagesList(Request $request) {
+    public function messagesList(Request $request):Response {
         $userId = $request->user()->id;;
         $usersWithMessage = $this->messagesRepository->getFirstMessage($userId);
-        return Inertia::render('Messages/MessagesList', [
+        return inertia('Messages/MessagesList', [
             'usersWithMessage'=>$usersWithMessage
         ]);
     }
 
-    public function messagesSingle(Request $request) {
+    public function messagesSingle(Request $request):Response {
         $interlocutorId = $request->route('id');
         $userId = $request->user()->id;;
         $userData = $this->messagesRepository->getUserData($interlocutorId);
@@ -36,7 +32,7 @@ class MessagesController extends Controller
         }
 
 
-        return Inertia::render('Messages/MessagesSingle', [
+        return inertia('Messages/MessagesSingle', [
             'type' => 'edit',
             'id'=>$interlocutorId,
             'userData'=>$userData,
@@ -44,7 +40,7 @@ class MessagesController extends Controller
         ]);
     }
 
-    public function reloadMessages(Request $request) {
+    public function reloadMessages(Request $request):JsonResponse {
         $interlocutorId = $request->query('id');
         $userId = $request->user()->id;;
         $messages = $this->messagesRepository->getAllMessages($interlocutorId, $userId);
@@ -54,13 +50,13 @@ class MessagesController extends Controller
         ], 200);
     }
 
-    public function messageNew() {
-        return Inertia::render('Messages/MessagesSingle', [
+    public function messageNew():Response {
+        return inertia('Messages/MessagesSingle', [
             'type'=>'new'
         ]);
     }
 
-    public function sendMessage(Request $request) {
+    public function sendMessage(Request $request):JsonResponse {
         $senderId = $request->user()->id;;
         $receiverId = $request->input('receiver_id');
         $message = $request->input('message');

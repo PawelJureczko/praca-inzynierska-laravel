@@ -23,7 +23,7 @@
 import SingleScheduleCeil from "@/Components/Views/Schedule/SingleScheduleCeil.vue";
 import ScheduleTableColumn from "@/Components/Views/Schedule/ScheduleTableColumn.vue";
 import { onBeforeMount, ref} from "vue";
-import {getStringFromDate} from "@/Helpers/helpers";
+import {getStringFromDate, prepareDateForRequest} from "@/Helpers/helpers";
 import ScheduleDatepicker from "@/Components/Views/Schedule/ScheduleDatepicker.vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 
@@ -42,6 +42,8 @@ const days = [
 const chosenDay = ref(new Date());
 
 const dates = ref([]);
+const dateFrom = ref(null);
+const dateTo = ref(null);
 
 const currentWeekDay = ref(10);
 
@@ -62,6 +64,9 @@ function prepareDates(iterator) {
         iteratedDate.setDate(chosenDay.value.getDate() + (i - currentWeekDay.value) + (7*iterator));
         dates.value.push(getStringFromDate(iteratedDate).split(',')[0])
     }
+
+    dateFrom.value = prepareDateForRequest(dates.value[0]);
+    dateTo.value = prepareDateForRequest(dates.value[dates.value.length-1]);
 }
 
 function handleIteratorClicked(type) {
