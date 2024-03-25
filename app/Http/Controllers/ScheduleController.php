@@ -5,38 +5,31 @@ namespace App\Http\Controllers;
 use App\Repositories\StudentRepository;
 use App\Repositories\ScheduleRepository;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Inertia\Inertia;
-
 class ScheduleController extends Controller
 {
 
-    private $studentRepository;
-    private $scheduleRepository;
 
-    public function __construct(StudentRepository $studentRepository, ScheduleRepository $scheduleRepository)
+    public function __construct(private readonly StudentRepository $studentRepository, private readonly ScheduleRepository $scheduleRepository)
     {
-        $this->studentRepository = $studentRepository;
-        $this->scheduleRepository = $scheduleRepository;
     }
 
-    public function index() {
-        return Inertia::render('Schedule/Schedule', [
+    public function index():Response {
+        return inertia('Schedule/Schedule', [
             'test'=>'test'
         ]);
     }
 
-    public function create(Request $request) {
+    public function create(Request $request):Response {
         $teacherId = $request->user()->id;
         $users = $this->studentRepository->getMyStudents($teacherId, true);
 
-        return Inertia::render('Schedule/ScheduleCreate', [
+        return inertia('Schedule/ScheduleCreate', [
             'students' => $users,
 
         ]);
     }
 
-    public function save(Request $request) {
+    public function save(Request $request):JsonResponse {
         $formData = $request->all();
         $teacherId = $request->user()->id;
         $errors = [];

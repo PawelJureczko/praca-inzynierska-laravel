@@ -10,20 +10,18 @@ use Inertia\Inertia;
 class StudentsController extends Controller
 {
 
-    private $studentRepository;
 
-    public function __construct(StudentRepository $studentRepository)
+    public function __construct(private readonly StudentRepository $studentRepository)
     {
-        $this->studentRepository = $studentRepository;
     }
 
     //wyswietlenie wszystkich studentów
-    public function getOtherStudents(Request $request)
+    public function getOtherStudents(Request $request):Response
     {
         $teacherId = $request->user()->id;
         $users = $this->studentRepository->getNotInvitedStudents($teacherId);
 
-        return Inertia::render('Students/StudentsList', [
+        return inertia('Students/StudentsList', [
             'users' => $users,
             'title' => 'Pozostali',
             'type' => 'other'
@@ -31,24 +29,24 @@ class StudentsController extends Controller
     }
 
     // zapytanie o studentów którzy są przypisani do nauczyciela i którzy zaakceptowali zaproszenie
-    public function getMyStudents(Request $request)
+    public function getMyStudents(Request $request):Response
     {
         $teacherId = $request->user()->id;
         $users = $this->studentRepository->getMyStudents($teacherId);
 
-        return Inertia::render('Students/StudentsList', [
+        return inertia('Students/StudentsList', [
             'users' => $users,
             'title' => 'Moja grupa',
             'type' => 'myGroup'
         ]);
     }
 
-    public function getInvitedStudents(Request $request)
+    public function getInvitedStudents(Request $request):Response
     {
         $teacherId = $request->user()->id;
         $users = $this->studentRepository->getInvitedStudents($teacherId);
 
-        return Inertia::render('Students/StudentsList', [
+        return inertia('Students/StudentsList', [
             'users' => $users,
             'title' => 'Zaproszeni',
             'type' => 'invited'
@@ -56,7 +54,7 @@ class StudentsController extends Controller
     }
 
     //obsługa zaproszenia studenta i na sukces zwrócenia zaktualizowanej listy niezaproszonych studentów
-    public function inviteStudent(Request $request)
+    public function inviteStudent(Request $request):JsonResponse
     {
         $user = $request->user();
         $studentId = $request->input('student_id');
