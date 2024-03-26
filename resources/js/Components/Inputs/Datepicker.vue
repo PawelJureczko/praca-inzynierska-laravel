@@ -6,6 +6,7 @@
             :min-date="minDate"
             :time-picker="timePicker"
             ref="datepicker"
+            :disabled-week-days="disabledWeekDays"
             @open="isOpen=true"
             @closed="isOpen=false"
         />
@@ -37,6 +38,12 @@ const datepicker = ref(null);
 const store = useMainStore();
 
 const props = defineProps({
+    disabledWeekDays: {
+        type: Array,
+        default() {
+            return []
+        }
+    },
     enableTimePicker: {
         type: Boolean,
         default: false,

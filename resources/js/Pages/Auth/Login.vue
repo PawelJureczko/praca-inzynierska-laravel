@@ -91,7 +91,7 @@ function submit() {
                 <div class="flex items-center justify-end mt-4">
                     <BorderBottomBtn v-if="canResetPassword" desc="Przypomnij hasło" @click="$inertia.visit(route('password.request'))"/>
 
-                    <Btn btnType="primary" class="ml-4" @click="submit" :isLoader="isBtnLoader">
+                    <Btn btnType="primary" class="ml-4 w-max" @click="submit" :isLoader="isBtnLoader">
                         Zaloguj
                     </Btn>
                 </div>

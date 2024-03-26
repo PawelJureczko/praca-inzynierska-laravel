@@ -2,8 +2,10 @@
     <div>
         <div class="flex justify-between items-center flex-wrap gap-2">
             <ScheduleDatepicker class="flex-shrink-0" :dates="dates" @iteratorClicked="handleIteratorClicked" @dateChanged="handleDateChanged"/>
-            <Btn @click="$inertia.visit(route('schedule.create'))">Dodaj zajęcia</Btn>
+            <Btn class="w-max" @click="$inertia.visit(route('schedule.create'))" v-if="userType==='teacher'">Dodaj zajęcia</Btn>
         </div>
+        <p @click="getSchedulesTest">TEST</p>
+
         <div class="flex mt-4">
             <div>
                 <div class="w-[12.5%] min-w-[100px]">
@@ -26,6 +28,14 @@ import { onBeforeMount, ref} from "vue";
 import {getStringFromDate, prepareDateForRequest} from "@/Helpers/helpers";
 import ScheduleDatepicker from "@/Components/Views/Schedule/ScheduleDatepicker.vue";
 import Btn from "@/Components/Buttons/Btn.vue";
+import {useMainStore} from "@/Store/mainStore.js";
+
+const props = defineProps({
+    userType: {
+        type: String,
+        default: ''
+    }
+})
 
 const timeInterval = [
     '', '8:00', '8:30', '9:00', '9:30', '10:00', '10:30',
@@ -39,6 +49,7 @@ const days = [
     'Poniedziałek', 'Wtorek', 'Środa', 'Czwartek', 'Piątek', 'Sobota', 'Niedziela'
 ];
 
+const store = useMainStore();
 const chosenDay = ref(new Date());
 
 const dates = ref([]);
@@ -48,6 +59,27 @@ const dateTo = ref(null);
 const currentWeekDay = ref(10);
 
 const weekIterator = ref(0); //0 oznacza obecny tydzien, wartość dodatnia to wartość x 7 dni do przodu, ujemna analogicznie wartość x 7 do tyłu
+
+function getSchedulesTest() {
+    // schedule.getData
+    if (store.getIsLock === false) {
+        store.setIsLock(true);
+        axios.get(route('schedule.getData'), {
+            params: {
+                dateFrom: dateFrom.value,
+                dateTo: dateTo.value
+            }
+        })
+            .then(response => {
+                store.showSnackbar('Dane załadowane pomyślnie', 'success');
+            })
+            .catch(error => {
+                store.showSnackbar('Wystąpił niespodziewany błąd, odśwież stronę', 'error');
+            }).finally(() => {
+            store.setIsLock(false);
+        });
+    }
+}
 
 function handleDateChanged(date) {
     chosenDay.value = date.value;
@@ -67,6 +99,8 @@ function prepareDates(iterator) {
 
     dateFrom.value = prepareDateForRequest(dates.value[0]);
     dateTo.value = prepareDateForRequest(dates.value[dates.value.length-1]);
+
+    getSchedulesTest();
 }
 
 function handleIteratorClicked(type) {

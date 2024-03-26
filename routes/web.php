@@ -59,6 +59,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/schedule', [\App\Http\Controllers\ScheduleController::class, 'index'])->name('schedule.index');
     Route::get('/schedule/new', [\App\Http\Controllers\ScheduleController::class, 'create'])->name('schedule.create')->middleware(['checkAdmin']);
     Route::post('/schedule/save', [\App\Http\Controllers\ScheduleController::class, 'save'])->name('schedule.save')->middleware(['checkAdmin']);
+    Route::get('/schedule/getData', [\App\Http\Controllers\ScheduleController::class, 'getScheduleForDateRange'])->name('schedule.getData');
 });
 
 Route::resource('/reports', \App\Http\Controllers\ReportsController::class)->middleware(['auth', 'verified']);

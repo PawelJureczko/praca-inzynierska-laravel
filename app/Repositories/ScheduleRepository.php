@@ -1,11 +1,14 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Models\Schedule;
 use Illuminate\Support\Facades\DB;
 
-class ScheduleRepository {
-    public function checkIsNull($arr) {
+class ScheduleRepository
+{
+    public function checkIsNull($arr)
+    {
         $errors = [];
         foreach ($arr as $key => $value) {
             if (is_null($value)) {
@@ -16,13 +19,14 @@ class ScheduleRepository {
         return $errors;
     }
 
-    public function validateTime($beginTime, $endTime) {
+    public function validateTime($beginTime, $endTime)
+    {
         $errors = [];
 
         $preparedBeginTime = intval(str_replace(':', '', $beginTime));
         $preparedEndTime = intval(str_replace(':', '', $endTime));
 
-        if (($preparedBeginTime > $preparedEndTime) && !is_null($beginTime) && !is_null($endTime) ) {
+        if (($preparedBeginTime > $preparedEndTime) && !is_null($beginTime) && !is_null($endTime)) {
             $errors['class_time_end'] = 'Godzina rozpoczęcia nie może być późniejsza niż zakończenia';
         }
 
@@ -52,13 +56,15 @@ class ScheduleRepository {
         ]);
     }
 
-    private function getStudentName($studentId) {
+    private function getStudentName($studentId)
+    {
         return DB::select("
                         SELECT first_name, last_name
                         FROM users WHERE id = $studentId");
     }
 
-    private function getWeekDayName($key) {
+    private function getWeekDayName($key)
+    {
         $weekdays = [
             '1' => 'poniedziałki',
             '2' => 'wtorki',
@@ -107,12 +113,33 @@ class ScheduleRepository {
                     $weekday = $this->getWeekDayName($schedule->classes_weekday);
                     $timeRange = substr($schedule->classes_time_start, 0, 5) . ' - ' . substr($schedule->classes_time_end, 0, 5);
 
-                    $errors['general'] = 'Nie można dodać zajęć w tym terminie. Kolidują one z zajęciami z '.$firstName . ' '. $lastName . ' odbywającymi się w '.$weekday . ' ' . 'w godzinach '.$timeRange.'.';
+                    $errors['general'] = 'Nie można dodać zajęć w tym terminie. Kolidują one z zajęciami z ' . $firstName . ' ' . $lastName . ' odbywającymi się w ' . $weekday . ' ' . 'w godzinach ' . $timeRange . '.';
 //                    // Jeśli kolizja występuje, zwracamy komunikat walidacyjny
                     return $errors;
                 }
             }
         }
         return $errors;
+    }
+
+    public function getLessonsForCurrentDates($request)
+    {
+        $teacherId = $request->user()->id;
+        $dateFrom = $request->input('dateFrom');
+        $dateTo = $request->input('dateTo');
+
+
+        return DB::select("
+            SELECT *
+            FROM schedule
+            WHERE teacher_id = ?
+            AND (
+                (date_end IS NULL AND date_begin <= ? AND date_begin <= ?)
+                OR
+                (date_end IS NOT NULL AND date_begin <= ? AND date_begin <= ? AND date_end >= ? AND date_end >= ?)
+            )
+        ", [
+            $teacherId, $dateFrom, $dateTo, $dateFrom, $dateTo, $dateFrom, $dateTo
+        ]);
     }
 }

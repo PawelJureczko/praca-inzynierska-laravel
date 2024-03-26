@@ -12,12 +12,12 @@
 
             <div>
                 <p>Data rozpoczęcia zajęć:</p>
-                <Datepicker v-model="form.date_begin" :enableTimePicker="false" :minDate="minDate" errorName="date_begin"/>
+                <Datepicker v-model="form.date_begin" :enableTimePicker="false" :minDate="minDate" errorName="date_begin" />
             </div>
 
             <div>
                 <p>Data zakończenia zajęć (opcjonalnie):</p>
-                <Datepicker v-model="form.date_end" :enableTimePicker="false" :minDate="form.date_begin" errorName="date_end"/>
+                <Datepicker v-model="form.date_end" :enableTimePicker="false" :minDate="form.date_begin" errorName="date_end" :disabledWeekDays="[1, 2, 3, 4, 5, 6]"/>
 
             </div>
 

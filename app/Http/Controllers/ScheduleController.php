@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Repositories\StudentRepository;
 use App\Repositories\ScheduleRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Inertia\Response;
+
 class ScheduleController extends Controller
 {
 
@@ -48,6 +51,13 @@ class ScheduleController extends Controller
         }
         return response()->json([
             'test' =>$formData['class_time_start'],
-        ], 200);
+        ]);
+    }
+
+    public function getScheduleForDateRange(Request $request):JsonResponse {
+        $schedule = $this->scheduleRepository->getLessonsForCurrentDates($request);
+        return response()->json([
+            'schedule' => $schedule
+        ]);
     }
 }

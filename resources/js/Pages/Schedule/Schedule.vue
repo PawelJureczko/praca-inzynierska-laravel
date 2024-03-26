@@ -1,7 +1,7 @@
 <template>
     <Layout :user="$page.props.auth.user" :isLogged="$page.props.auth.user!==null" :userType="$page.props.auth.user.role">
         <TitleComponent desc="Mój terminarz" />
-        <ScheduleTable />
+        <ScheduleTable :userType="$page.props.auth.user.role"/>
     </Layout>
 </template>
 

@@ -49,5 +49,13 @@ class ScheduleSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => null,
         ]);
+        DB::table('lessons')->insert([
+            'date'=> now(),
+            'schedule_id'=>1,
+            'presence'=>1,
+            'topic'=>'Przykładowy temat',
+            'notes'=>'Przykładowa notatka',
+            'created_at'=>now()
+        ]);
     }
 }
