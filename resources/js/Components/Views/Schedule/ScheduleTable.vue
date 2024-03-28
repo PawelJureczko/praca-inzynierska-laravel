@@ -15,7 +15,7 @@
                     </SingleScheduleCeil>
                 </div>
             </div>
-            <div class="flex max-w-full overflow-auto">
+            <div class="flex max-w-full overflow-x-auto overflow-y-hidden">
                 <ScheduleTableColumn v-for="(day, index) in days" :date="dates[index]" :day="day"
                                      :columnLength="timeInterval.length-1"
                                      class="last-of-type:border-r last-of-type:border-r-main_hover"

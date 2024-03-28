@@ -72,10 +72,31 @@ export function scrollToError() {
     }, 1);
 }
 
-export function prepareDateForRequest(date) {
-    if (date.split(', ').length>1) {
-        return date.split(', ')[0].split('.').reverse().join('-')+' '+date.split(', ')[1]
-    } else {
-        return date.split(', ')[0].split('.').reverse().join('-');
+export function prepareDateForRequest(date, type, classesWeekDay) {
+    const weekDay = date.getDay(); //dzien tygodnia wynikajacy z kalendarza
+    const chosenWeekday = classesWeekDay%7; //dzien tygodnia wybrany z selecta
+    const preparedDate = new Date(date);
+    let res;
+    if (type === 'from') {
+        // jezeli wybrany dzien tygodnia jest pozniejszy lub taki sam niz dzien tygodnia wynikajacy z kalendarza, wówczas odejmujemy od początkowej daty
+        if (chosenWeekday >= weekDay) {
+            res = preparedDate.setDate(preparedDate.getDate() - weekDay);
+        }
+        // jezeli wybrany dzien tygodnia jest wczesniej niz dzien tygodnia wynikajacy z kalendarza, wowczas dodajemy do poczatkowej daty
+        else {
+            res = preparedDate.setDate(preparedDate.getDate() + ((7-weekDay)%7));
+        }
     }
+
+    if (type === 'to') {
+        // jeżeli wybrany dzień tygodnia jest późniejszy niż dzień tygodnia wynikający z kalendarza, wówczas
+        console.log(chosenWeekday)
+        console.log(weekDay);
+        if ((chosenWeekday > weekDay) || chosenWeekday ===0) {
+            res = preparedDate.setDate(preparedDate.getDate() - weekDay);
+        } else {
+            res = preparedDate.setDate(preparedDate.getDate() + ((7-weekDay)%7));
+        }
+    }
+    return getStringFromDate(new Date(res)).split(', ')[0].split('.').reverse().join('-')
 }

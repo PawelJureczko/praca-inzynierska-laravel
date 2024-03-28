@@ -17,7 +17,7 @@
 
             <div>
                 <p>Data zakończenia zajęć (opcjonalnie):</p>
-                <Datepicker v-model="form.date_end" :enableTimePicker="false" :minDate="form.date_begin" errorName="date_end" :disabledWeekDays="[1, 2, 3, 4, 5, 6]"/>
+                <Datepicker v-model="form.date_end" :enableTimePicker="false" :minDate="minEndDateCp" errorName="date_end" />
 
             </div>
 
@@ -56,6 +56,7 @@ import Btn from "@/Components/Buttons/Btn.vue";
 import Datepicker from "@/Components/Inputs/Datepicker.vue";
 import {addLeadingZero, getDateFromString, getStringFromDate, scrollToError, prepareDateForRequest} from "@/Helpers/helpers.js";
 import {useMainStore} from "@/Store/mainStore.js";
+import {router} from "@inertiajs/vue3";
 const store = useMainStore();
 
 const props = defineProps({
@@ -86,6 +87,12 @@ watch(dateBeginCp, () => {
         date.setDate(date.getDate() + 1);
         form.value.date_end = date;
     }
+})
+
+const minEndDateCp = computed(() => {
+    const preparedEndDate = new Date(form.value.date_begin);
+    preparedEndDate.setDate(preparedEndDate.getDate() + 7);
+    return preparedEndDate;
 })
 
 const minDate = new Date();
@@ -131,33 +138,38 @@ const preparedOptions = ref(props.students.map(item => {
 function save() {
     const preparedForm = {
         student_id: form.value.student_id ? parseInt(form.value.student_id) : null,
-        date_begin: prepareDateForRequest(getStringFromDate(form.value.date_begin).split(', ')[0]),
-        date_end: form.value.date_end ? prepareDateForRequest(getStringFromDate(form.value.date_end).split(', ')[0]) : null,
+        date_begin: prepareDateForRequest(form.value.date_begin, 'from', form.value.class_weekday ? parseInt(form.value.class_weekday) : null),
+        date_end: form.value.date_end ? prepareDateForRequest(form.value.date_end, 'to', form.value.class_weekday ? parseInt(form.value.class_weekday) : null) : null,
         class_weekday: form.value.class_weekday ? parseInt(form.value.class_weekday) : null,
         class_time_start: form.value.class_time_start ? (addLeadingZero(form.value.class_time_start.hours) + ':' + addLeadingZero(form.value.class_time_start.minutes)) + ':' + '00' : null,
         class_time_end: form.value.class_time_end ? (addLeadingZero(form.value.class_time_end.hours) + ':' + addLeadingZero(form.value.class_time_end.minutes)) + ':' + '00' : null,
     }
-    if (store.getIsLock === false) {
-        store.setIsLock(true);
-        store.clearErrors();
-        axios.post(route('schedule.save'), preparedForm)
-            .then(response => {
-                // if (response.data.status === 'ok') {
-                //     router.visit(route('schedule.index'));
-                // }
-            })
-            .catch(error => {
-                // Obsługa błędu
-                console.log(error.response.data.errors)
-                if (error.response.status === 422) {
-                    store.setErrors(error.response.data.errors);
-                    scrollToError();
-                } else {
-                    console.log(error.data)
-                }
-            }).finally(() => {
-            store.setIsLock(false);
-        })}
+
+    console.log(preparedForm);
+    // if (store.getIsLock === false) {
+    //     store.setIsLock(true);
+    //     store.clearErrors();
+    //     axios.post(route('schedule.save'), preparedForm)
+    //         .then(response => {
+    //             console.log(response);
+    //             if (response.data.status === 'ok') {
+    //                 store.showSnackbar('Zajęcia dodane pomyślnie!', 'success');
+    //                 router.visit(route('schedule.index'));
+    //             }
+    //         })
+    //         .catch(error => {
+    //             // Obsługa błędu
+    //             console.log(error.response.data.errors)
+    //             if (error.response.status === 422) {
+    //                 store.setErrors(error.response.data.errors);
+    //                 scrollToError();
+    //             } else {
+    //                 console.log(error.data)
+    //                 store.showSnackbar('Wystąpił niespodziewany błąd, spróbuj ponownie później.', 'error');
+    //             }
+    //         }).finally(() => {
+    //         store.setIsLock(false);
+    //     })}
 }
 
 
