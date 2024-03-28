@@ -129,7 +129,7 @@ class ScheduleRepository
         $dateTo = $request->input('dateTo');
 
 
-        return DB::select("
+        $existingSchedules = DB::select("
             SELECT *
             FROM schedule
             WHERE teacher_id = ?
@@ -141,5 +141,38 @@ class ScheduleRepository
         ", [
             $teacherId, $dateFrom, $dateTo, $dateFrom, $dateTo, $dateFrom, $dateTo
         ]);
+
+        $lessonsOnWeek = DB::select("
+            SELECT
+                lessons.*,
+                schedule.*,
+                teachers.first_name AS teacher_first_name,
+                teachers.last_name AS teacher_last_name,
+                students.first_name AS student_first_name,
+                students.last_name AS student_last_name
+            FROM lessons
+            JOIN schedule ON lessons.schedule_id = schedule.id
+            JOIN users AS teachers ON schedule.teacher_id = teachers.id
+            JOIN users AS students ON schedule.student_id = students.id
+            WHERE schedule.teacher_id = ?
+            AND lessons.date >= ?
+            AND lessons.date <= ?;
+        ", [
+            $teacherId, $dateFrom, $dateTo
+        ]);
+
+        $schedules = json_decode(json_encode($existingSchedules), true);
+        $lessons = json_decode(json_encode($lessonsOnWeek), true);
+
+        $lessonIds = array_unique(array_column($lessons, 'schedule_id'));
+
+        $schedules = array_filter($schedules, function($schedule) use ($lessonIds) {
+            return !in_array($schedule['id'], $lessonIds);
+        });
+
+        return [
+            'schedules' => $schedules,
+            'lessons' => $lessons
+        ];
     }
 }

@@ -50,7 +50,7 @@ class ScheduleController extends Controller
             $this->scheduleRepository->saveScheduleElem($formData, $teacherId);
         }
         return response()->json([
-            'test' =>$formData['class_time_start'],
+            'status' => 'ok',
         ]);
     }
 
