@@ -54,7 +54,7 @@ import Select from "@/Components/Inputs/Select.vue";
 import {computed, ref, watch} from "vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import Datepicker from "@/Components/Inputs/Datepicker.vue";
-import {addLeadingZero, getDateFromString, getStringFromDate, scrollToError, prepareDateForRequest} from "@/Helpers/helpers.js";
+import {addLeadingZero, getDateFromString, getStringFromDate, scrollToError, prepareDateForSend} from "@/Helpers/helpers.js";
 import {useMainStore} from "@/Store/mainStore.js";
 import {router} from "@inertiajs/vue3";
 const store = useMainStore();
@@ -138,38 +138,37 @@ const preparedOptions = ref(props.students.map(item => {
 function save() {
     const preparedForm = {
         student_id: form.value.student_id ? parseInt(form.value.student_id) : null,
-        date_begin: prepareDateForRequest(form.value.date_begin, 'from', form.value.class_weekday ? parseInt(form.value.class_weekday) : null),
-        date_end: form.value.date_end ? prepareDateForRequest(form.value.date_end, 'to', form.value.class_weekday ? parseInt(form.value.class_weekday) : null) : null,
+        date_begin: prepareDateForSend(form.value.date_begin, 'from', form.value.class_weekday ? parseInt(form.value.class_weekday) : null),
+        date_end: form.value.date_end ? prepareDateForSend(form.value.date_end, 'to', form.value.class_weekday ? parseInt(form.value.class_weekday) : null) : null,
         class_weekday: form.value.class_weekday ? parseInt(form.value.class_weekday) : null,
         class_time_start: form.value.class_time_start ? (addLeadingZero(form.value.class_time_start.hours) + ':' + addLeadingZero(form.value.class_time_start.minutes)) + ':' + '00' : null,
         class_time_end: form.value.class_time_end ? (addLeadingZero(form.value.class_time_end.hours) + ':' + addLeadingZero(form.value.class_time_end.minutes)) + ':' + '00' : null,
     }
 
-    console.log(preparedForm);
-    // if (store.getIsLock === false) {
-    //     store.setIsLock(true);
-    //     store.clearErrors();
-    //     axios.post(route('schedule.save'), preparedForm)
-    //         .then(response => {
-    //             console.log(response);
-    //             if (response.data.status === 'ok') {
-    //                 store.showSnackbar('Zajęcia dodane pomyślnie!', 'success');
-    //                 router.visit(route('schedule.index'));
-    //             }
-    //         })
-    //         .catch(error => {
-    //             // Obsługa błędu
-    //             console.log(error.response.data.errors)
-    //             if (error.response.status === 422) {
-    //                 store.setErrors(error.response.data.errors);
-    //                 scrollToError();
-    //             } else {
-    //                 console.log(error.data)
-    //                 store.showSnackbar('Wystąpił niespodziewany błąd, spróbuj ponownie później.', 'error');
-    //             }
-    //         }).finally(() => {
-    //         store.setIsLock(false);
-    //     })}
+    if (store.getIsLock === false) {
+        store.setIsLock(true);
+        store.clearErrors();
+        axios.post(route('schedule.save'), preparedForm)
+            .then(response => {
+                console.log(response);
+                if (response.data.status === 'ok') {
+                    store.showSnackbar('Zajęcia dodane pomyślnie!', 'success');
+                    router.visit(route('schedule.index'));
+                }
+            })
+            .catch(error => {
+                // Obsługa błędu
+                console.log(error.response.data.errors)
+                if (error.response.status === 422) {
+                    store.setErrors(error.response.data.errors);
+                    scrollToError();
+                } else {
+                    console.log(error.data)
+                    store.showSnackbar('Wystąpił niespodziewany błąd, spróbuj ponownie później.', 'error');
+                }
+            }).finally(() => {
+            store.setIsLock(false);
+        })}
 }
 
 

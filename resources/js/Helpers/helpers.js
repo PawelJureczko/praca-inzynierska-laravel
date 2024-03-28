@@ -72,7 +72,14 @@ export function scrollToError() {
     }, 1);
 }
 
-export function prepareDateForRequest(date, type, classesWeekDay) {
+export function prepareDateForRequest(date) {
+    if (date.split(', ').length>1) {
+        return date.split(', ')[0].split('.').reverse().join('-')+' '+date.split(', ')[1]
+    } else {
+        return date.split(', ')[0].split('.').reverse().join('-');
+    }
+}
+export function prepareDateForSend(date, type, classesWeekDay) {
     const weekDay = date.getDay(); //dzien tygodnia wynikajacy z kalendarza
     const chosenWeekday = classesWeekDay%7; //dzien tygodnia wybrany z selecta
     const preparedDate = new Date(date);
@@ -89,9 +96,6 @@ export function prepareDateForRequest(date, type, classesWeekDay) {
     }
 
     if (type === 'to') {
-        // jeżeli wybrany dzień tygodnia jest późniejszy niż dzień tygodnia wynikający z kalendarza, wówczas
-        console.log(chosenWeekday)
-        console.log(weekDay);
         if ((chosenWeekday > weekDay) || chosenWeekday ===0) {
             res = preparedDate.setDate(preparedDate.getDate() - weekDay);
         } else {
