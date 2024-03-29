@@ -16,7 +16,7 @@ class ScheduleSeeder extends Seeder
     public function run(): void
     {
         DB::table('schedule')->insert([
-            'date_begin' => Carbon::create(2024, 3, 15),
+            'date_begin' => Carbon::create(2024, 3, 17),
             'date_end' => null,
             'classes_weekday' => 1,
             'classes_time_start' => '08:45',
@@ -28,7 +28,7 @@ class ScheduleSeeder extends Seeder
         ]);
 
         DB::table('schedule')->insert([
-            'date_begin' => Carbon::create(2024, 3, 12),
+            'date_begin' => Carbon::create(2024, 3, 10),
             'date_end' => null,
             'classes_weekday' => 1,
             'classes_time_start' => '11:45',
@@ -39,8 +39,8 @@ class ScheduleSeeder extends Seeder
             'updated_at' => null,
         ]);
         DB::table('schedule')->insert([
-            'date_begin' => Carbon::create(2024, 1, 12),
-            'date_end' => Carbon::create(2024, 2, 12),
+            'date_begin' => Carbon::create(2024, 1, 14),
+            'date_end' => Carbon::create(2024, 2, 11),
             'classes_weekday' => 1,
             'classes_time_start' => '14:45',
             'classes_time_end' => '15:45',
@@ -50,12 +50,13 @@ class ScheduleSeeder extends Seeder
             'updated_at' => null,
         ]);
         DB::table('lessons')->insert([
-            'date'=> now(),
+            'date'=> '2024-03-25',
             'schedule_id'=>1,
-            'presence'=>1,
+            'canceled_by_student'=>0,
+            'canceled_by_teacher'=>0,
             'topic'=>'Przykładowy temat',
             'notes'=>'Przykładowa notatka',
-            'created_at'=>now()
+            'created_at'=>Carbon::create(2024, 3, 25)
         ]);
     }
 }

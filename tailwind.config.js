@@ -57,6 +57,12 @@ export default {
                     'topBarBackground': '#000000',
 
                 },
+                'schedule': {
+                    'completed': '#AFE1AF',
+                    'incoming': '#ADD8E6',
+                    'teacher_absence': '#E0B0FF',
+                    'student_absence': '#FF2400'
+                },
                 'textfield': {
                     'border': '#E5E7EB',
                     'inputText': '#0E051B',

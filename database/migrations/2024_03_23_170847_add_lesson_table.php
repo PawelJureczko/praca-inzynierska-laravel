@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->date('date');
             $table->unsignedBigInteger('schedule_id');
-            $table->boolean('presence')->default(false);
+            $table->boolean('canceled_by_student')->default(false);
+            $table->boolean('canceled_by_teacher')->default(false);
             $table->string('topic')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();

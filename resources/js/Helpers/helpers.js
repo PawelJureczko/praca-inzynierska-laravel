@@ -104,3 +104,18 @@ export function prepareDateForSend(date, type, classesWeekDay) {
     }
     return getStringFromDate(new Date(res)).split(', ')[0].split('.').reverse().join('-')
 }
+
+export function calculateTopDistance(timeStart, timeFrom) {
+    const minutesHeight = parseInt(timeStart.split(':')[1]) / 60 * 96;
+    const hoursHeight = ((parseInt(timeStart.split(':')[0]) - parseInt(timeFrom.split(':')[0])) * 96) + 48
+    return (minutesHeight + hoursHeight);
+}
+
+export function singleTileHeight(timeStart, timeEnd) {
+    const startParts = timeStart.split(':').map(Number);
+    const endParts = timeEnd.split(':').map(Number);
+
+    const startMinutes = startParts[0] * 60 + startParts[1];
+    const endMinutes = endParts[0] * 60 + endParts[1];
+    return (((endMinutes - startMinutes) / 60) * 96);
+}

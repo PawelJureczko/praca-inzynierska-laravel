@@ -130,14 +130,25 @@ class ScheduleRepository
 
 
         $existingSchedules = DB::select("
-            SELECT *
-            FROM schedule
-            WHERE teacher_id = ?
-            AND (
-                (date_end IS NULL AND date_begin <= ? AND date_begin <= ?)
-                OR
-                (date_end IS NOT NULL AND date_begin <= ? AND date_begin <= ? AND date_end >= ? AND date_end >= ?)
-            )
+            SELECT
+                schedule.*,
+                teachers.first_name AS teacher_first_name,
+                teachers.last_name AS teacher_last_name,
+                students.first_name AS student_first_name,
+                students.last_name AS student_last_name
+            FROM
+                schedule
+            JOIN
+                users AS teachers ON schedule.teacher_id = teachers.id
+            JOIN
+                users AS students ON schedule.student_id = students.id
+            WHERE
+                schedule.teacher_id = ?
+                AND (
+                    (schedule.date_end IS NULL AND schedule.date_begin <= ? AND schedule.date_begin <= ?)
+                    OR
+                    (schedule.date_end IS NOT NULL AND schedule.date_begin <= ? AND schedule.date_begin <= ? AND schedule.date_end >= ? AND schedule.date_end >= ?)
+                )
         ", [
             $teacherId, $dateFrom, $dateTo, $dateFrom, $dateTo, $dateFrom, $dateTo
         ]);

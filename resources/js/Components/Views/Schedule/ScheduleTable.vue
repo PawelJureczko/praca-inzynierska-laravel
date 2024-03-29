@@ -7,6 +7,7 @@
                 zajęcia
             </Btn>
         </div>
+        <ScheduleLegend class="mt-4"/>
         <div class="flex mt-4">
             <div>
                 <div class="w-[12.5%] min-w-[100px]">
@@ -18,6 +19,7 @@
             <div class="flex max-w-full overflow-x-auto overflow-y-hidden">
                 <ScheduleTableColumn v-for="(day, index) in days" :date="dates[index]" :day="day"
                                      :columnLength="timeInterval.length-1"
+                                     :timeFrom="timeInterval[1]"
                                      class="last-of-type:border-r last-of-type:border-r-main_hover"
                                      :class="[currentWeekDay-1 === index && weekIterator===0 && 'bg-[#f7dcc6]']"
                                      :lessons="(filledLessons && filledLessons.length>0) ? (filledLessons.filter(item => item.date.split('-').reverse().join('.') === dates[index])) :  null"
@@ -36,6 +38,7 @@ import {getStringFromDate, prepareDateForRequest} from "@/Helpers/helpers";
 import ScheduleDatepicker from "@/Components/Views/Schedule/ScheduleDatepicker.vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import {useMainStore} from "@/Store/mainStore.js";
+import ScheduleLegend from "@/Components/Views/Schedule/ScheduleLegend.vue";
 
 const props = defineProps({
     userType: {
