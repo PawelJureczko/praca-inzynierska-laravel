@@ -78,4 +78,12 @@ class StudentsController extends Controller
             return response()->json(['error' => 'Błędne dane wejściowe'], 422);
         }
     }
+
+    public function showStudentDetails(Request $request):Response {
+        $studentId = $request->route('id');
+        $studentData = $this->studentRepository->getStudentsData($studentId);
+        return inertia('Students/StudentDetails', [
+            'studentData' => $studentData,
+        ]);
+    }
 }

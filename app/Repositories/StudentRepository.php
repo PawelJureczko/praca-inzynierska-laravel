@@ -60,5 +60,12 @@ class StudentRepository
                 AND teachers_students_pivot.teacher_id = ?
             );', [$teacherId]);
     }
+
+    public function getStudentsData($studentsId) {
+        return DB::table('users')
+            ->select('first_name', 'last_name', 'created_at', 'email', 'phone_number', 'id')
+            ->where('id', $studentsId)
+            ->first();
+    }
 }
 

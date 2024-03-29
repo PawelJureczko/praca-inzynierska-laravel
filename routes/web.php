@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified', 'checkAdmin'])->group(function () {
     //pozostali uczniowie
     Route::get('/students/other', [StudentsController::class, 'getOtherStudents'])->name('students.other');
     Route::post('/students', [StudentsController::class, 'inviteStudent'])->name('students.invite');
+    Route::get('/students/details/{id}', [StudentsController::class, 'showStudentDetails'])->name('student.details')->middleware(['areConnected']);
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
