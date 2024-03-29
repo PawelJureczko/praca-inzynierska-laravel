@@ -28,6 +28,17 @@ class MessagesController extends Controller
         $userId = $request->user()->id;;
         $userData = $this->messagesRepository->getUserData($interlocutorId);
         $messages = $this->messagesRepository->getAllMessages($interlocutorId, $userId);
+        $usersWithoutConversation = $this->messagesRepository->getConnectedUsersWithoutConversation($request);
+
+
+        if (count($messages) === 0) {
+            return inertia('Messages/MessagesSingle', [
+                'type' => 'new',
+                'id'=>$interlocutorId,
+                'userData'=>$userData,
+                'usersWithoutConversation' => $usersWithoutConversation
+            ]);
+        }
 
         if (end($messages)->receiver_id === $userId) {
             $this->messagesRepository->updateAllMessages($interlocutorId, $userId);
@@ -52,9 +63,11 @@ class MessagesController extends Controller
         ], 200);
     }
 
-    public function messageNew():Response {
+    public function messageNew(Request $request):Response {
+        $usersWithoutConversation = $this->messagesRepository->getConnectedUsersWithoutConversation($request);
         return inertia('Messages/MessagesSingle', [
-            'type'=>'new'
+            'type'=>'new',
+            'usersWithoutConversation' => $usersWithoutConversation
         ]);
     }
 

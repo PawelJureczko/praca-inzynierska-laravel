@@ -54,7 +54,7 @@ export default {
                     'contentBackground': '#FFFFFF',
                     'tint': '#000C',
                     'topBarTextColor': '#FFFFFF',
-                    'topBarBackground': '#000000',
+                    'topBarBackground': '#ff7400',
 
                 },
                 'schedule': {
