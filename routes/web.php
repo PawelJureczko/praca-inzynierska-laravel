@@ -47,7 +47,7 @@ Route::middleware(['auth', 'verified', 'checkAdmin'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/messages', [\App\Http\Controllers\MessagesController::class, 'messagesList'])->name('messages.index');
-    Route::get('/messages/t/{id}', [\App\Http\Controllers\MessagesController::class, 'messagesSingle'])->name('messages.single');
+    Route::get('/messages/t/{id}', [\App\Http\Controllers\MessagesController::class, 'messagesSingle'])->name('messages.single')->middleware(['areConnected']);
     Route::get('/messages/reload', [\App\Http\Controllers\MessagesController::class, 'reloadMessages'])->name('messages.reload');
     Route::get('/messages/new', [\App\Http\Controllers\MessagesController::class, 'messageNew'])->name('messages.new');
 
