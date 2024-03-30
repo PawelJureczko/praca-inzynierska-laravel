@@ -1,6 +1,7 @@
 <script setup>
 import {calculateTopDistance, singleTileHeight} from "@/Helpers/helpers.js";
 import {computed} from "vue";
+import {router} from "@inertiajs/vue3";
 
 const props = defineProps({
     lesson: {
@@ -18,6 +19,14 @@ const props = defineProps({
         default: ''
     }
 })
+
+function handleScheduleClick() {
+    if (props.type === 'schedule') {
+        router.visit(route('lesson.create', {id: props.lesson.id}))
+    } else {
+        router.visit(route('lesson.edit', {id: props.lesson.id}))
+    }
+}
 
 const preparedBg = computed(() => {
     if (props.type === 'schedule') {
@@ -37,7 +46,8 @@ const preparedBg = computed(() => {
 </script>
 
 <template>
-    <div class="absolute left-2 w-full max-w-[calc(100%_-_16px)] p-4 flex items-center justify-center"
+    <div class="absolute left-2 w-full max-w-[calc(100%_-_16px)] p-4 flex items-center justify-center cursor-pointer"
+         @click="handleScheduleClick"
          :class="preparedBg"
          :style="'top:'+ calculateTopDistance(props.lesson.classes_time_start, props.timeFrom) + 'px; height:'+ singleTileHeight(props.lesson.classes_time_start, props.lesson.classes_time_end)+'px'">
             <p class="font-[10px] leading-[14px] font-bold">{{ props.lesson.student_first_name.charAt(0) }}.

@@ -63,6 +63,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/schedule/getData', [\App\Http\Controllers\ScheduleController::class, 'getScheduleForDateRange'])->name('schedule.getData');
 });
 
+Route::middleware(['auth', 'verified', 'lessonParticipant'])->group(function () {
+    Route::get('/lesson/{id}', [\App\Http\Controllers\LessonController::class, 'createLesson'])->name('lesson.create');
+    Route::get('/lesson/edit/{id}', [\App\Http\Controllers\LessonController::class, 'editLesson'])->name('lesson.edit');
+});
+
 Route::resource('/reports', \App\Http\Controllers\ReportsController::class)->middleware(['auth', 'verified']);
 
 
