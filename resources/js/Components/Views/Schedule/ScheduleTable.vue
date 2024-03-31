@@ -18,13 +18,13 @@
             </div>
             <div class="flex max-w-full overflow-x-auto overflow-y-hidden">
                 <ScheduleTableColumn v-for="(day, index) in days" :date="dates[index]" :day="day"
-                                     :columnLength="timeInterval.length-1"
-                                     :timeFrom="timeInterval[1]"
-                                     class="last-of-type:border-r last-of-type:border-r-main_hover"
-                                     :class="[currentWeekDay-1 === index && weekIterator===0 && 'bg-[#f7dcc6]']"
-                                     :lessons="(filledLessons && filledLessons.length>0) ? (filledLessons.filter(item => item.date.split('-').reverse().join('.') === dates[index])) :  null"
-                                        :schedules="schedules ? schedules[index+1] : []"
-                                    />
+                     :columnLength="timeInterval.length-1"
+                     :timeFrom="timeInterval[1]"
+                     class="last-of-type:border-r last-of-type:border-r-main_hover"
+                     :class="[currentWeekDay-1 === index && weekIterator===0 && 'bg-[#f7dcc6]']"
+                     :lessons="(filledLessons && filledLessons.length>0) ? (filledLessons.filter(item => item.date.split('-').reverse().join('.') === dates[index])) :  null"
+                        :schedules="schedules ? schedules[index+1] : []"
+                    />
             </div>
         </div>
     </div>
@@ -85,7 +85,6 @@ function getSchedules() {
             }
         })
             .then(response => {
-                console.log(response)
                 const tempSchedules = response.data.schedule.schedules && Object.values(response.data.schedule.schedules);
                 filledLessons.value = response.data.schedule.lessons && Object.values(response.data.schedule.lessons);
                 schedules.value = prepareSchedules(tempSchedules);

@@ -1,7 +1,6 @@
 <script setup>
 import Layout from "@/Layouts/Layout.vue";
 import TitleComponent from "@/Components/Views/TitleComponent.vue";
-import {ref} from "vue";
 
 
 const props = defineProps({
@@ -26,8 +25,8 @@ const type = (props.lessonData===null ? 'new' : 'edit');
 <template>
     <Layout :isLogged="$page.props.auth.user!==null" :user="$page.props.auth.user">
         <TitleComponent :desc="type==='edit' ? 'Edytuj lekcje' : 'Stwórz lekcje'" :isSearch="false"/>
-
-        <p>dodac jakis middleware do sprawdzania czy na pewno lekcja jest miedzy tym nauczycielem i uczniem</p>
+        <p>{{lessonData}}</p>
+        <p>{{scheduleData}}</p>
     </Layout>
 </template>
 

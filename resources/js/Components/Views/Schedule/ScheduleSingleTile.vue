@@ -20,6 +20,8 @@ const props = defineProps({
     }
 })
 
+const userRole = (router.page.props.auth.user.role);
+
 function handleScheduleClick() {
     if (props.type === 'schedule') {
         router.visit(route('lesson.create', {id: props.lesson.id}))
@@ -43,6 +45,8 @@ const preparedBg = computed(() => {
     }
 
 })
+
+
 </script>
 
 <template>
@@ -50,8 +54,8 @@ const preparedBg = computed(() => {
          @click="handleScheduleClick"
          :class="preparedBg"
          :style="'top:'+ calculateTopDistance(props.lesson.classes_time_start, props.timeFrom) + 'px; height:'+ singleTileHeight(props.lesson.classes_time_start, props.lesson.classes_time_end)+'px'">
-            <p class="font-[10px] leading-[14px] font-bold">{{ props.lesson.student_first_name.charAt(0) }}.
-                {{ props.lesson.student_last_name }}</p>
+            <p class="font-[10px] leading-[14px] font-bold">{{ userRole==='teacher' ? props.lesson.student_first_name.charAt(0) : props.lesson.teacher_first_name.charAt(0) }}.
+                {{ userRole==='teacher' ? props.lesson.student_last_name : props.lesson.teacher_last_name}}</p>
     </div>
 </template>
 

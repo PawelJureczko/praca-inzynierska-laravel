@@ -125,9 +125,11 @@ class ScheduleRepository
     public function getLessonsForCurrentDates($request)
     {
         $teacherId = $request->user()->id;
+        $userType = $request->user()->role;
         $dateFrom = $request->input('dateFrom');
         $dateTo = $request->input('dateTo');
 
+        $columnToSearch = $userType === 'teacher' ? 'schedule.teacher_id' : 'schedule.student_id';
 
         $existingSchedules = DB::select("
             SELECT
@@ -143,7 +145,7 @@ class ScheduleRepository
             JOIN
                 users AS students ON schedule.student_id = students.id
             WHERE
-                schedule.teacher_id = ?
+                $columnToSearch = ?
                 AND (
                     (schedule.date_end IS NULL AND schedule.date_begin <= ? AND schedule.date_begin <= ?)
                     OR
@@ -165,7 +167,7 @@ class ScheduleRepository
             JOIN schedule ON lessons.schedule_id = schedule.id
             JOIN users AS teachers ON schedule.teacher_id = teachers.id
             JOIN users AS students ON schedule.student_id = students.id
-            WHERE schedule.teacher_id = ?
+            WHERE $columnToSearch = ?
             AND lessons.date >= ?
             AND lessons.date <= ?;
         ", [
