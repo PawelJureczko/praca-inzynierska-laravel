@@ -188,4 +188,8 @@ class ScheduleRepository
             'lessons' => $lessons
         ];
     }
+
+    public function getScheduleData($scheduleId) {
+        return DB::select('SELECT * FROM schedule WHERE id = ?', [$scheduleId])[0];
+    }
 }

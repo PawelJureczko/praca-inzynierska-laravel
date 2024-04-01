@@ -1,7 +1,7 @@
 <template>
     <div class="w-[12.5%] min-w-[200px] relative">
-        <ScheduleSingleTile v-for="schedule in schedules" :lesson="schedule" :timeFrom="timeFrom" type="schedule"/>
-        <ScheduleSingleTile v-for="lesson in lessons" :lesson="lesson" :timeFrom="timeFrom" type="lesson"/>
+        <ScheduleSingleTile v-for="schedule in schedules" :lesson="schedule" :timeFrom="timeFrom" type="schedule" :date="date.split('.').reverse().join('-')"/>
+        <ScheduleSingleTile v-for="lesson in lessons" :lesson="lesson" :timeFrom="timeFrom" type="lesson" :date="date.split('.').reverse().join('-')"/>
         <SingleScheduleCeil class="bg-[#ffcda3]">
             <div>
                 <p class="font-bold">{{ day }}</p>

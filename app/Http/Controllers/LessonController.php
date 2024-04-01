@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\LessonRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
@@ -13,10 +14,12 @@ class LessonController extends Controller
     }
     public function createLesson(Request $request):Response {
         $scheduleId = $request->route('id');
+        $lessonDate = $request->query('date');
+        $this->lessonRepository->isProperLessonDate($scheduleId, $lessonDate);
         $scheduleData = $this->lessonRepository->getScheduleData($scheduleId);
         return inertia('Lesson/Lesson', [
             'type'=>'new',
-            'scheduleData' => $scheduleData
+            'scheduleData' => $scheduleData[0]
         ]);
     }
 
@@ -26,7 +29,22 @@ class LessonController extends Controller
 
         return inertia('Lesson/Lesson', [
             'type'=>'edit',
-            'lessonData'=>$lessonData
+            'lessonData'=>$lessonData[0]
         ]);
+    }
+
+    //Stworzenie nowej lekcji ze schedule
+    public function saveLesson(Request $request):JsonResponse {
+
+        return response()->json([
+            'status' =>'ok',
+        ], 200);
+    }
+
+    //Zaktualizowanie istniejącej lekcji ze schedule
+    public function updateLesson(Request $request):JsonResponse {
+        return response()->json([
+            'status' =>'ok',
+        ], 200);
     }
 }

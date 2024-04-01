@@ -4,6 +4,10 @@ import {computed} from "vue";
 import {router} from "@inertiajs/vue3";
 
 const props = defineProps({
+    date: {
+        type: String,
+        default: null
+    },
     lesson: {
         type: Object,
         default() {
@@ -24,7 +28,7 @@ const userRole = (router.page.props.auth.user.role);
 
 function handleScheduleClick() {
     if (props.type === 'schedule') {
-        router.visit(route('lesson.create', {id: props.lesson.id}))
+        router.visit(route('lesson.create', {id: props.lesson.id, date: props.date}))
     } else {
         router.visit(route('lesson.edit', {id: props.lesson.id}))
     }
