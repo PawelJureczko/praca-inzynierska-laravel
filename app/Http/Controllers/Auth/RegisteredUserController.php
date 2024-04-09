@@ -29,7 +29,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request): Response
     {
         $request->validate([
             'first_name' => 'required|string|max:255',
@@ -51,8 +51,14 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        $user->sendEmailVerificationNotification(); // wysłanie maila weryfikującego
 
-        return redirect(RouteServiceProvider::HOME);
+//        Auth::login($user);
+
+        return inertia('Auth/Login', [
+            'afterRegistration'=>true
+        ]);
+
+//        return redirect(RouteServiceProvider::HOME);
     }
 }

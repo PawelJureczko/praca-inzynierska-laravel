@@ -88,12 +88,17 @@ function submit() {
                     </label>
                 </div>
 
-                <div class="flex items-center justify-end mt-4">
-                    <BorderBottomBtn v-if="canResetPassword" desc="Przypomnij hasło" @click="$inertia.visit(route('password.request'))"/>
-
-                    <Btn btnType="primary" class="ml-4 w-max" @click="submit" :isLoader="isBtnLoader">
-                        Zaloguj
+                <div class="flex items-center justify-between mt-4">
+                    <Btn btnType="secondary" class="w-max" @click="$inertia.visit(route('register'))" :isLoader="isBtnLoader">
+                        Zarejestruj się
                     </Btn>
+                    <div class="flex items-center ">
+                        <BorderBottomBtn v-if="canResetPassword" desc="Przypomnij hasło" @click="$inertia.visit(route('password.request'))"/>
+
+                        <Btn btnType="primary" class="ml-4 w-max" @click="submit" :isLoader="isBtnLoader">
+                            Zaloguj
+                        </Btn>
+                    </div>
                 </div>
         </div>
     </Layout>

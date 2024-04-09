@@ -31,7 +31,7 @@ class LessonRepository
 
     public function isProperLessonDate($scheduleId, $lessonDate) {
         $scheduleData = $this->scheduleRepository->getScheduleData($scheduleId);
-        dd($scheduleData);
+//        dd($scheduleData);
         //tutaj trzeba sprawdzic czy dana lekcja odbywa sie w poprawnym terinie (pomiedzy min i max date zalozonym w schedules + czy jest to odpowiedni dzien tygodnia)
         return;
     }

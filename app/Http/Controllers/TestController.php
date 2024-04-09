@@ -26,6 +26,10 @@ class TestController extends Controller
         ]);
     }
 
+    public function test() {
+        dd('test');
+    }
+
     public function create() {
         return Inertia::render('Test/Create');
     }
