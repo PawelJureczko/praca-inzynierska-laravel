@@ -15,6 +15,7 @@ return new class extends Migration
             $table->boolean('canceled_by_student')->default(false);
             $table->boolean('canceled_by_teacher')->default(false);
             $table->string('topic')->nullable();
+            $table->string('absence_reason')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
 

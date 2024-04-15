@@ -59,12 +59,16 @@ function save() {
     //lesson.save
 }
 
+const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData)
+
 </script>
 
 <template>
     <Layout :isLogged="$page.props.auth.user!==null" :user="$page.props.auth.user">
         <TitleComponent :desc="type==='edit' ? 'Edytuj lekcje' : 'Stwórz lekcje'" :isSearch="false"/>
         <div>
+            <p>Identyfikator zajęć: {{currentData.id}}</p>
+            <p>Termin zajęć: {{}}</p>
         </div>
         <p>{{lessonData}}</p>
         <p>{{scheduleData}}</p>
