@@ -1,5 +1,5 @@
 <template>
-    <div class="w-screen h-screen fixed top-0 left-0 bg-modal-tint flex items-center justify-center z-[999] backdrop-blur-sm">
+    <div class="w-screen h-screen fixed top-0 left-0 bg-modal-tint flex items-center justify-center z-[998] backdrop-blur-sm">
         <div class="absolute w-screen h-screen top-0 left-0 z-[1]" @click="$emit('close')"></div>
         <div class="rounded rounded-lg overflow-hidden relative z-[2]" :class="modalStyles">
             <div class="w-full min-h-8 bg-modal-topBarBackground px-4 py-2 flex items-center justify-between">

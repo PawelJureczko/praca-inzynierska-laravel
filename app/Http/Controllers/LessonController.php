@@ -13,7 +13,9 @@ class LessonController extends Controller
     public function __construct(private readonly LessonRepository $lessonRepository)
     {
     }
-    public function createLesson(Request $request):Response {
+
+    public function createLesson(Request $request): Response
+    {
         $scheduleId = $request->route('id');
         $lessonDate = $request->query('date');
         $this->lessonRepository->isProperLessonDate($scheduleId, $lessonDate);
@@ -23,34 +25,46 @@ class LessonController extends Controller
             abort(404);
         }
         return inertia('Lesson/Lesson', [
-            'type'=>'new',
-            'lessonDate'=>$lessonDate,
+            'type' => 'new',
+            'lessonDate' => $lessonDate,
             'scheduleData' => $scheduleData[0],
         ]);
     }
 
-    public function editLesson(Request $request):Response {
+    public function editLesson(Request $request): Response
+    {
         $lessonId = $request->route('id');
         $lessonData = $this->lessonRepository->getLessonData($lessonId);
 
         return inertia('Lesson/Lesson', [
-            'type'=>'edit',
-            'lessonData'=>$lessonData[0]
+            'type' => 'edit',
+            'lessonData' => $lessonData[0]
         ]);
     }
 
     //Stworzenie nowej lekcji ze schedule
-    public function saveLesson(Request $request):JsonResponse {
+    public function saveLesson(Request $request): JsonResponse
+    {
+        return response()->json([
+            'status' => 'ok',
+        ], 200);
+    }
+
+    public function addAbsence(Request $request): JsonResponse
+    {
+        $newLessonId = $this->lessonRepository->addAbsence($request->all()['date'], $request->all()['schedule_id'], $request->all()['absent_person'], $request->all()['absence_reason']);
 
         return response()->json([
-            'status' =>'ok',
+            'status' => 'ok',
+            'lessonId' => $newLessonId
         ], 200);
     }
 
     //Zaktualizowanie istniejącej lekcji ze schedule
-    public function updateLesson(Request $request):JsonResponse {
+    public function updateLesson(Request $request): JsonResponse
+    {
         return response()->json([
-            'status' =>'ok',
+            'status' => 'ok',
         ], 200);
     }
 }

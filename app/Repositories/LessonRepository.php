@@ -12,7 +12,9 @@ class LessonRepository
     public function __construct(private readonly StudentRepository $studentRepository, private readonly ScheduleRepository $scheduleRepository)
     {
     }
-    public function getScheduleData($id) {
+
+    public function getScheduleData($id)
+    {
         return DB::select('
         SELECT
             schedule.*,
@@ -27,7 +29,8 @@ class LessonRepository
     ', [$id]);
     }
 
-    public function getLessonData($id) {
+    public function getLessonData($id): array
+    {
         return DB::select('
         SELECT
             lessons.*,
@@ -51,19 +54,20 @@ class LessonRepository
     private function checkIsScheduleLesson($scheduleId, $date): bool
     {
         $record = DB::select('SELECT * FROM lessons WHERE schedule_id = ? AND date = ?', [$scheduleId, $date]);
-        return(!empty($record));
+        return (!empty($record));
     }
 
-    public function isProperLessonDate($scheduleId, $lessonDate):bool {
+    public function isProperLessonDate($scheduleId, $lessonDate): bool
+    {
         $scheduleData = $this->scheduleRepository->getScheduleData($scheduleId);
         $scheduleFrom = $scheduleData->date_begin;
         $scheduleTo = $scheduleData->date_end;
 
         //sprawdzenie dnia tygodnia dla daty z requestu
-        $currentLessonWeekDay = Carbon::create($lessonDate)->dayOfWeek===0 ? 7 : Carbon::create($lessonDate)->dayOfWeek;
+        $currentLessonWeekDay = Carbon::create($lessonDate)->dayOfWeek === 0 ? 7 : Carbon::create($lessonDate)->dayOfWeek;
 
         //sprawdzenie czy lekcja jest w wyznaczonym wczesniej zakresie od-do ze schedule
-        $lessonInDateRange = ($lessonDate>=$scheduleFrom && (!($scheduleTo !== null) || $lessonDate <= $scheduleTo));
+        $lessonInDateRange = ($lessonDate >= $scheduleFrom && (!($scheduleTo !== null) || $lessonDate <= $scheduleTo));
 
         //sprawdzenie czy schedule week day jest taki sam jak week day z requestu
         $isSameWeekDay = $scheduleData->classes_weekday === $currentLessonWeekDay;
@@ -73,10 +77,19 @@ class LessonRepository
 
 
         return ($lessonInDateRange && $isSameWeekDay && !$isScheduleLessonForCurrentDate);
-//        dd($scheduleData->classes_weekday === $currentLessonWeekDay);
-//        if ( && )
-//        dd(Carbon::create($lessonDate)->dayOfWeek);
-        //tutaj trzeba sprawdzic czy dana lekcja odbywa sie w poprawnym terinie (pomiedzy min i max date zalozonym w schedules + czy jest to odpowiedni dzien tygodnia)
-//        return;
+    }
+
+    public function addAbsence($date, $scheduleId, $absentPerson, $absenceMessage): int
+    {
+        return DB::table('lessons')->insertGetId([
+            'date' => $date,
+            'schedule_id' => $scheduleId,
+            'canceled_by_student' => $absentPerson === 'student',
+            'canceled_by_teacher' => $absentPerson === 'teacher',
+            'topic' => NULL,
+            'notes' => NULL,
+            'absence_reason' => $absenceMessage,
+            'created_at' => now(),
+        ]);
     }
 }

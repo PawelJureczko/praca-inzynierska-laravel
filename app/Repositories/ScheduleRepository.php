@@ -159,6 +159,7 @@ class ScheduleRepository
             SELECT
                 lessons.*,
                 schedule.*,
+                lessons.id AS id,
                 teachers.first_name AS teacher_first_name,
                 teachers.last_name AS teacher_last_name,
                 students.first_name AS student_first_name,
