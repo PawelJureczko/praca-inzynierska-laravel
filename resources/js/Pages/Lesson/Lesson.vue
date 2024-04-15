@@ -5,18 +5,25 @@ import Btn from "@/Components/Buttons/Btn.vue";
 import {router} from "@inertiajs/vue3";
 import {useMainStore} from "@/Store/mainStore.js";
 import {ref} from "vue";
-
-
-const store = useMainStore();
-const isBtnLoader = ref(false);
-
+import {getStringFromDate} from "../../Helpers/helpers.js";
+import AbsenceModal from "@/Components/Modals/AbsenceModal.vue";
 
 const props = defineProps({
+    auth: {
+        type: Object,
+        default() {
+            return {}
+        }
+    },
     lessonData: {
         type: Object,
         default() {
             return null
         }
+    },
+    lessonDate: {
+        type: String,
+        default: ''
     },
     scheduleData: {
         type: Object,
@@ -26,8 +33,15 @@ const props = defineProps({
     },
 })
 
-const type = (props.lessonData===null ? 'new' : 'edit');
 
+const store = useMainStore();
+const isBtnLoader = ref(false);
+const isAbsenceModal = ref(props.lessonData===null);
+
+
+
+const type = (props.lessonData===null ? 'new' : 'edit');
+const userType = props.auth.user.role;
 
 function save() {
     if (store.getIsLock === false) {
@@ -65,15 +79,23 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
 
 <template>
     <Layout :isLogged="$page.props.auth.user!==null" :user="$page.props.auth.user">
-        <TitleComponent :desc="type==='edit' ? 'Edytuj lekcje' : 'Stwórz lekcje'" :isSearch="false"/>
+        <div class="flex justify-between items-center">
+            <TitleComponent :desc="type==='edit' ? 'Edytuj lekcje' : 'Stwórz lekcje'" :isSearch="false"/>
+            <div v-if="type==='new'">
+                <Btn btnType="danger">Zgłoś nieobecność</Btn>
+            </div>
+        </div>
         <div>
-            <p>Identyfikator zajęć: {{currentData.id}}</p>
-            <p>Termin zajęć: {{}}</p>
+            <p>Zajęcia z: {{userType==='teacher' ? (currentData.student_first_name + ' ' + currentData.student_last_name) : (currentData.teacher_first_name + ' ' + currentData.teacher_last_name)}}</p>
+            <p>Termin zajęć: {{getStringFromDate(new Date(scheduleData ? lessonDate : lessonData.date)).split(', ')[0]}}</p>
+            <p>Zajęcia od: {{currentData.classes_time_start.split(':').slice(0,2).join(':')}}</p>
+            <p>Zajęcia do: {{currentData.classes_time_end.split(':').slice(0,2).join(':')}}</p>
         </div>
         <p>{{lessonData}}</p>
         <p>{{scheduleData}}</p>
         <Btn @click="save">Zapisz</Btn>
     </Layout>
+    <AbsenceModal :userType="userType" :date="lessonDate" v-if="isAbsenceModal"/>
 </template>
 
 <style scoped>

@@ -14,19 +14,35 @@ class LessonRepository
     }
     public function getScheduleData($id) {
         return DB::select('
-        SELECT schedule.*, users.first_name AS student_first_name, users.last_name AS student_last_name
+        SELECT
+            schedule.*,
+            student.first_name AS student_first_name,
+            student.last_name AS student_last_name,
+            teacher.first_name AS teacher_first_name,
+            teacher.last_name AS teacher_last_name
         FROM schedule
-        JOIN users ON schedule.student_id = users.id
+        JOIN users AS student ON schedule.student_id = student.id
+        JOIN users AS teacher ON schedule.teacher_id = teacher.id
         WHERE schedule.id = ?
     ', [$id]);
     }
 
     public function getLessonData($id) {
         return DB::select('
-        SELECT lessons.*, schedule.teacher_id, schedule.student_id, schedule.classes_time_start, schedule.classes_time_end, users.first_name AS student_first_name, users.last_name AS student_last_name
+        SELECT
+            lessons.*,
+            schedule.teacher_id,
+            schedule.student_id,
+            schedule.classes_time_start,
+            schedule.classes_time_end,
+            student.first_name AS student_first_name,
+            student.last_name AS student_last_name,
+            teacher.first_name AS teacher_first_name,
+            teacher.last_name AS teacher_last_name
         FROM lessons
         JOIN schedule ON lessons.schedule_id = schedule.id
-        JOIN users ON schedule.student_id = users.id
+        JOIN users AS student ON schedule.student_id = student.id
+        JOIN users AS teacher ON schedule.teacher_id = teacher.id
         WHERE lessons.id = ?
     ', [$id]);
     }

@@ -24,6 +24,7 @@ class LessonController extends Controller
         }
         return inertia('Lesson/Lesson', [
             'type'=>'new',
+            'lessonDate'=>$lessonDate,
             'scheduleData' => $scheduleData[0],
         ]);
     }
