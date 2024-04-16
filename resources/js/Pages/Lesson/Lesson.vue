@@ -166,10 +166,11 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
                     <TextField class="mt-2" v-model="lesson.notes" placeholder="Wpisz notatkę do zajęć..." errorName="notes"/>
                 </div>
             </div>
-            <p>{{ lessonData }}</p>
-            <p>{{ scheduleData }}</p>
-            <Btn @click="save" v-if="type==='new'">Zapisz</Btn>
-            <Btn @click="update" v-if="type==='edit' && (!lesson.canceled_by_teacher && !lesson.canceled_by_student)">Aktualizuj</Btn>
+            <div class="max-w-[450px] mx-auto flex gap-[20px]">
+                <Btn @click="save" v-if="type==='new'">Zapisz</Btn>
+                <Btn @click="update" v-if="type==='edit' && (!lesson.canceled_by_teacher && !lesson.canceled_by_student)">Aktualizuj</Btn>
+                <Btn btnType="secondary" @click="$inertia.visit(route('schedule.index'))">Wróć</Btn>
+            </div>
         </div>
     </Layout>
     <AbsenceModal :userType="userType" :date="lessonDate ? lessonDate : lessonData.date" :scheduleId="scheduleData ? scheduleData.id : lessonData.schedule_id" v-if="isAbsenceModal"
