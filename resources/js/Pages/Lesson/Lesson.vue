@@ -62,7 +62,10 @@ function saveBasicData() {
         isBtnLoader.value = true;
         store.clearErrors();
         axios.post(route('lesson.save'), {
-
+            topic: lesson.value.topic,
+            notes: lesson.value.notes,
+            schedule_id: props.scheduleData.id,
+            lessonDate: props.lessonDate
         })
             .then(response => {
                 if (response.data.status === 'ok') {
@@ -116,20 +119,24 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
                 <BorderBottomBtn class="mt-2" @click="undoAbsence">Oznacz jako obecny</BorderBottomBtn>
             </div>
 
-            <div class="mt-6">
-                <p>Zajęcia z:
-                    {{ userType === 'teacher' ? (currentData.student_first_name + ' ' + currentData.student_last_name) : (currentData.teacher_first_name + ' ' + currentData.teacher_last_name) }}</p>
-                <p>Termin zajęć:
-                    {{ getStringFromDate(new Date(scheduleData ? lessonDate : lessonData.date)).split(', ')[0] }}</p>
-                <p>Godziny zajęć: {{ currentData.classes_time_start.split(':').slice(0, 2).join(':') }} - {{ currentData.classes_time_end.split(':').slice(0, 2).join(':') }}</p>
+            <div class="mt-6 flex flex-col gap-2">
+                <p class="text-[22px] leading-[26px]">Zajęcia z: <b>
+                    {{ userType === 'teacher' ? (currentData.student_first_name + ' ' + currentData.student_last_name) : (currentData.teacher_first_name + ' ' + currentData.teacher_last_name) }}</b></p>
+                <p class="text-[22px] leading-[26px]">Termin zajęć: <b>
+                    {{ getStringFromDate(new Date(scheduleData ? lessonDate : lessonData.date)).split(', ')[0] }}</b></p>
+                <p  class="text-[22px] leading-[26px]">Godziny zajęć: <b>{{ currentData.classes_time_start.split(':').slice(0, 2).join(':') }} - {{ currentData.classes_time_end.split(':').slice(0, 2).join(':') }}</b></p>
             </div>
 
-            <div v-if="!lesson.canceled_by_teacher && !lesson.canceled_by_student">
-                <p>Temat zajęć</p>
-                <TextField v-model="lesson.topic" placeholder="Wpisz temat zajęć..."/>
+            <div v-if="!lesson.canceled_by_teacher && !lesson.canceled_by_student" class="mt-4">
+                <div class="mb-6">
+                    <p class="text-[18px] leading-[24px] font-bold">Temat zajęć:</p>
+                    <TextField v-model="lesson.topic" placeholder="Wpisz temat zajęć..." errorName="topic"/>
+                </div>
 
-                <p>Opis zajęć</p>
-                <TextField v-model="lesson.notes" placeholder="Wpisz notatkę do zajęć..." />
+                <div class="mb-6">
+                    <p class="text-[18px] leading-[24px] font-bold">Opis zajęć:</p>
+                    <TextField v-model="lesson.notes" placeholder="Wpisz notatkę do zajęć..." errorName="notes"/>
+                </div>
             </div>
             <p>{{ lessonData }}</p>
             <p>{{ scheduleData }}</p>

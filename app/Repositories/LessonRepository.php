@@ -92,4 +92,18 @@ class LessonRepository
             'created_at' => now(),
         ]);
     }
+
+    public function saveNewLesson($topic, $notes, $scheduleId, $lessonDate):int
+    {
+        return DB::table('lessons')->insertGetId([
+            'date' => $lessonDate, // Na przykład, możesz dodać bieżącą datę
+            'schedule_id' => $scheduleId,
+            'topic' => $topic,
+            'notes' => $notes,
+            'canceled_by_teacher' => 0,
+            'canceled_by_student' => 0,
+            // Tutaj możesz dodać pozostałe kolumny, których wartości nie zostały przekazane z żądania
+            'created_at' => now(),
+        ]);
+    }
 }

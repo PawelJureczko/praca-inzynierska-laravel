@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\LessonRepository;
+use App\Repositories\ScheduleRepository;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -10,7 +11,7 @@ use Inertia\Response;
 
 class LessonController extends Controller
 {
-    public function __construct(private readonly LessonRepository $lessonRepository)
+    public function __construct(private readonly LessonRepository $lessonRepository, private readonly ScheduleRepository $scheduleRepository)
     {
     }
 
@@ -45,9 +46,26 @@ class LessonController extends Controller
     //Stworzenie nowej lekcji ze schedule
     public function saveLesson(Request $request): JsonResponse
     {
-        return response()->json([
-            'status' => 'ok',
-        ], 200);
+        $topic = $request->all()['topic'];
+        $notes = $request->all()['notes'];
+        $scheduleId = $request->all()['schedule_id'];
+        $lessonDate = $request->all()['lessonDate'];
+
+        $errors = [];
+        $errors += $this->scheduleRepository->checkIsNull($request->all());
+
+        if (count($errors) > 0) {
+            return response()->json([
+                'errors' =>$errors,
+            ], 422);
+        } else {
+            $lessonId = $this->lessonRepository->saveNewLesson($topic, $notes, $scheduleId, $lessonDate);
+
+            return response()->json([
+                'status' => 'ok',
+                'lessonId' => $lessonId
+            ], 200);
+        }
     }
 
     public function addAbsence(Request $request): JsonResponse

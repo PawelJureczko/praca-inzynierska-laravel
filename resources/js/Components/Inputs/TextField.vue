@@ -155,7 +155,12 @@ let showCopiedMessage = ref(false);
 const store = useMainStore();
 
 const errorMessage = computed(() => {
-    return store.getErrors[props.errorName] && store.getErrors[props.errorName].length ? store.getErrors[props.errorName][0] : ''
+    let preparedError = ''
+    if (store.getErrors[props.errorName]) {
+    preparedError = typeof store.getErrors[props.errorName] === 'string' ? store.getErrors[props.errorName] : store.getErrors[props.errorName][0];
+
+    }
+    return store.getErrors[props.errorName] && store.getErrors[props.errorName].length ? preparedError : ''
 })
 
 function handleClearBtnClicked() {
