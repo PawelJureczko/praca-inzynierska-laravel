@@ -9,7 +9,7 @@
                 <option v-if="modelValue==null" :value="null" disabled>{{placeholder}}</option>
                 <option v-if="modelValue==''" :value="''" disabled>{{placeholder}}</option>
                 <template v-if="typeof options[0] === 'string'">
-                    <option v-for="(value, key) in options" :value="key">{{ value }}</option>
+                    <option v-for="(value, key) in options" :value="keyAsValue ? key : value">{{ value }}</option>
                 </template>
                 <template v-else>
                     <option v-for="item in options" :value="item.key">{{ item.value }}</option>
@@ -47,6 +47,10 @@ const props = defineProps({
     inline: {
         type: Boolean,
         default: false,
+    },
+    keyAsValue: {
+        type: Boolean,
+        default: true
     },
     modelValue: {
         type: [String, Number],

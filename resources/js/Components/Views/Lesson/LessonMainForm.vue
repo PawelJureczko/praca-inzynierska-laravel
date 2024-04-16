@@ -6,13 +6,13 @@ const lesson = defineModel();
 </script>
 
 <template>
-    <div v-if="!lesson.canceled_by_teacher && !lesson.canceled_by_student" class="mt-4">
-        <div class="mb-6">
+    <div v-if="!lesson.canceled_by_teacher && !lesson.canceled_by_student" class="mt-8">
+        <div class="mb-4">
             <p class="text-[18px] leading-[24px] font-bold">Temat zajęć:</p>
             <TextField class="mt-2" v-model="lesson.topic" placeholder="Wpisz temat zajęć..." errorName="topic"/>
         </div>
 
-        <div class="mb-6">
+        <div class="mb-4">
             <p class="text-[18px] leading-[24px] font-bold">Opis zajęć:</p>
             <TextField class="mt-2" v-model="lesson.notes" placeholder="Wpisz notatkę do zajęć..." errorName="notes"/>
         </div>

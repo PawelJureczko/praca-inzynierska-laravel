@@ -10,6 +10,8 @@ import LessonMainForm from "@/Components/Views/Lesson/LessonMainForm.vue";
 import LessonButtons from "@/Components/Views/Lesson/LessonButtons.vue";
 import LessonDataBox from "@/Components/Views/Lesson/LessonDataBox.vue";
 import LessonAbsenceBox from "@/Components/Views/Lesson/LessonAbsenceBox.vue";
+import LessonGrades from "@/Components/Views/Lesson/LessonGrades.vue";
+import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
 
 const props = defineProps({
     auth: {
@@ -46,6 +48,8 @@ const lesson = ref({
     notes: props.lessonData ? props.lessonData.notes : '',
     canceled_by_teacher: props.lessonData ? props.lessonData.canceled_by_teacher === 1 : false,
     canceled_by_student: props.lessonData ? props.lessonData.canceled_by_student === 1 : false,
+    grades: [
+    ],
 })
 
 
@@ -143,7 +147,11 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
 
             <LessonMainForm v-model="lesson" />
 
+            <LessonGrades v-model="lesson.grades"/>
+
             <LessonButtons :type="type" :lesson="lesson" @save="save" @update="update"/>
+
+
         </div>
     </Layout>
     <AbsenceModal :userType="userType" :date="lessonDate ? lessonDate : lessonData.date" :scheduleId="scheduleData ? scheduleData.id : lessonData.schedule_id" v-if="isAbsenceModal"

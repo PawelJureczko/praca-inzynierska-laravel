@@ -39,11 +39,12 @@ const props = defineProps({
 
 <template>
     <div class="mt-6 flex flex-col gap-2">
-        <p class="text-[22px] leading-[26px]">Zajęcia z: <b>
+        <h2 class="text-[24px] heading-[32px] font-bold">Dane podstawowe:</h2>
+        <p class="text-[18px] leading-[24px]">Zajęcia z: <b>
             {{ userType === 'teacher' ? (currentData.student_first_name + ' ' + currentData.student_last_name) : (currentData.teacher_first_name + ' ' + currentData.teacher_last_name) }}</b></p>
-        <p class="text-[22px] leading-[26px]">Termin zajęć: <b>
+        <p class="text-[18px] leading-[24px]">Termin zajęć: <b>
             {{ getStringFromDate(new Date(scheduleData ? lessonDate : lessonData.date)).split(', ')[0] }}</b></p>
-        <p  class="text-[22px] leading-[26px]">Godziny zajęć: <b>{{ currentData.classes_time_start.split(':').slice(0, 2).join(':') }} - {{ currentData.classes_time_end.split(':').slice(0, 2).join(':') }}</b></p>
+        <p  class="text-[18px] leading-[24px]">Godziny zajęć: <b>{{ currentData.classes_time_start.split(':').slice(0, 2).join(':') }} - {{ currentData.classes_time_end.split(':').slice(0, 2).join(':') }}</b></p>
     </div>
 </template>
 
