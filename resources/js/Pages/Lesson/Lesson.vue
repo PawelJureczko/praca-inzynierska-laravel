@@ -5,10 +5,11 @@ import Btn from "@/Components/Buttons/Btn.vue";
 import {router} from "@inertiajs/vue3";
 import {useMainStore} from "@/Store/mainStore.js";
 import {ref} from "vue";
-import {getStringFromDate} from "../../Helpers/helpers.js";
 import AbsenceModal from "@/Components/Modals/AbsenceModal.vue";
-import TextField from "@/Components/Inputs/TextField.vue";
-import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
+import LessonMainForm from "@/Components/Views/Lesson/LessonMainForm.vue";
+import LessonButtons from "@/Components/Views/Lesson/LessonButtons.vue";
+import LessonDataBox from "@/Components/Views/Lesson/LessonDataBox.vue";
+import LessonAbsenceBox from "@/Components/Views/Lesson/LessonAbsenceBox.vue";
 
 const props = defineProps({
     auth: {
@@ -136,41 +137,13 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
                 </div>
             </div>
 
-            <div v-if="lesson.canceled_by_teacher || lesson.canceled_by_student"
-                 class="border border-[red] rounded-lg p-4">
-                <div class="bg-[red] w-max px-4 py-2 rounded-[4px]">
-                    <p class="text-white text-[12px] leading-[16px] font-bold">Zajęcia odwołane przez
-                        {{ currentData.canceled_by_student === 1 ? 'ucznia.' : 'nauczyciela' }}</p>
-                </div>
-                <p class="mt-2">Powód: {{ currentData.absence_reason ? currentData.absence_reason : 'Brak.' }}</p>
+            <LessonAbsenceBox v-if="lesson.canceled_by_teacher || lesson.canceled_by_student" :currentData="currentData" @undoAbsence="undoAbsence"/>
 
-                <BorderBottomBtn class="mt-2" @click="undoAbsence">Oznacz jako obecny</BorderBottomBtn>
-            </div>
+            <LessonDataBox :currentData="currentData" :lessonData="lessonData" :lessonDate="lessonDate" :scheduleData="scheduleData"/>
 
-            <div class="mt-6 flex flex-col gap-2">
-                <p class="text-[22px] leading-[26px]">Zajęcia z: <b>
-                    {{ userType === 'teacher' ? (currentData.student_first_name + ' ' + currentData.student_last_name) : (currentData.teacher_first_name + ' ' + currentData.teacher_last_name) }}</b></p>
-                <p class="text-[22px] leading-[26px]">Termin zajęć: <b>
-                    {{ getStringFromDate(new Date(scheduleData ? lessonDate : lessonData.date)).split(', ')[0] }}</b></p>
-                <p  class="text-[22px] leading-[26px]">Godziny zajęć: <b>{{ currentData.classes_time_start.split(':').slice(0, 2).join(':') }} - {{ currentData.classes_time_end.split(':').slice(0, 2).join(':') }}</b></p>
-            </div>
+            <LessonMainForm v-model="lesson" />
 
-            <div v-if="!lesson.canceled_by_teacher && !lesson.canceled_by_student" class="mt-4">
-                <div class="mb-6">
-                    <p class="text-[18px] leading-[24px] font-bold">Temat zajęć:</p>
-                    <TextField class="mt-2" v-model="lesson.topic" placeholder="Wpisz temat zajęć..." errorName="topic"/>
-                </div>
-
-                <div class="mb-6">
-                    <p class="text-[18px] leading-[24px] font-bold">Opis zajęć:</p>
-                    <TextField class="mt-2" v-model="lesson.notes" placeholder="Wpisz notatkę do zajęć..." errorName="notes"/>
-                </div>
-            </div>
-            <div class="max-w-[450px] mx-auto flex gap-[20px]">
-                <Btn @click="save" v-if="type==='new'">Zapisz</Btn>
-                <Btn @click="update" v-if="type==='edit' && (!lesson.canceled_by_teacher && !lesson.canceled_by_student)">Aktualizuj</Btn>
-                <Btn btnType="secondary" @click="$inertia.visit(route('schedule.index'))">Wróć</Btn>
-            </div>
+            <LessonButtons :type="type" :lesson="lesson" @save="save" @update="update"/>
         </div>
     </Layout>
     <AbsenceModal :userType="userType" :date="lessonDate ? lessonDate : lessonData.date" :scheduleId="scheduleData ? scheduleData.id : lessonData.schedule_id" v-if="isAbsenceModal"
