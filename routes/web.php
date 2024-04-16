@@ -67,7 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/lesson/{id}', [\App\Http\Controllers\LessonController::class, 'createLesson'])->name('lesson.create')->middleware(['lessonParticipant']);
     Route::post('/lesson/save', [\App\Http\Controllers\LessonController::class, 'saveLesson'])->name('lesson.save');
     Route::get('/lesson/edit/{id}', [\App\Http\Controllers\LessonController::class, 'editLesson'])->name('lesson.edit')->middleware(['lessonParticipant']);;
-    Route::post('/lesson/edit/save/{id}', [\App\Http\Controllers\LessonController::class, 'updateLesson'])->name('lesson.update');
+    Route::put('/lesson/edit/update', [\App\Http\Controllers\LessonController::class, 'updateLesson'])->name('lesson.update');
     Route::post('lessons/edit/save/addAbsence', [\App\Http\Controllers\LessonController::class, 'addAbsence'])->name('absence.create');
 
 });

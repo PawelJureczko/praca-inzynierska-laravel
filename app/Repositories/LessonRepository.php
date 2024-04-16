@@ -106,4 +106,20 @@ class LessonRepository
             'created_at' => now(),
         ]);
     }
+
+    public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason): int
+    {
+        return DB::table('lessons')
+            ->where('id', $lessonId)
+            ->update([
+                'date' => $lessonDate,
+                'topic' => $topic,
+                'notes' => $notes,
+                'canceled_by_student' => $canceledByStudent,
+                'canceled_by_teacher' => $canceledByTeacher,
+                'absence_reason' => $absenceReason,
+                // Inne pola do zaktualizowania
+                'updated_at' => now(), // Przykładowo, możesz zaktualizować pole updated_at
+            ]);
+    }
 }

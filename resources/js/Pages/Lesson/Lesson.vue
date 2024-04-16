@@ -56,7 +56,7 @@ function undoAbsence() {
     lesson.value.canceled_by_student = false;
 }
 
-function saveBasicData() {
+function save() {
     if (store.getIsLock === false) {
         store.setIsLock(true);
         isBtnLoader.value = true;
@@ -85,13 +85,41 @@ function saveBasicData() {
             isBtnLoader.value = false;
         })
     }
-
-    console.log('test');
     //lesson.save
 }
 
-function updateBasicData() {
-    console.log('update')
+function update() {
+    if (store.getIsLock === false) {
+        store.setIsLock(true);
+        isBtnLoader.value = true;
+        store.clearErrors();
+        axios.put(route('lesson.update'), {
+            topic: lesson.value.topic,
+            notes: lesson.value.notes,
+            lessonId: props.lessonData.id,
+            lessonDate: props.lessonData.date,
+            canceledByStudent: lesson.value.canceled_by_student,
+            canceledByTeacher: lesson.value.canceled_by_teacher,
+            absenceReason: (lesson.value.canceled_by_student || lesson.value.canceled_by_teacher) ? props.lessonData.absence_reason : null
+        })
+            .then(response => {
+                if (response.data.status === 'ok') {
+                    router.visit(route('schedule.index'));
+                }
+            })
+            .catch(error => {
+                // Obsługa błędu
+                console.log(error.response.data.errors)
+                if (error.response.status === 422) {
+                    store.setErrors(error.response.data.errors);
+                } else {
+                    console.log(error)
+                }
+            }).finally(() => {
+            store.setIsLock(false);
+            isBtnLoader.value = false;
+        })
+    }
 }
 
 const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData)
@@ -130,18 +158,18 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
             <div v-if="!lesson.canceled_by_teacher && !lesson.canceled_by_student" class="mt-4">
                 <div class="mb-6">
                     <p class="text-[18px] leading-[24px] font-bold">Temat zajęć:</p>
-                    <TextField v-model="lesson.topic" placeholder="Wpisz temat zajęć..." errorName="topic"/>
+                    <TextField class="mt-2" v-model="lesson.topic" placeholder="Wpisz temat zajęć..." errorName="topic"/>
                 </div>
 
                 <div class="mb-6">
                     <p class="text-[18px] leading-[24px] font-bold">Opis zajęć:</p>
-                    <TextField v-model="lesson.notes" placeholder="Wpisz notatkę do zajęć..." errorName="notes"/>
+                    <TextField class="mt-2" v-model="lesson.notes" placeholder="Wpisz notatkę do zajęć..." errorName="notes"/>
                 </div>
             </div>
             <p>{{ lessonData }}</p>
             <p>{{ scheduleData }}</p>
-            <Btn @click="saveBasicData" v-if="type==='new'">Zapisz</Btn>
-            <Btn @click="updateBasicData" v-if="type==='edit'">Aktualizuj</Btn>
+            <Btn @click="save" v-if="type==='new'">Zapisz</Btn>
+            <Btn @click="update" v-if="type==='edit' && (!lesson.canceled_by_teacher && !lesson.canceled_by_student)">Aktualizuj</Btn>
         </div>
     </Layout>
     <AbsenceModal :userType="userType" :date="lessonDate ? lessonDate : lessonData.date" :scheduleId="scheduleData ? scheduleData.id : lessonData.schedule_id" v-if="isAbsenceModal"

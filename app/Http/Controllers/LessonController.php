@@ -43,6 +43,17 @@ class LessonController extends Controller
         ]);
     }
 
+    //dodanie nieobecności
+    public function addAbsence(Request $request): JsonResponse
+    {
+        $newLessonId = $this->lessonRepository->addAbsence($request->all()['date'], $request->all()['schedule_id'], $request->all()['absent_person'], $request->all()['absence_reason']);
+
+        return response()->json([
+            'status' => 'ok',
+            'lessonId' => $newLessonId
+        ], 200);
+    }
+
     //Stworzenie nowej lekcji ze schedule
     public function saveLesson(Request $request): JsonResponse
     {
@@ -56,7 +67,7 @@ class LessonController extends Controller
 
         if (count($errors) > 0) {
             return response()->json([
-                'errors' =>$errors,
+                'errors' => $errors,
             ], 422);
         } else {
             $lessonId = $this->lessonRepository->saveNewLesson($topic, $notes, $scheduleId, $lessonDate);
@@ -68,21 +79,31 @@ class LessonController extends Controller
         }
     }
 
-    public function addAbsence(Request $request): JsonResponse
-    {
-        $newLessonId = $this->lessonRepository->addAbsence($request->all()['date'], $request->all()['schedule_id'], $request->all()['absent_person'], $request->all()['absence_reason']);
-
-        return response()->json([
-            'status' => 'ok',
-            'lessonId' => $newLessonId
-        ], 200);
-    }
-
     //Zaktualizowanie istniejącej lekcji ze schedule
     public function updateLesson(Request $request): JsonResponse
     {
-        return response()->json([
-            'status' => 'ok',
-        ], 200);
+        $topic = $request->all()['topic'];
+        $notes = $request->all()['notes'];
+        $lessonId = $request->all()['lessonId'];
+        $lessonDate = $request->all()['lessonDate'];
+        $canceledByStudent = $request->all()['canceledByStudent'];
+        $canceledByTeacher = $request->all()['canceledByTeacher'];
+        $absenceReason = $request->all()['absenceReason'];
+
+        $errors = [];
+        $errors += $this->scheduleRepository->checkIsNull($request->only(['topic', 'notes']));
+
+        if (count($errors) > 0) {
+            return response()->json([
+                'errors' => $errors,
+            ], 422);
+        } else {
+            $lessonId = $this->lessonRepository->updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason);
+
+            return response()->json([
+                'status' => 'ok',
+                'lessonId' => $lessonId
+            ], 200);
+        }
     }
 }
