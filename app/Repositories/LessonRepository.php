@@ -50,6 +50,11 @@ class LessonRepository
     ', [$id]);
     }
 
+    public function getGradesForLesson($id): array
+    {
+        return DB::select('SELECT * FROM grades WHERE lesson_id = ? AND deleted_at IS NULL', [$id]);
+    }
+
     //sprawdzenie, czy dla danego schedule nie występuje już jakaś instancja lekcji dla wybranej daty
     private function checkIsScheduleLesson($scheduleId, $date): bool
     {
@@ -93,18 +98,32 @@ class LessonRepository
         ]);
     }
 
-    public function saveNewLesson($topic, $notes, $scheduleId, $lessonDate):int
+    public function saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades):int
     {
-        return DB::table('lessons')->insertGetId([
-            'date' => $lessonDate, // Na przykład, możesz dodać bieżącą datę
+        $newLessonId = DB::table('lessons')->insertGetId([
+            'date' => $lessonDate,
             'schedule_id' => $scheduleId,
             'topic' => $topic,
             'notes' => $notes,
             'canceled_by_teacher' => 0,
             'canceled_by_student' => 0,
-            // Tutaj możesz dodać pozostałe kolumny, których wartości nie zostały przekazane z żądania
             'created_at' => now(),
         ]);
+
+        foreach ($grades as $gradeData) {
+            $grade = $gradeData['grade'];
+            $desc = $gradeData['desc'];
+
+            DB::table('grades')->insert([
+                'lesson_id' => $newLessonId,
+                'grade' => $grade,
+                'desc' => $desc,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        return $newLessonId;
     }
 
     public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason): int

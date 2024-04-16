@@ -11,13 +11,18 @@ import LessonButtons from "@/Components/Views/Lesson/LessonButtons.vue";
 import LessonDataBox from "@/Components/Views/Lesson/LessonDataBox.vue";
 import LessonAbsenceBox from "@/Components/Views/Lesson/LessonAbsenceBox.vue";
 import LessonGrades from "@/Components/Views/Lesson/LessonGrades.vue";
-import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
 
 const props = defineProps({
     auth: {
         type: Object,
         default() {
             return {}
+        }
+    },
+    grades: {
+        type: Array,
+        default() {
+            return []
         }
     },
     lessonData: {
@@ -48,8 +53,7 @@ const lesson = ref({
     notes: props.lessonData ? props.lessonData.notes : '',
     canceled_by_teacher: props.lessonData ? props.lessonData.canceled_by_teacher === 1 : false,
     canceled_by_student: props.lessonData ? props.lessonData.canceled_by_student === 1 : false,
-    grades: [
-    ],
+    grades: props.grades,
 })
 
 
@@ -70,7 +74,8 @@ function save() {
             topic: lesson.value.topic,
             notes: lesson.value.notes,
             schedule_id: props.scheduleData.id,
-            lessonDate: props.lessonDate
+            lessonDate: props.lessonDate,
+            grades: lesson.value.grades
         })
             .then(response => {
                 if (response.data.status === 'ok') {

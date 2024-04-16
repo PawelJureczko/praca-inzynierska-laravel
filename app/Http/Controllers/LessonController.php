@@ -36,10 +36,12 @@ class LessonController extends Controller
     {
         $lessonId = $request->route('id');
         $lessonData = $this->lessonRepository->getLessonData($lessonId);
+        $grades = $this->lessonRepository->getGradesForLesson($lessonId);
 
         return inertia('Lesson/Lesson', [
             'type' => 'edit',
-            'lessonData' => $lessonData[0]
+            'lessonData' => $lessonData[0],
+            'grades'=>$grades
         ]);
     }
 
@@ -57,10 +59,11 @@ class LessonController extends Controller
     //Stworzenie nowej lekcji ze schedule
     public function saveLesson(Request $request): JsonResponse
     {
-        $topic = $request->all()['topic'];
-        $notes = $request->all()['notes'];
-        $scheduleId = $request->all()['schedule_id'];
-        $lessonDate = $request->all()['lessonDate'];
+        $topic = $request->input('topic');
+        $notes = $request->input('notes');
+        $scheduleId = $request->input('schedule_id');
+        $lessonDate = $request->input('lessonDate');
+        $grades = $request->input('grades');
 
         $errors = [];
         $errors += $this->scheduleRepository->checkIsNull($request->all());
@@ -70,7 +73,7 @@ class LessonController extends Controller
                 'errors' => $errors,
             ], 422);
         } else {
-            $lessonId = $this->lessonRepository->saveNewLesson($topic, $notes, $scheduleId, $lessonDate);
+            $lessonId = $this->lessonRepository->saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades);
 
             return response()->json([
                 'status' => 'ok',
