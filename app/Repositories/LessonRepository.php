@@ -13,7 +13,7 @@ class LessonRepository
     {
     }
 
-    public function getScheduleData($id)
+    public function getScheduleData($id): array
     {
         return DB::select('
         SELECT
@@ -126,8 +126,27 @@ class LessonRepository
         return $newLessonId;
     }
 
-    public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason): int
+    public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades): int
     {
+        //ustawia deleted_at dla wszystkich ocen dla tej lekcji
+        DB::table('grades')
+            ->where('lesson_id', $lessonId)
+            ->update(['deleted_at' => now()]);
+
+        //ddaje nowe oceny nawet, jesli nie roznia sie od poprzednich
+        foreach ($grades as $gradeData) {
+            $grade = $gradeData['grade'];
+            $desc = $gradeData['desc'];
+
+            DB::table('grades')->insert([
+                'lesson_id' => $lessonId,
+                'grade' => $grade,
+                'desc' => $desc,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
         return DB::table('lessons')
             ->where('id', $lessonId)
             ->update([

@@ -85,13 +85,14 @@ class LessonController extends Controller
     //Zaktualizowanie istniejącej lekcji ze schedule
     public function updateLesson(Request $request): JsonResponse
     {
-        $topic = $request->all()['topic'];
-        $notes = $request->all()['notes'];
-        $lessonId = $request->all()['lessonId'];
-        $lessonDate = $request->all()['lessonDate'];
-        $canceledByStudent = $request->all()['canceledByStudent'];
-        $canceledByTeacher = $request->all()['canceledByTeacher'];
-        $absenceReason = $request->all()['absenceReason'];
+        $topic = $request->input('topic');
+        $notes = $request->input('notes');
+        $lessonId = $request->input('lessonId');
+        $lessonDate = $request->input('lessonDate');
+        $canceledByStudent = $request->input('canceledByStudent');
+        $canceledByTeacher = $request->input('canceledByTeacher');
+        $absenceReason = $request->input('absenceReason');
+        $grades = $request->input('grades');
 
         $errors = [];
         $errors += $this->scheduleRepository->checkIsNull($request->only(['topic', 'notes']));
@@ -101,7 +102,7 @@ class LessonController extends Controller
                 'errors' => $errors,
             ], 422);
         } else {
-            $lessonId = $this->lessonRepository->updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason);
+            $lessonId = $this->lessonRepository->updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades);
 
             return response()->json([
                 'status' => 'ok',
