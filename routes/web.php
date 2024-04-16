@@ -30,7 +30,7 @@ Route::get('/', function () {
 Route::resource('/test', \App\Http\Controllers\TestController::class)->middleware(['auth', 'verified']);
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/notifications/invitations', [NotificationsController::class, 'invitations'])->name('notifications.invitations');
+    Route::get('/notifications/invitations', [NotificationsController::class, 'invitations'])->name('notifications.invitations')->middleware(['checkStudent']);
     Route::get('/notifications/homeworks', [NotificationsController::class, 'homeworks'])->name('notifications.homeworks');
     Route::put('/notifications/invitations', [NotificationsController::class, 'acceptInvitation'])->name('notification.accept');
 });
