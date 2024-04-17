@@ -4,7 +4,7 @@
             <p class="text-base" :class="{'opacity-50': inactive}">{{ label }}</p>
         </label>
 
-        <textarea class="border  px-3 py-2.5 rounded-md text-base w-full bg-inputBox-background"
+        <textarea class="border border-textfield-border px-3 py-2.5 rounded-md text-base w-full bg-inputBox-background"
                 :class="[isResizable ? 'resize' : 'resize-none', textAreaHeight, errorMessage!==undefined && errorMessage!=='' ? 'error border-general-error focus:outline-none' : 'border-inputBox-border ', minHeight, inactive &&  'opacity-50']"
                 type="text"
                 :rows="rows"
