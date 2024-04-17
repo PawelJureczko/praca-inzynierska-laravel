@@ -49,25 +49,37 @@ class ScheduleSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => null,
         ]);
-        DB::table('lessons')->insert([
-            'date'=> '2024-03-25',
-            'schedule_id'=>1,
-            'canceled_by_student'=>0,
-            'canceled_by_teacher'=>0,
-            'topic'=>'Przykładowy temat',
-            'notes'=>'Przykładowa notatka',
-            'absence_reason'=>null,
-            'created_at'=>Carbon::create(2024, 3, 25)
+        DB::table('teachers_students_pivot')->insert([
+            'teacher_id' => 1,
+            'student_id' => 11,
+            'created_at' => now(),
+            'accepted_at' => now(),
         ]);
-        DB::table('lessons')->insert([
-            'date'=> '2024-04-08',
-            'schedule_id'=>1,
-            'canceled_by_student'=>1,
-            'canceled_by_teacher'=>0,
-            'topic'=>'Przykładowy temat',
-            'notes'=>'Przykładowa notatka',
-            'absence_reason'=>'Choroba ucznia',
-            'created_at'=>Carbon::create(2024, 4, 8)
+        DB::table('teachers_students_pivot')->insert([
+            'teacher_id' => 1,
+            'student_id' => 12,
+            'created_at' => now(),
+            'accepted_at' => now(),
         ]);
+//        DB::table('lessons')->insert([
+//            'date'=> '2024-03-25',
+//            'schedule_id'=>1,
+//            'canceled_by_student'=>0,
+//            'canceled_by_teacher'=>0,
+//            'topic'=>'Przykładowy temat',
+//            'notes'=>'Przykładowa notatka',
+//            'absence_reason'=>null,
+//            'created_at'=>Carbon::create(2024, 3, 25)
+//        ]);
+//        DB::table('lessons')->insert([
+//            'date'=> '2024-04-08',
+//            'schedule_id'=>1,
+//            'canceled_by_student'=>1,
+//            'canceled_by_teacher'=>0,
+//            'topic'=>'Przykładowy temat',
+//            'notes'=>'Przykładowa notatka',
+//            'absence_reason'=>'Choroba ucznia',
+//            'created_at'=>Carbon::create(2024, 4, 8)
+//        ]);
     }
 }

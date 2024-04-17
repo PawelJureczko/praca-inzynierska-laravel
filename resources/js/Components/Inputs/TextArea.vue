@@ -12,6 +12,7 @@
                 v-model="value"
                 spellcheck="false"
                 :resizable="true"
+                  :placeholder="placeholder"
                 @input="(event) => $emit('update:modelValue', event.target.value)"/>
         <p class="absolute text-[11px] leading-[14px] -bottom-[14px] text-general-error">{{ errorMessage }}</p>
     </div>
@@ -54,6 +55,10 @@ const props = defineProps({
     modelValue: {
         type: [String, Number],
         default: '',
+    },
+    placeholder: {
+        type: String,
+        default: ''
     },
     rows: {
         type: Number,

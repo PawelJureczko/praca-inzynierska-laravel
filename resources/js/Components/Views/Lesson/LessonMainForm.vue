@@ -1,5 +1,6 @@
 <script setup>
 import TextField from "@/Components/Inputs/TextField.vue";
+import TextArea from "@/Components/Inputs/TextArea.vue";
 
 const lesson = defineModel();
 
@@ -14,7 +15,7 @@ const lesson = defineModel();
 
         <div class="mb-4">
             <p class="text-[18px] leading-[24px] font-bold">Opis zajęć:</p>
-            <TextField class="mt-2" v-model="lesson.notes" placeholder="Wpisz notatkę do zajęć..." errorName="notes"/>
+            <TextArea class="mt-2" v-model="lesson.notes" placeholder="Wpisz notatkę do zajęć..." errorName="notes"/>
         </div>
     </div>
 </template>
