@@ -37,11 +37,13 @@ class LessonController extends Controller
         $lessonId = $request->route('id');
         $lessonData = $this->lessonRepository->getLessonData($lessonId);
         $grades = $this->lessonRepository->getGradesForLesson($lessonId);
+        $homeworks = $this->lessonRepository->getHomeworksForLesson($lessonId);
 
         return inertia('Lesson/Lesson', [
             'type' => 'edit',
             'lessonData' => $lessonData[0],
-            'grades'=>$grades
+            'grades'=>$grades,
+            'homeworks'=>$homeworks
         ]);
     }
 
@@ -64,6 +66,7 @@ class LessonController extends Controller
         $scheduleId = $request->input('schedule_id');
         $lessonDate = $request->input('lessonDate');
         $grades = $request->input('grades');
+        $homeworks = $request->input('homeworks');
 
         $errors = [];
         $errors += $this->scheduleRepository->checkIsNull($request->all());
@@ -73,7 +76,7 @@ class LessonController extends Controller
                 'errors' => $errors,
             ], 422);
         } else {
-            $lessonId = $this->lessonRepository->saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades);
+            $lessonId = $this->lessonRepository->saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades, $homeworks);
 
             return response()->json([
                 'status' => 'ok',
@@ -93,6 +96,7 @@ class LessonController extends Controller
         $canceledByTeacher = $request->input('canceledByTeacher');
         $absenceReason = $request->input('absenceReason');
         $grades = $request->input('grades');
+        $homeworks = $request->input('homeworks');
 
         $errors = [];
         $errors += $this->scheduleRepository->checkIsNull($request->only(['topic', 'notes']));
@@ -102,7 +106,7 @@ class LessonController extends Controller
                 'errors' => $errors,
             ], 422);
         } else {
-            $lessonId = $this->lessonRepository->updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades);
+            $lessonId = $this->lessonRepository->updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades, $homeworks);
 
             return response()->json([
                 'status' => 'ok',

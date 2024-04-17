@@ -83,7 +83,8 @@ function save() {
             notes: lesson.value.notes,
             schedule_id: props.scheduleData.id,
             lessonDate: props.lessonDate,
-            grades: lesson.value.grades
+            grades: lesson.value.grades,
+            homeworks: lesson.value.homeworks
         })
             .then(response => {
                 if (response.data.status === 'ok') {
@@ -120,6 +121,7 @@ function update() {
             canceledByTeacher: lesson.value.canceled_by_teacher,
             absenceReason: (lesson.value.canceled_by_student || lesson.value.canceled_by_teacher) ? props.lessonData.absence_reason : null,
             grades: lesson.value.grades,
+            homeworks: lesson.value.homeworks
         })
             .then(response => {
                 if (response.data.status === 'ok') {

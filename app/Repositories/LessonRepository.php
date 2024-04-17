@@ -55,6 +55,11 @@ class LessonRepository
         return DB::select('SELECT * FROM grades WHERE lesson_id = ? AND deleted_at IS NULL', [$id]);
     }
 
+    public function getHomeworksForLesson($id): array
+    {
+        return DB::select('SELECT * FROM homeworks WHERE lesson_id = ? AND deleted_at IS NULL', [$id]);
+    }
+
     //sprawdzenie, czy dla danego schedule nie występuje już jakaś instancja lekcji dla wybranej daty
     private function checkIsScheduleLesson($scheduleId, $date): bool
     {
@@ -98,7 +103,7 @@ class LessonRepository
         ]);
     }
 
-    public function saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades):int
+    public function saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades, $homeworks):int
     {
         $newLessonId = DB::table('lessons')->insertGetId([
             'date' => $lessonDate,
@@ -123,13 +128,30 @@ class LessonRepository
             ]);
         }
 
+        foreach ($homeworks as $homework) {
+            $desc = $homework['desc'];
+
+            DB::table('homeworks')->insert([
+                'lesson_id' => $newLessonId,
+                'desc' => $desc,
+                'date' => now(), //@TODO dodac date z datepickera
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
         return $newLessonId;
     }
 
-    public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades): int
+    public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades, $homeworks): int
     {
         //ustawia deleted_at dla wszystkich ocen dla tej lekcji
         DB::table('grades')
+            ->where('lesson_id', $lessonId)
+            ->update(['deleted_at' => now()]);
+
+        //ustawia deleted_at dla wszystkich zadan domowych dla tej lekcji
+        DB::table('homeworks')
             ->where('lesson_id', $lessonId)
             ->update(['deleted_at' => now()]);
 
@@ -142,6 +164,19 @@ class LessonRepository
                 'lesson_id' => $lessonId,
                 'grade' => $grade,
                 'desc' => $desc,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        //ddaje nowe zadania domowe nawet, jesli nie roznia sie od poprzednich
+        foreach ($homeworks as $homework) {
+            $desc = $homework['desc'];
+
+            DB::table('homeworks')->insert([
+                'lesson_id' => $lessonId,
+                'desc' => $desc,
+                'date' => now(), //@TODO dodac date z datepickera
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

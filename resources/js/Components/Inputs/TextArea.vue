@@ -19,7 +19,8 @@
 </template>
 
 <script setup>
-import {ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
+import {useMainStore} from "@/Store/mainStore.js";
 
 const emits = defineEmits(['update:modelValue'])
 
@@ -32,7 +33,7 @@ const props = defineProps({
         type: String,
         default: '',
     },
-    errorMessage: {
+    errorName: {
         type: String,
         default: '',
     },
@@ -72,7 +73,16 @@ const props = defineProps({
 
 let value = ref(props.modelValue);
 let uuid = ref(props.id ? props.id : getUuid())
+const store = useMainStore();
 
+const errorMessage = computed(() => {
+    let preparedError = ''
+    if (store.getErrors[props.errorName]) {
+        preparedError = typeof store.getErrors[props.errorName] === 'string' ? store.getErrors[props.errorName] : store.getErrors[props.errorName][0];
+
+    }
+    return store.getErrors[props.errorName] && store.getErrors[props.errorName].length ? preparedError : ''
+})
 
 function getUuid() {
     const randomNumber = Math.random();

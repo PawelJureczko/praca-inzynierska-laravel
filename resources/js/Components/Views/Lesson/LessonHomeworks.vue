@@ -4,6 +4,8 @@ import {ref} from "vue";
 import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
 import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
 import HomeworkModal from "@/Components/Modals/HomeworkModal.vue";
+import {getUuid} from "@/Helpers/helpers.js";
+import GradesModal from "@/Components/Modals/GradesModal.vue";
 
 const isHomeworkModal = ref(false);
 const isRemoveModal = ref(false);
@@ -11,13 +13,15 @@ const isRemoveModal = ref(false);
 function addHomework(val) {
     if (chosenElem.value.desc !== '') {
         if (chosenElem.value.id) {
-            homeworks.value.find(item => item.id === chosenElem.value.id).grade = val.grade;
             homeworks.value.find(item => item.id === chosenElem.value.id).desc = val.desc;
         } else {
             homeworks.value[chosenElem.value.tempId] = val
         }
     } else {
-        homeworks.value.push(val);
+        homeworks.value.push({
+            ...val,
+            tempId: getUuid()
+        });
     }
     chosenElem.value = {
         desc: ''
@@ -26,32 +30,21 @@ function addHomework(val) {
 }
 
 function handleEditButtonClicked(item, index) {
-    if (item.id) {
-        chosenElem.value = item;
-    } else {
-        chosenElem.value = {
-            ...item,
-            tempId: index
-        };
-    }
+    chosenElem.value = item;
     isHomeworkModal.value = true;
 }
 
 function handleRemoveButtonClicked(item, index) {
-    if (item.id) {
-        chosenElem.value = item;
-    } else {
-        chosenElem.value = {
-            ...item,
-            tempId: index
-        };
-    }
+    chosenElem.value = item;
     isRemoveModal.value = true;
 }
 
 function handleRemoveElemConfirmation() {
-    homeworks.value = homeworks.value.filter(item => item.id !== chosenElem.value.id)
-    chosenElem.value = {
+    if (chosenElem.value.tempId) {
+        homeworks.value = homeworks.value.filter(item => item.tempId !== chosenElem.value.tempId)
+    } else {
+        homeworks.value = homeworks.value.filter(item => item.id !== chosenElem.value.id)
+    }    chosenElem.value = {
         desc: ''
     }
 }
@@ -95,7 +88,7 @@ const chosenElem = ref({
                 </div>
             </div>
         </div>
-        <HomeworkModal v-if="isHomeworkModal" @close="handleModalClose" @save="addHomework" />
+        <HomeworkModal v-if="isHomeworkModal" @close="handleModalClose" @save="addHomework" :desc="chosenElem.desc"/>
         <ModalConfirmation desc="Czy na pewno chcesz usunąć zadanie domowe?" v-if="isRemoveModal" @close="handleModalClose"
                            @confirm="handleRemoveElemConfirmation"/>
 
