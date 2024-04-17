@@ -119,3 +119,9 @@ export function singleTileHeight(timeStart, timeEnd) {
     const endMinutes = endParts[0] * 60 + endParts[1];
     return (((endMinutes - startMinutes) / 60) * 96);
 }
+
+export function getUuid() {
+    const randomNumber = Math.random();
+    const hexString = (randomNumber).toString(16).slice(2, 17);
+    return hexString
+}

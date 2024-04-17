@@ -4,6 +4,7 @@ import {ref} from "vue";
 import GradesModal from "@/Components/Modals/GradesModal.vue";
 import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
 import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
+import {getUuid} from "@/Helpers/helpers.js";
 
 const isGradesModal = ref(false);
 const isRemoveModal = ref(false);
@@ -17,8 +18,10 @@ function addGrade(val) {
             grades.value[chosenElem.value.tempId] = val
         }
     } else {
-        console.log('nowy')
-        grades.value.push(val);
+        grades.value.push({
+            ...val,
+            tempId: getUuid()
+        });
     }
     chosenElem.value = {
         grade: '',
@@ -28,35 +31,26 @@ function addGrade(val) {
 }
 
 function handleEditButtonClicked(item, index) {
-    if (item.id) {
-        chosenElem.value = item;
-    } else {
-        chosenElem.value = {
-            ...item,
-            tempId: index
-        };
-    }
+    chosenElem.value = item;
     isGradesModal.value = true;
 }
 
 function handleRemoveButtonClicked(item, index) {
-    if (item.id) {
-        chosenElem.value = item;
-    } else {
-        chosenElem.value = {
-            ...item,
-            tempId: index
-        };
-    }
+    chosenElem.value = item;
     isRemoveModal.value = true;
 }
 
 function handleRemoveElemConfirmation() {
-    grades.value = grades.value.filter(item => item.id !== chosenElem.value.id)
+    if (chosenElem.value.tempId) {
+        grades.value = grades.value.filter(item => item.tempId !== chosenElem.value.tempId)
+    } else {
+        grades.value = grades.value.filter(item => item.id !== chosenElem.value.id)
+    }
     chosenElem.value = {
         grade: '',
         desc: ''
     }
+    isRemoveModal.value = false;
 }
 
 function handleModalClose() {

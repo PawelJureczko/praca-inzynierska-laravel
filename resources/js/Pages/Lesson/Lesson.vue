@@ -11,6 +11,7 @@ import LessonButtons from "@/Components/Views/Lesson/LessonButtons.vue";
 import LessonDataBox from "@/Components/Views/Lesson/LessonDataBox.vue";
 import LessonAbsenceBox from "@/Components/Views/Lesson/LessonAbsenceBox.vue";
 import LessonGrades from "@/Components/Views/Lesson/LessonGrades.vue";
+import LessonHomeworks from "@/Components/Views/Lesson/LessonHomeworks.vue";
 
 const props = defineProps({
     auth: {
@@ -20,6 +21,12 @@ const props = defineProps({
         }
     },
     grades: {
+        type: Array,
+        default() {
+            return []
+        }
+    },
+    homeworks: {
         type: Array,
         default() {
             return []
@@ -54,6 +61,7 @@ const lesson = ref({
     canceled_by_teacher: props.lessonData ? props.lessonData.canceled_by_teacher === 1 : false,
     canceled_by_student: props.lessonData ? props.lessonData.canceled_by_student === 1 : false,
     grades: props.grades,
+    homeworks: props.homeworks,
 })
 
 
@@ -154,6 +162,8 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
             <LessonMainForm v-model="lesson" />
 
             <LessonGrades v-model="lesson.grades"/>
+
+            <LessonHomeworks v-model="lesson.homeworks" />
 
             <LessonButtons :type="type" :lesson="lesson" @save="save" @update="update"/>
 
