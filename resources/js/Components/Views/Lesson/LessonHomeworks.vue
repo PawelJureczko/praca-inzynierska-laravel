@@ -39,6 +39,14 @@ function handleRemoveButtonClicked(item, index) {
     isRemoveModal.value = true;
 }
 
+function handleModalClose() {
+    isRemoveModal.value = false;
+    isHomeworkModal.value = false;
+    chosenElem.value = {
+        desc: ''
+    }
+}
+
 function handleRemoveElemConfirmation() {
     if (chosenElem.value.tempId) {
         homeworks.value = homeworks.value.filter(item => item.tempId !== chosenElem.value.tempId)
@@ -47,14 +55,8 @@ function handleRemoveElemConfirmation() {
     }    chosenElem.value = {
         desc: ''
     }
-}
 
-function handleModalClose() {
-    isRemoveModal.value = false;
-    isHomeworkModal.value = false;
-    chosenElem.value = {
-        desc: ''
-    }
+    handleModalClose();
 }
 
 const homeworks = defineModel();
