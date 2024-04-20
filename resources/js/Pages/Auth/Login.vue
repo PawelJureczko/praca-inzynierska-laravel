@@ -6,7 +6,7 @@ import Btn from "@/Components/Buttons/Btn.vue";
 import Checkbox from "@/Components/Inputs/Checkbox.vue";
 import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
 import TitleComponent from "@/Components/Views/TitleComponent.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import {useMainStore} from "@/Store/mainStore.js";
 
 defineProps({
@@ -52,6 +52,10 @@ function submit() {
             isBtnLoader.value=false;
         })}
 }
+
+onMounted(() => {
+    store.clearErrors();
+})
 </script>
 
 <template>

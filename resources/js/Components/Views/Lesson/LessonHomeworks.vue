@@ -5,7 +5,6 @@ import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
 import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
 import HomeworkModal from "@/Components/Modals/HomeworkModal.vue";
 import {getUuid} from "@/Helpers/helpers.js";
-import GradesModal from "@/Components/Modals/GradesModal.vue";
 
 const isHomeworkModal = ref(false);
 const isRemoveModal = ref(false);
@@ -81,7 +80,7 @@ const chosenElem = ref({
             <Btn @click="isHomeworkModal = true" class="w-max">Dodaj zadanie</Btn>
         </div>
 
-        <div class="mt-4 border border-main rounded-lg p-4">
+        <div class="mt-4 border border-textfield-border rounded-lg p-4">
             <p v-if="homeworks.length===0">
                 Brak zadań domowych dla tej lekcji.
             </p>

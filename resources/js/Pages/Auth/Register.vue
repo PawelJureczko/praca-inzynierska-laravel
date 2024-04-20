@@ -9,17 +9,17 @@ import Layout from "@/Layouts/Layout.vue";
 import TextField from "@/Components/Inputs/TextField.vue";
 import TitleComponent from "@/Components/Views/TitleComponent.vue";
 import Radiobox from "@/Components/Inputs/Radiobox.vue";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import {useMainStore} from "@/Store/mainStore.js";
 
 const form = ref({
-    first_name: 'asd',
-    last_name: 'asd',
-    email: 'palobo@o2.pl',
-    phone_number: '123123123',
-    password: 'password',
-    password_confirmation: 'password',
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone_number: '',
+    password: '',
+    password_confirmation: '',
     role: 'admin',
 });
 
@@ -58,6 +58,10 @@ function submit() {
             isBtnLoader.value=false;
         })}
 }
+
+onMounted(() => {
+    store.clearErrors();
+})
 
 </script>
 

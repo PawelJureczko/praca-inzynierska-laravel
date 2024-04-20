@@ -15,7 +15,8 @@ function addGrade(val) {
             grades.value.find(item => item.id === chosenElem.value.id).grade = val.grade;
             grades.value.find(item => item.id === chosenElem.value.id).desc = val.desc;
         } else {
-            grades.value[chosenElem.value.tempId] = val
+            grades.value.find(item => item.tempId === chosenElem.value.tempId).grade = val.grade;
+            grades.value.find(item => item.tempId === chosenElem.value.tempId).desc = val.desc;
         }
     } else {
         grades.value.push({
@@ -76,7 +77,7 @@ const chosenElem = ref({
             <Btn @click="isGradesModal = true" class="w-max">Dodaj ocenę</Btn>
         </div>
 
-        <div class="mt-4 border border-main rounded-lg p-4">
+        <div class="mt-4 border border-textfield-border rounded-lg p-4">
             <p v-if="grades.length===0">
                 Brak ocen dla tej lekcji.
             </p>

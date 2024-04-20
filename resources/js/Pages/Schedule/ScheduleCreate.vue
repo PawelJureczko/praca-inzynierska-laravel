@@ -161,6 +161,9 @@ function save() {
                 console.log(error.response.data.errors)
                 if (error.response.status === 422) {
                     store.setErrors(error.response.data.errors);
+                    if (error.response.data.errors.general) {
+                        store.showSnackbar(error.response.data.errors.general, 'error', 10000);
+                    }
                     scrollToError();
                 } else {
                     console.log(error.data)
