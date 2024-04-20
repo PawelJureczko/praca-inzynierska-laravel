@@ -21,6 +21,10 @@ const props = defineProps({
     scheduleId: {
         type: Number,
         default: null
+    },
+    userType: {
+        type: String,
+        default: ''
     }
 })
 
@@ -42,11 +46,12 @@ function save() {
            date: form.value.date.split('.').reverse().join('-'),
             desc:form.value.desc,
             scheduleId: props.scheduleId,
-            recipientId: props.recipient.id
+            recipientId: props.recipient.id,
+            userType: props.userType
         })
             .then(response => {
                 if (response.data.status === 'ok') {
-                    router.visit(route('schedule.index'));
+                    window.location.reload();
                 }
             })
             .catch(error => {

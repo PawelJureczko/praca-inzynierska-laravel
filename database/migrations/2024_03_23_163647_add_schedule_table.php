@@ -20,6 +20,8 @@ return new class extends Migration
             $table->time('classes_time_end');
             $table->unsignedBigInteger('teacher_id');
             $table->unsignedBigInteger('student_id');
+            $table->string('resigned_by')->nullable();
+            $table->string('resignation_reason')->nullable();
             $table->timestamps();
 
             // Definicja kluczy obcych

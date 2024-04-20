@@ -65,9 +65,10 @@ class ScheduleController extends Controller
         $senderId = $request->user()->id;
         $recipientId = $request->input('recipientId');
         $scheduleId = $request->input('scheduleId');
+        $userType = $request->input('userType');
         $date = $request->input('date');
         $desc = $request->input('desc');
-        $this->scheduleRepository->resignFromClasses($scheduleId, $date, $desc, $senderId, $recipientId);
+        $this->scheduleRepository->resignFromClasses($scheduleId, $date, $desc, $senderId, $recipientId, $userType);
         return response()->json([
             'status' => 'ok'
         ]);

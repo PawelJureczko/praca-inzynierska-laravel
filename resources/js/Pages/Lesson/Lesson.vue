@@ -173,8 +173,10 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
 
             <LessonButtons :userType="userType" :type="type" :lesson="lesson" @save="save" @update="update"/>
 
-            <LessonResign :scheduleId="currentData.schedule_id ? currentData.schedule_id : scheduleData.id"
-                          :recipient="userType === 'teacher' ? ({name: (currentData.student_first_name + ' ' + currentData.student_last_name), id: currentData.student_id}) : ({name: (currentData.teacher_first_name + ' ' + currentData.teacher_last_name), id: currentData.teacher_id})"/>
+            <LessonResign :userType="userType"
+                          :scheduleId="currentData.schedule_id ? currentData.schedule_id : scheduleData.id"
+                          :recipient="userType === 'teacher' ? ({name: (currentData.student_first_name + ' ' + currentData.student_last_name), id: currentData.student_id}) : ({name: (currentData.teacher_first_name + ' ' + currentData.teacher_last_name), id: currentData.teacher_id})"
+                          v-if="currentData.resigned_by===null"/>
 
 
         </div>

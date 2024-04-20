@@ -15,6 +15,10 @@ const props = defineProps({
     scheduleId: {
         type: Number,
         default: null
+    },
+    userType: {
+        type: String,
+        default: ''
     }
 })
 
@@ -23,7 +27,7 @@ const props = defineProps({
 <template>
     <div class="max-w-[450px] mt-12 mx-auto">
         <Btn btnType="danger" @click="isResignationModal=true">Zrezygnuj z zajęć</Btn>
-        <ResignationModal v-if="isResignationModal" @close="isResignationModal=false" :recipient="recipient" :scheduleId="scheduleId"/>
+        <ResignationModal v-if="isResignationModal" @close="isResignationModal=false" :recipient="recipient" :scheduleId="scheduleId" :userType="userType"/>
 
     </div>
 </template>

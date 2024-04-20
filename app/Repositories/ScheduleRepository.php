@@ -194,10 +194,10 @@ class ScheduleRepository
         return DB::select('SELECT * FROM schedule WHERE id = ?', [$scheduleId])[0];
     }
 
-    public function resignFromClasses($scheduleId, $date, $message, $senderId, $recipientId):void {
+    public function resignFromClasses($scheduleId, $date, $message, $senderId, $recipientId, $userType):void {
         DB::table('schedule')
             ->where('id', $scheduleId)
-            ->update(['date_end' => $date]);
+            ->update(['date_end' => $date, 'resigned_by' => $userType, 'resignation_reason' => $message]);
 
         $preparedMessage = 'Użytkownik zrezygnował z zajęć z dniem ' . implode('.', array_reverse(explode('-', $date))) . ($message !== '' ? ' i zostawił następującą wiadomość: ' . $message : '');
 
