@@ -134,7 +134,7 @@ class LessonRepository
             DB::table('homeworks')->insert([
                 'lesson_id' => $newLessonId,
                 'desc' => $desc,
-                'date' => now(), //@TODO dodac date z datepickera
+                'date' => $homework['date'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -176,7 +176,8 @@ class LessonRepository
             DB::table('homeworks')->insert([
                 'lesson_id' => $lessonId,
                 'desc' => $desc,
-                'date' => now(), //@TODO dodac date z datepickera
+                'completed_at' => isset($homework->completed_at) ? $homework->completed_at : null,
+                'date' => $homework['date'],
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -194,5 +195,11 @@ class LessonRepository
                 // Inne pola do zaktualizowania
                 'updated_at' => now(), // Przykładowo, możesz zaktualizować pole updated_at
             ]);
+    }
+
+    public function setHomeworkAsCompleted($homeworkId):void {
+        DB::table('homeworks')
+            ->where('id', $homeworkId)
+            ->update(['completed_at' => now()]);
     }
 }

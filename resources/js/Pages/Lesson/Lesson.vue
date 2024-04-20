@@ -165,7 +165,7 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
 
             <LessonGrades :userType="userType" v-model="lesson.grades"/>
 
-            <LessonHomeworks :userType="userType" v-model="lesson.homeworks" />
+            <LessonHomeworks :userType="userType" v-model="lesson.homeworks" :lessonId="lessonData ? lessonData.id : null"/>
 
             <LessonButtons :userType="userType" :type="type" :lesson="lesson" @save="save" @update="update"/>
 

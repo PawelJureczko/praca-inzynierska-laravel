@@ -114,4 +114,16 @@ class LessonController extends Controller
             ], 200);
         }
     }
+
+    public function markHomeworkAsDone(Request $request): JsonResponse{
+        $homeworkId = $request->input('homeworkId');
+        $lessonId = $request->input('lessonId');
+//        dd($lessonId);
+        $this->lessonRepository->setHomeworkAsCompleted($homeworkId);
+        $homeworks = $this->lessonRepository->getHomeworksForLesson($lessonId);
+        return response()->json([
+            'status' => 'ok',
+            'homeworks' => $homeworks
+        ], 200);
+    }
 }

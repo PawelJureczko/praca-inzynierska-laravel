@@ -69,7 +69,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/lesson/edit/{id}', [\App\Http\Controllers\LessonController::class, 'editLesson'])->name('lesson.edit')->middleware(['lessonParticipant']);;
     Route::put('/lesson/edit/update', [\App\Http\Controllers\LessonController::class, 'updateLesson'])->name('lesson.update');
     Route::post('lessons/edit/save/addAbsence', [\App\Http\Controllers\LessonController::class, 'addAbsence'])->name('absence.create');
-
+    Route::put('lessons/edit/save/homeworkDone', [\App\Http\Controllers\LessonController::class, 'markHomeworkAsDone'])->name('homework.completed');
 });
 
 Route::resource('/reports', \App\Http\Controllers\ReportsController::class)->middleware(['auth', 'verified']);

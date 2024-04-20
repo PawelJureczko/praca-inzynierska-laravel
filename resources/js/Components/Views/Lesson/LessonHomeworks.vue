@@ -5,11 +5,18 @@ import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
 import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
 import HomeworkModal from "@/Components/Modals/HomeworkModal.vue";
 import {getUuid} from "@/Helpers/helpers.js";
+import {useMainStore} from "@/Store/mainStore.js";
+import GreenTickIcon from "@/Components/Icons/GreenTickIcon.vue";
 
 const isHomeworkModal = ref(false);
 const isRemoveModal = ref(false);
+const store = useMainStore();
 
 const props = defineProps({
+    lessonId: {
+        type: [Number, String],
+        default: null
+    },
     userType: {
         type: String,
         default: ''
@@ -17,7 +24,6 @@ const props = defineProps({
 })
 
 function addHomework(val) {
-    console.log(val)
     if (chosenElem.value.desc !== '') {
         if (chosenElem.value.id) {
             console.log('tu1')
@@ -74,7 +80,30 @@ function handleRemoveElemConfirmation() {
 }
 
 function markAsDone(homework, index) {
-    console.log(homework.id);
+    if (store.getIsLock === false) {
+        store.setIsLock(true);
+        store.clearErrors();
+        axios.put(route('homework.completed'), {
+           homeworkId: homework.id,
+            lessonId: props.lessonId
+        })
+            .then(response => {
+                if (response.data.status === 'ok') {
+                    homeworks.value = response.data.homeworks
+                }
+            })
+            .catch(error => {
+                // Obsługa błędu
+                console.log(error.response.data.errors)
+                if (error.response.status === 422) {
+                    store.setErrors(error.response.data.errors);
+                } else {
+                    console.log(error)
+                }
+            }).finally(() => {
+            store.setIsLock(false);
+        })
+    }
 }
 
 const homeworks = defineModel();
@@ -111,7 +140,11 @@ const chosenElem = ref({
                             <BorderBottomBtn @click="handleRemoveButtonClicked(homework, index)">Usuń</BorderBottomBtn>
                         </template>
                         <template v-else>
-                            <BorderBottomBtn @click="markAsDone(homework, index)">Oznacz jako wykonane</BorderBottomBtn>
+                            <BorderBottomBtn @click="markAsDone(homework, index)" v-if="homework.completed_at===null">Oznacz jako wykonane</BorderBottomBtn>
+                            <div class="w-full flex justify-end items-center gap-4" v-else>
+                                <GreenTickIcon class="w-5 h-5 mr-0"  />
+                                <p class="text-[12px] leading-[16px] max-w-[80px]">Zrealizowane: {{homework.completed_at.split('-').reverse().join('.')}}</p>
+                            </div>
                         </template>
                     </div>
                 </div>
