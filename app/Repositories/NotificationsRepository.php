@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use Illuminate\Support\Facades\DB;
+use mysql_xdevapi\Collection;
 
 class NotificationsRepository {
     public function getInvitations($studentId) {
@@ -43,9 +44,23 @@ class NotificationsRepository {
         return $invitationsMapped;
     }
 
-    public function acceptInvitation($invitationId) {
+    public function acceptInvitation($invitationId):void {
         DB::update('UPDATE teachers_students_pivot
                 SET accepted_at = NOW()
                 WHERE id = ?', [$invitationId]);
+    }
+
+    public function getHomeworks($studentId) {
+        $homeworks = DB::table('homeworks')
+            ->join('lessons', 'homeworks.lesson_id', '=', 'lessons.id')
+            ->join('schedule', 'lessons.schedule_id', '=', 'schedule.id')
+            ->join('users as teachers', 'schedule.teacher_id', '=', 'teachers.id')
+            ->where('schedule.student_id', $studentId)
+            ->whereNull('homeworks.completed_at')
+            ->select('homeworks.*', 'teachers.first_name as teacher_first_name', 'teachers.last_name as teacher_last_name')
+            ->distinct()
+            ->get();
+
+        return $homeworks;
     }
 }

@@ -34,9 +34,11 @@ class NotificationsController extends Controller
     {
         $userId = $request->user()->id;
         $invitationsMapped = $this->notificationsRepository-> getInvitations($userId);;
+        $homeworks = $this->notificationsRepository-> getHomeworks($userId);;
 
         return inertia('Notifications/Notifications', [
             'invitations' => $invitationsMapped,
+            'homeworks' => $homeworks,
             'type' => 'homeworks'
         ]);
     }
