@@ -12,6 +12,7 @@ import LessonDataBox from "@/Components/Views/Lesson/LessonDataBox.vue";
 import LessonAbsenceBox from "@/Components/Views/Lesson/LessonAbsenceBox.vue";
 import LessonGrades from "@/Components/Views/Lesson/LessonGrades.vue";
 import LessonHomeworks from "@/Components/Views/Lesson/LessonHomeworks.vue";
+import LessonResign from "@/Components/Views/Lesson/LessonResign.vue";
 
 const props = defineProps({
     auth: {
@@ -157,22 +158,29 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
                 </div>
             </div>
 
-            <LessonAbsenceBox v-if="lesson.canceled_by_teacher || lesson.canceled_by_student" :currentData="currentData" @undoAbsence="undoAbsence"/>
+            <LessonAbsenceBox v-if="lesson.canceled_by_teacher || lesson.canceled_by_student" :currentData="currentData"
+                              @undoAbsence="undoAbsence"/>
 
-            <LessonDataBox :currentData="currentData" :lessonData="lessonData" :lessonDate="lessonDate" :scheduleData="scheduleData"/>
+            <LessonDataBox :currentData="currentData" :lessonData="lessonData" :lessonDate="lessonDate"
+                           :scheduleData="scheduleData"/>
 
-            <LessonMainForm :userType="userType" v-model="lesson" />
+            <LessonMainForm :userType="userType" v-model="lesson"/>
 
             <LessonGrades :userType="userType" v-model="lesson.grades"/>
 
-            <LessonHomeworks :userType="userType" v-model="lesson.homeworks" :lessonId="lessonData ? lessonData.id : null"/>
+            <LessonHomeworks :userType="userType" v-model="lesson.homeworks"
+                             :lessonId="lessonData ? lessonData.id : null"/>
 
             <LessonButtons :userType="userType" :type="type" :lesson="lesson" @save="save" @update="update"/>
+
+            <LessonResign :scheduleId="currentData.schedule_id ? currentData.schedule_id : scheduleData.id"
+                          :recipient="userType === 'teacher' ? ({name: (currentData.student_first_name + ' ' + currentData.student_last_name), id: currentData.student_id}) : ({name: (currentData.teacher_first_name + ' ' + currentData.teacher_last_name), id: currentData.teacher_id})"/>
 
 
         </div>
     </Layout>
-    <AbsenceModal :userType="userType" :date="lessonDate ? lessonDate : lessonData.date" :scheduleId="scheduleData ? scheduleData.id : lessonData.schedule_id" v-if="isAbsenceModal"
+    <AbsenceModal :userType="userType" :date="lessonDate ? lessonDate : lessonData.date"
+                  :scheduleId="scheduleData ? scheduleData.id : lessonData.schedule_id" v-if="isAbsenceModal"
                   @close="isAbsenceModal=false"/>
 </template>
 

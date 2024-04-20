@@ -193,4 +193,19 @@ class ScheduleRepository
     public function getScheduleData($scheduleId) {
         return DB::select('SELECT * FROM schedule WHERE id = ?', [$scheduleId])[0];
     }
+
+    public function resignFromClasses($scheduleId, $date, $message, $senderId, $recipientId):void {
+        DB::table('schedule')
+            ->where('id', $scheduleId)
+            ->update(['date_end' => $date]);
+
+        $preparedMessage = 'Użytkownik zrezygnował z zajęć z dniem ' . implode('.', array_reverse(explode('-', $date))) . ($message !== '' ? ' i zostawił następującą wiadomość: ' . $message : '');
+
+        DB::table('messages')->insert([
+            'sender_id' => $senderId,
+            'receiver_id' => $recipientId,
+            'content' => $preparedMessage,
+            'created_at' => now()
+        ]);
+    }
 }

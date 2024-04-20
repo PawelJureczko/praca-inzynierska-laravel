@@ -60,4 +60,16 @@ class ScheduleController extends Controller
             'schedule' => $schedule
         ]);
     }
+
+    public function resignFromClasses(Request $request):JsonResponse {
+        $senderId = $request->user()->id;
+        $recipientId = $request->input('recipientId');
+        $scheduleId = $request->input('scheduleId');
+        $date = $request->input('date');
+        $desc = $request->input('desc');
+        $this->scheduleRepository->resignFromClasses($scheduleId, $date, $desc, $senderId, $recipientId);
+        return response()->json([
+            'status' => 'ok'
+        ]);
+    }
 }

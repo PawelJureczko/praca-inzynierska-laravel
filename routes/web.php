@@ -61,6 +61,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/schedule/new', [\App\Http\Controllers\ScheduleController::class, 'create'])->name('schedule.create')->middleware(['checkAdmin']);
     Route::post('/schedule/save', [\App\Http\Controllers\ScheduleController::class, 'save'])->name('schedule.save')->middleware(['checkAdmin']);
     Route::get('/schedule/getData', [\App\Http\Controllers\ScheduleController::class, 'getScheduleForDateRange'])->name('schedule.getData');
+    Route::put('/schedule/resign', [\App\Http\Controllers\ScheduleController::class, 'resignFromClasses'])->name('schedule.resign');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
