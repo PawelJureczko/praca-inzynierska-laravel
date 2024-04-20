@@ -9,6 +9,13 @@ import {getUuid} from "@/Helpers/helpers.js";
 const isHomeworkModal = ref(false);
 const isRemoveModal = ref(false);
 
+const props = defineProps({
+    userType: {
+        type: String,
+        default: ''
+    }
+})
+
 function addHomework(val) {
     console.log(val)
     if (chosenElem.value.desc !== '') {
@@ -66,6 +73,10 @@ function handleRemoveElemConfirmation() {
     handleModalClose();
 }
 
+function markAsDone(homework, index) {
+    console.log(homework.id);
+}
+
 const homeworks = defineModel();
 const chosenElem = ref({
     desc: '',
@@ -77,7 +88,7 @@ const chosenElem = ref({
     <div class="mt-8">
         <div class="flex justify-between items-center">
             <h2 class="text-[24px] heading-[32px] font-bold">Zadania domowe:</h2>
-            <Btn @click="isHomeworkModal = true" class="w-max">Dodaj zadanie</Btn>
+            <Btn @click="isHomeworkModal = true" class="w-max" v-if="userType==='teacher'">Dodaj zadanie</Btn>
         </div>
 
         <div class="mt-4 border border-textfield-border rounded-lg p-4">
@@ -94,9 +105,14 @@ const chosenElem = ref({
                             <p>{{ homework.desc }}</p>
                         </div>
                     </div>
-                    <div class="flex gap-4 w-[120px]">
-                        <BorderBottomBtn @click="handleEditButtonClicked(homework, index)">Edytuj</BorderBottomBtn>
-                        <BorderBottomBtn @click="handleRemoveButtonClicked(homework, index)">Usuń</BorderBottomBtn>
+                    <div class="flex gap-4 w-[120px]" :class="userType==='teacher' ? 'w-[120px]' : 'w-[200px]'">
+                        <template  v-if="userType==='teacher'">
+                            <BorderBottomBtn @click="handleEditButtonClicked(homework, index)">Edytuj</BorderBottomBtn>
+                            <BorderBottomBtn @click="handleRemoveButtonClicked(homework, index)">Usuń</BorderBottomBtn>
+                        </template>
+                        <template v-else>
+                            <BorderBottomBtn @click="markAsDone(homework, index)">Oznacz jako wykonane</BorderBottomBtn>
+                        </template>
                     </div>
                 </div>
             </div>

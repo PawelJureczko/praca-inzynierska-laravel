@@ -161,13 +161,13 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
 
             <LessonDataBox :currentData="currentData" :lessonData="lessonData" :lessonDate="lessonDate" :scheduleData="scheduleData"/>
 
-            <LessonMainForm v-model="lesson" />
+            <LessonMainForm :userType="userType" v-model="lesson" />
 
-            <LessonGrades v-model="lesson.grades"/>
+            <LessonGrades :userType="userType" v-model="lesson.grades"/>
 
-            <LessonHomeworks v-model="lesson.homeworks" />
+            <LessonHomeworks :userType="userType" v-model="lesson.homeworks" />
 
-            <LessonButtons :type="type" :lesson="lesson" @save="save" @update="update"/>
+            <LessonButtons :userType="userType" :type="type" :lesson="lesson" @save="save" @update="update"/>
 
 
         </div>

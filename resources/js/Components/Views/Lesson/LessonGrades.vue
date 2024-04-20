@@ -6,6 +6,14 @@ import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
 import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
 import {getUuid} from "@/Helpers/helpers.js";
 
+
+const props = defineProps({
+    userType: {
+        type: String,
+        default: ''
+    }
+})
+
 const isGradesModal = ref(false);
 const isRemoveModal = ref(false);
 
@@ -74,7 +82,7 @@ const chosenElem = ref({
     <div class="mt-8">
         <div class="flex justify-between items-center">
             <h2 class="text-[24px] heading-[32px] font-bold">Oceny:</h2>
-            <Btn @click="isGradesModal = true" class="w-max">Dodaj ocenę</Btn>
+            <Btn @click="isGradesModal = true" class="w-max" v-if="userType==='teacher'">Dodaj ocenę</Btn>
         </div>
 
         <div class="mt-4 border border-textfield-border rounded-lg p-4">
@@ -91,7 +99,7 @@ const chosenElem = ref({
                             <p>{{ grade.desc }}</p>
                         </div>
                     </div>
-                    <div class="flex gap-4 w-[120px]">
+                    <div class="flex gap-4 w-[120px]" v-if="userType==='teacher'">
                         <BorderBottomBtn @click="handleEditButtonClicked(grade, index)">Edytuj</BorderBottomBtn>
                         <BorderBottomBtn @click="handleRemoveButtonClicked(grade, index)">Usuń</BorderBottomBtn>
                     </div>
