@@ -1,0 +1,40 @@
+/* roboto-regular - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url('@/../fonts/DMSans/DMSans-Regular.eot'); /* IE9 Compat Modes */
+    src: local(''),
+    url('@/../fonts/DMSans/DMSans-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('@/../fonts/DMSans/DMSans-Regular.woff2') format('woff2'), /* Super Modern Browsers */
+    url('@/../fonts/DMSans/DMSans-Regular.woff') format('woff'), /* Modern Browsers */
+    url('@/../fonts/DMSans/DMSans-Regular.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('@/../fonts/DMSans/DMSans-Regular.svg#DMSans') format('svg'); /* Legacy iOS */
+}
+
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 500;
+    src: url('@/../fonts/DMSans/DMSans-Medium.eot'); /* IE9 Compat Modes */
+    src: local(''),
+    url('@/../fonts/DMSans/DMSans-Medium.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('@/../fonts/DMSans/DMSans-Medium.woff2') format('woff2'), /* Super Modern Browsers */
+    url('@/../fonts/DMSans/DMSans-Medium.woff') format('woff'), /* Modern Browsers */
+    url('@/../fonts/DMSans/DMSans-Medium.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('@/../fonts/DMSans/DMSans-Medium.svg#DMSans') format('svg'); /* Legacy iOS */
+}
+
+/* roboto-700 - latin-ext_latin */
+@font-face {
+    font-family: 'DM Sans';
+    font-style: normal;
+    font-weight: 700;
+    src: url('@/../fonts/DMSans/DMSans-Bold.eot'); /* IE9 Compat Modes */
+    src: local(''),
+    url('@/../fonts/DMSans/DMSans-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('@/../fonts/DMSans/DMSans-Bold.woff2') format('woff2'), /* Super Modern Browsers */
+    url('@/../fonts/DMSans/DMSans-Bold.woff') format('woff'), /* Modern Browsers */
+    url('@/../fonts/DMSans/DMSans-Bold.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('@/../fonts/DMSans/DMSans-Bold.svg#DMSans') format('svg'); /* Legacy iOS */
+}

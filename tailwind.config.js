@@ -21,7 +21,7 @@ export default {
                 '5xl': '0 -4px 48px rgba(0, 0, 0, 0.08)',
             },
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ["DM Sans", 'sans-serif'],
             },
             colors: {
                 'actionBtn': {

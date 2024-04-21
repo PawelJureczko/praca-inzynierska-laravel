@@ -28,6 +28,6 @@ defineProps({
             class="max-w-xl"
         />
         <UpdatePasswordForm class="max-w-xl" />
-        <DeleteUserForm class="max-w-xl" />
+<!--        <DeleteUserForm class="max-w-xl" />-->
     </Layout>
 </template>
