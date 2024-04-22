@@ -27,11 +27,16 @@ const form = ref({
 })
 
 const isBtnLoader = ref(false);
+const isLoginBtnLoader = ref(false);
 
+function handleRegisterButtonClicked() {
+    router.visit(route('register'))
+    isBtnLoader.value = true;
+}
 function submit() {
     if (store.getIsLock === false) {
         store.setIsLock(true);
-        isBtnLoader.value = true;
+        isLoginBtnLoader.value = true;
         store.clearErrors();
         axios.post(route('login'), form.value)
             .then(response => {
@@ -49,7 +54,7 @@ function submit() {
                 }
             }).finally(() => {
             store.setIsLock(false);
-            isBtnLoader.value=false;
+            isLoginBtnLoader.value = false;
         })}
 }
 
@@ -93,13 +98,13 @@ onMounted(() => {
                 </div>
 
                 <div class="flex items-center justify-between mt-4">
-                    <Btn btnType="secondary" class="w-max" @click="$inertia.visit(route('register'))" :isLoader="isBtnLoader">
+                    <Btn btnType="secondary" class="w-max" @click="handleRegisterButtonClicked" :isLoader="isBtnLoader">
                         Zarejestruj się
                     </Btn>
                     <div class="flex items-center ">
                         <BorderBottomBtn v-if="canResetPassword" desc="Przypomnij hasło" @click="$inertia.visit(route('password.request'))"/>
 
-                        <Btn btnType="primary" class="ml-4 w-max" @click="submit" :isLoader="isBtnLoader">
+                        <Btn btnType="primary" class="ml-4 w-max" @click="submit" :isLoader="isLoginBtnLoader">
                             Zaloguj
                         </Btn>
                     </div>
