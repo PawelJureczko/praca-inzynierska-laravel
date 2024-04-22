@@ -1,6 +1,6 @@
 <template>
     <nav class="fixed xl:flex top-0 h-[64px] container bg-white flex justify-between items-center z-[99]">
-        <LogoIcon/>
+        <LogoIcon @click="$inertia.visit(route('schedule.index'))" class="cursor-pointer"/>
         <template v-if="isLogged">
             <ul class="fixed xl:static w-screen xl:w-max h-[calc(100vh_-_64px)] xl:h-[64px] bg-[#FEFEFE] flex flex-col xl:flex-row xl:gap-8 items-start xl:items-center left-0 z-[99] transition-[bottom] px-4 md:px-[calc((100vw_-_672px)/2)] lg:px-[calc((100vw_-_960px)/2)] xl:px-0 pt-8 xl:pt-0"
                 :class="isMobileOpen ? 'bottom-[0]' : '-bottom-[100vh]'"

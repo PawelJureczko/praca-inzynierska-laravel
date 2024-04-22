@@ -21,7 +21,7 @@
                         <a :href="'tel:'+student.phone_number" class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[4]}}: </span>{{ student.phone_number }}</a>
                     </div>
                     <div class="flex xl:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[5]" >
-                        <Btn class="min-w-max" btnType="primary" @click="handleButtonClicked(student.id)" v-if="type!=='invited'" :isLoader="isBtnLoader">{{pageType[type].btnDesc}}</Btn>
+                        <Btn class="min-w-max" btnType="primary" @click="handleButtonClicked(student.id)" v-if="type!=='invited'" :isLoader="isBtnLoader && student.id === chosenStudentId">{{pageType[type].btnDesc}}</Btn>
                         <p class="text-[12px] xl:text-base leading-[16px]" v-if="type==='invited'"><span class="font-bold lg:hidden">{{pageType[type].headers[5]}}: </span>{{ getStringFromDate(new Date(student.created_at)) }}</p>
                     </div>
                 </div>
@@ -68,6 +68,8 @@ const searchValue = ref('');
 const students = ref(props.users);
 
 const isBtnLoader = ref(false);
+
+const chosenStudentId = ref(null);
 
 const pageType = {
     'other': {
@@ -142,6 +144,7 @@ function handleButtonClicked(id) {
         }
     } else if (props.type === 'myGroup') {
         isBtnLoader.value=true;
+        chosenStudentId.value = id;
         router.visit(route('student.details', {id: id}))
     }
 }
