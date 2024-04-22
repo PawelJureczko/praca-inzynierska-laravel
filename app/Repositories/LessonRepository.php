@@ -2,10 +2,8 @@
 
 namespace App\Repositories;
 
-use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use JetBrains\PhpStorm\NoReturn;
 
 class LessonRepository
 {

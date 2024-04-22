@@ -74,7 +74,7 @@ function save() {
 
 <template>
     <ModalWrapper @close="$emit('close')">
-        <div class="w-screen max-w-[100%_-_32px] md:max-w-[420px]">
+        <div class="w-screen max-w-[calc(100%_-_32px)] mx-auto md:max-w-[420px]">
             <p>Wybierz termin rezygnacji z zajęć</p>
             <Datepicker v-model="form.date"/>
             <p class="mt-4">Napisz powód rezygnacji z zajęć (opcjonalnie):</p>

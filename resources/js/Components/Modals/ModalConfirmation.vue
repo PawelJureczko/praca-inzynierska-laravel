@@ -13,7 +13,7 @@ const props = defineProps({
 
 <template>
     <ModalWrapper @close="$emit('close')">
-        <div class="w-screen max-w-[100%_-_32px] md:max-w-[420px]">
+        <div class="w-screen max-w-[calc(100%_-_32px)] mx-auto md:max-w-[420px]">
             <p class="text-[18px] leading-[26px]">{{desc}}</p>
 
             <div class="flex items-center justify-between gap-4 mt-8">

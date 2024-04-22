@@ -66,7 +66,7 @@ function save() {
 
 <template>
     <ModalWrapper>
-        <div class="w-screen max-w-[100%_-_32px] md:max-w-[420px]">
+        <div class="w-screen max-w-[calc(100%_-_32px)] mx-auto md:max-w-[420px]">
 
             <p class="text-[18px] leading-[24px]">Zgłoś nieobecność w dniu:<br> <b>{{date}}</b></p>
             <div v-if="userType === 'teacher'">

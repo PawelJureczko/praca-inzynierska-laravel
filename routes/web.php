@@ -73,7 +73,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('lessons/edit/save/homeworkDone', [\App\Http\Controllers\LessonController::class, 'markHomeworkAsDone'])->name('homework.completed');
 });
 
-Route::resource('/reports', \App\Http\Controllers\ReportsController::class)->middleware(['auth', 'verified']);
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/reports', [\App\Http\Controllers\ReportsController::class, 'index'])->name('reports.index');
+    Route::get('/reports/getData', [\App\Http\Controllers\ReportsController::class, 'getDataFromDateRange'])->name('reports.details');
+});
 
 
 Route::middleware('auth')->group(function () {

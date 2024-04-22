@@ -35,7 +35,7 @@ watch(preparedDate, () => {
 
 <template>
     <ModalWrapper @close="$emit('close')">
-        <div class="w-screen max-w-[100%_-_32px] md:max-w-[420px]">
+        <div class="w-screen max-w-[calc(100%_-_32px)] mx-auto md:max-w-[420px]">
             <p>Termin ukończenia zadania domowego</p>
             <Datepicker v-model="preparedDate"/>
             <p class="mt-4">Treść zadania domowego:</p>

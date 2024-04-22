@@ -25,7 +25,7 @@ const form = ref({
 
 <template>
     <ModalWrapper @close="$emit('close')">
-        <div class="w-screen max-w-[100%_-_32px] md:max-w-[420px]">
+        <div class="w-screen max-w-[calc(100%_-_32px)] mx-auto md:max-w-[420px]">
             <Select label="Ocena:" placeholder="Wybierz ocenę..." :options="['1', '2-', '2', '2+', '3-', '3', '3+', '4-', '4', '4+', '5-', '5', '5+', '6']" v-model="form.grade" :keyAsValue="false"/>
 
             <p class="mt-4">Opis oceny:</p>
