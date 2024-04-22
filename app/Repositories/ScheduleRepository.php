@@ -78,7 +78,7 @@ class ScheduleRepository
         return $weekdays[$key];
     }
 
-    public function validateSchedule($request, $teacherId)
+    public function validateSchedule($request, $teacherId, $studentId)
     {
         $teacherId = $teacherId;
         $weekday = $request->input('class_weekday');
@@ -88,7 +88,7 @@ class ScheduleRepository
         $endTime = $request->input('class_time_end');
 
         // Sprawdzenie, czy istnieją rekordy o podanych teacher_id i weekday
-        $existingSchedules = DB::select("
+        $existingTeachersSchedules = DB::select("
         SELECT *
         FROM schedule
         WHERE teacher_id = :teacherId
@@ -98,8 +98,7 @@ class ScheduleRepository
             'weekday' => $weekday
         ]);
         $errors = [];
-//        dd($existingSchedules);
-        foreach ($existingSchedules as $schedule) {
+        foreach ($existingTeachersSchedules as $schedule) {
 //            // Sprawdzenie zakresu dat
             if (($startDate >= $schedule->date_begin && $startDate <= $schedule->date_end) || (($endDate >= $schedule->date_begin && $endDate <= $schedule->date_end))) {
                 // Sprawdzenie kolizji godzinowych
@@ -119,6 +118,42 @@ class ScheduleRepository
                 }
             }
         }
+
+
+        // Sprawdzenie tego samego dla studenta
+        $existingStudentsSchedules = DB::select("
+        SELECT *
+        FROM schedule
+        WHERE student_id = :studentId
+        AND classes_weekday = :weekday
+    ", [
+            'studentId' => $studentId,
+            'weekday' => $weekday
+        ]);
+        foreach ($existingStudentsSchedules as $schedule) {
+//            // Sprawdzenie zakresu dat
+            if (($startDate >= $schedule->date_begin && $startDate <= $schedule->date_end) || (($endDate >= $schedule->date_begin && $endDate <= $schedule->date_end))) {
+                // Sprawdzenie kolizji godzinowych
+                if (($startTime >= $schedule->classes_time_start && $startTime <= $schedule->classes_time_end) ||
+                    $endTime >= $schedule->classes_time_start && $endTime <= $schedule->classes_time_end
+                ) {
+                    $teacherId = $schedule->teacher_id;
+                    $userName = $this->getStudentName($teacherId);
+                    $firstName = $userName[0]->first_name;
+                    $lastName = $userName[0]->last_name;
+                    $weekday = $this->getWeekDayName($schedule->classes_weekday);
+                    $timeRange = substr($schedule->classes_time_start, 0, 5) . ' - ' . substr($schedule->classes_time_end, 0, 5);
+
+                    $errors['general'] = 'Nie można dodać zajęć w tym terminie. Kolidują one z zajęciami z ' . $firstName . ' ' . $lastName . ' odbywającymi się w ' . $weekday . ' ' . 'w godzinach ' . $timeRange . '.';
+//                    // Jeśli kolizja występuje, zwracamy komunikat walidacyjny
+                    return $errors;
+                }
+            }
+        }
+
+
+
+
         return $errors;
     }
 
