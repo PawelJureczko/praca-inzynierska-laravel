@@ -81,9 +81,12 @@ class StudentsController extends Controller
 
     public function showStudentDetails(Request $request):Response {
         $studentId = $request->route('id');
+        $teacherId = $request->user()->id;
         $studentData = $this->studentRepository->getStudentsData($studentId);
+        $studentLessons = $this->studentRepository->getStudentsLessons($studentId, $teacherId);
         return inertia('Students/StudentDetails', [
             'studentData' => $studentData,
+            'studentLessons' => $studentLessons
         ]);
     }
 }

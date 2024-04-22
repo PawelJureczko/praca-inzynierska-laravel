@@ -27,7 +27,7 @@ const props = defineProps({
             <Btn @click="$emit('save')" v-if="type==='new'">Zapisz</Btn>
             <Btn @click="$emit('update')" v-if="type==='edit' && (!lesson.canceled_by_teacher && !lesson.canceled_by_student)">Aktualizuj</Btn>
         </template>
-        <Btn btnType="secondary" @click="$inertia.visit(route('schedule.index'))">Wróć</Btn>
+        <Btn btnType="secondary" @click="$inertia.visit(route('schedule.index'))">Wróć do terminarza</Btn>
     </div>
 </template>
 

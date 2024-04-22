@@ -2,7 +2,7 @@
 namespace App\Repositories;
 
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Collection;
 class StudentRepository
 {
     // zapytanie o studentów którzy są przypisani do nauczyciela i którzy zaakceptowali zaproszenie
@@ -66,6 +66,16 @@ class StudentRepository
             ->select('first_name', 'last_name', 'created_at', 'email', 'phone_number', 'id')
             ->where('id', $studentsId)
             ->first();
+    }
+
+    public function getStudentsLessons($studentId, $teacherId): Collection
+    {
+        return DB::table('lessons')
+            ->join('schedule', 'lessons.schedule_id', '=', 'schedule.id')
+            ->where('schedule.student_id', $studentId)
+            ->where('schedule.teacher_id', $teacherId)
+            ->select('lessons.id', 'date', 'topic', 'schedule.classes_time_start', 'schedule.classes_time_start', 'schedule.classes_time_end', 'canceled_by_student', 'canceled_by_teacher')
+            ->get();
     }
 }
 
