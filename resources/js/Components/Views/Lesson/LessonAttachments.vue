@@ -4,6 +4,7 @@ import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
 import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
 import {onMounted, ref} from "vue";
 import Btn from "@/Components/Buttons/Btn.vue";
+import {useMainStore} from "@/Store/mainStore.js";
 
 const emits = defineEmits(['filesUploaded'])
 const props = defineProps({
@@ -37,6 +38,7 @@ const props = defineProps({
 
 const isAttachmentModal = ref(false);
 const isRemoveModal = ref(false);
+const store = useMainStore();
 
 const attachments = defineModel();
 const chosenElem = ref(null);
@@ -53,10 +55,101 @@ function handleRemoveElemConfirmation() {
     handleModalClose();
 }
 
-function handleDownloadButtonClicked() {
-    //@TODO
-    alert('download');
+// function handleDownloadButtonClicked(id) {
+//     console.log(id)
+//     if (store.getIsLock === false) {
+//         store.setIsLock(true);
+//         store.clearErrors();
+//         axios.get(route('file.download', {id: id}))
+//             .then(response => {
+//                 console.log(response)
+//
+//                 const url = window.URL.createObjectURL(new Blob([response.data]));
+//                 const link = document.createElement('a');
+//                 link.href = url;
+//
+//                 // Pobierz nazwę pliku z nagłówków odpowiedzi
+//                 const contentDisposition = response.headers['content-disposition'];
+//                 let fileName = 'downloaded_file';
+//                 if (contentDisposition) {
+//                     const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+//                     if (fileNameMatch.length === 2) {
+//                         fileName = fileNameMatch[1];
+//                     }
+//                 }
+//
+//                 link.setAttribute('download', fileName); // Określ nazwę pliku
+//                 document.body.appendChild(link);
+//                 link.click();
+//
+//                 // Usuń element po kliknięciu
+//                 document.body.removeChild(link);
+//             })
+//             .catch(error => {
+//                 // Obsługa błędu
+//                 console.log(error)
+//                 if (error.response.status === 422) {
+//                     store.setErrors(error.response.data.errors);
+//                 } else {
+//                     console.log(error)
+//                 }
+//             }).finally(() => {
+//             store.setIsLock(false);
+//         })
+//     }
+// }
+
+function handleDownloadButtonClicked(id) {
+    console.log(id);
+    if (store.getIsLock === false) {
+        store.setIsLock(true);
+        store.clearErrors();
+
+        axios({
+            url: route('file.download', {id: id}),
+            method: 'GET',
+            responseType: 'blob', // Oczekujemy binarnego strumienia danych
+        })
+            .then(response => {
+                console.log(response);
+
+                // Utwórz URL dla pliku
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+
+                // Pobierz nazwę pliku z nagłówków odpowiedzi
+                const contentDisposition = response.headers['content-disposition'];
+                let fileName = 'downloaded_file';
+                if (contentDisposition) {
+                    const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                    if (fileNameMatch && fileNameMatch[1]) {
+                        fileName = fileNameMatch[1].replace(/['"]/g, '');
+                    }
+                }
+
+                link.setAttribute('download', fileName); // Określ nazwę pliku
+                document.body.appendChild(link);
+                link.click();
+
+                // Usuń element po kliknięciu
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                // Obsługa błędu
+                console.log(error.response?.data?.errors);
+                if (error.response && error.response.status === 422) {
+                    store.setErrors(error.response.data.errors);
+                } else {
+                    console.log(error);
+                }
+            })
+            .finally(() => {
+                store.setIsLock(false);
+            });
+    }
 }
+
 
 function handleRemoveButtonClicked() {
     //@TODO
@@ -91,6 +184,8 @@ async function handleFileUploaded(event) {
         console.error(error);
     }
 }
+
+
 </script>
 
 <template>
@@ -110,8 +205,8 @@ async function handleFileUploaded(event) {
                         <p>{{attachment.filename}}</p>
                     </div>
                     <div class="flex gap-4 w-[120px]" :class="userType==='teacher' ? 'w-[120px]' : 'w-[200px]'">
-                            <BorderBottomBtn @click="handleDownloadButtonClicked()">Pobierz</BorderBottomBtn>
-                            <BorderBottomBtn @click="handleRemoveButtonClicked()" v-if="userType==='teacher'">Usuń</BorderBottomBtn>
+                            <BorderBottomBtn @click="handleDownloadButtonClicked(attachment.id)">Pobierz</BorderBottomBtn>
+                            <BorderBottomBtn @click="handleRemoveButtonClicked" v-if="userType==='teacher'">Usuń</BorderBottomBtn>
                     </div>
                 </div>
                 <div v-for="(attachment, index) in lessonAttachments" class="flex gap-4 items-center justify-between">
@@ -119,8 +214,8 @@ async function handleFileUploaded(event) {
                         <p>{{attachment.filename}}</p>
                     </div>
                     <div class="flex gap-4 w-[120px]" :class="userType==='teacher' ? 'w-[120px]' : 'w-[200px]'">
-                        <BorderBottomBtn @click="handleDownloadButtonClicked(homework, index)">Pobierz</BorderBottomBtn>
-                        <BorderBottomBtn @click="handleRemoveButtonClicked(homework, index)" v-if="userType==='teacher'">Usuń</BorderBottomBtn>
+                        <BorderBottomBtn @click="handleDownloadButtonClicked(attachment.id)">Pobierz</BorderBottomBtn>
+                        <BorderBottomBtn @click="handleRemoveButtonClicked" v-if="userType==='teacher'">Usuń</BorderBottomBtn>
                     </div>
                 </div>
             </template>

@@ -6,6 +6,26 @@ use Illuminate\Support\Facades\DB;
 
 class FilesRepository
 {
+
+    public function downloadFile($fileId) {
+        // Pobierz informacje o pliku z bazy danych
+        $file = DB::table('files')->where('id', $fileId)->first();
+
+        if (!$file) {
+            return response()->json(['message' => 'Plik nie znaleziony.'], 404);
+        }
+
+        // Sprawdź, czy plik istnieje w storage
+        $path = storage_path('app/' . $file->path);
+        if (!file_exists($path)) {
+            return response()->json(['message' => 'Plik nie znaleziony w storage.'], 404);
+        }
+
+        // Ustaw nagłówki odpowiedzi, aby zawierały nazwę pliku z odpowiednim rozszerzeniem
+        return response()->download($path, $file->filename, [
+            'Content-Disposition' => 'attachment; filename="' . $file->filename . '"'
+        ]);
+    }
     public function uploadFile($request) {
         if ($request->hasFile('files')) {
             $files = $request->file('files');
