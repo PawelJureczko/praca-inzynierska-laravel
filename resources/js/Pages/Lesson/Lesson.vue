@@ -4,7 +4,7 @@ import TitleComponent from "@/Components/Views/TitleComponent.vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import {router} from "@inertiajs/vue3";
 import {useMainStore} from "@/Store/mainStore.js";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import AbsenceModal from "@/Components/Modals/AbsenceModal.vue";
 import LessonMainForm from "@/Components/Views/Lesson/LessonMainForm.vue";
 import LessonButtons from "@/Components/Views/Lesson/LessonButtons.vue";
@@ -92,6 +92,12 @@ function handleFilesUploaded(val) {
     })
 }
 
+function handleFilesIdsUpdated(val) {
+    if (!filesIds.value.includes(val)) {
+        filesIds.value.push(val);
+    }
+}
+
 function handleFileRemoved(val) {
     filesIds.value = filesIds.value.filter(item => item !== val);
 
@@ -151,6 +157,17 @@ function save() {
     }
     //lesson.save
 }
+
+const preparedTeachersAttachmentsCp = computed(() => {
+    let preparedTeachersAttachments = [];
+
+    props.teacherAttachments.forEach(item => {
+        if (!filesIds.value.includes(item.id)) {
+            preparedTeachersAttachments.push(item)
+        }
+    })
+    return preparedTeachersAttachments
+})
 
 function update() {
     if (store.getIsLock === false) {
@@ -217,7 +234,7 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
             <LessonHomeworks :userType="userType" v-model="lesson.homeworks"
                              :lessonId="lessonData ? lessonData.id : null"/>
 
-            <LessonAttachments :userType="userType" v-model="lesson.attachments" :filesIds=filesIds :lessonAttachments="lessonAttachments" :teacherAttachments="teacherAttachments" @filesUploaded="handleFilesUploaded" @fileRemoved="handleFileRemoved"/>
+            <LessonAttachments :userType="userType" v-model="lesson.attachments" :filesIds=filesIds :lessonAttachments="lessonAttachments" :teacherAttachments="preparedTeachersAttachmentsCp" @filesUploaded="handleFilesUploaded" @fileRemoved="handleFileRemoved" @filesIdsUpdated="handleFilesIdsUpdated"/>
 
             <LessonButtons :userType="userType" :type="type" :lesson="lesson" @save="save" @update="update"/>
 

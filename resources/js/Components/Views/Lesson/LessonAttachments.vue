@@ -2,12 +2,12 @@
 
 import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
 import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
-import {onBeforeMount, onMounted, ref} from "vue";
+import {ref} from "vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import {useMainStore} from "@/Store/mainStore.js";
 import AttachmentsModal from "@/Components/Modals/AttachmentsModal.vue";
 
-const emits = defineEmits(['filesUploaded', 'fileRemoved'])
+const emits = defineEmits(['fileRemoved', 'filesIdsUpdated'])
 const props = defineProps({
     filesIds: {
         type: Array,
@@ -48,6 +48,12 @@ const localAttachments = ref([]);
 function handleModalClose() {
     isRemoveModal.value = false;
     chosenElem.value = null;
+}
+
+function handleAddFile(val) {
+    localAttachments.value.push(val);
+    emits('filesIdsUpdated', val.id);
+    isAttachmentModal.value = false;
 }
 
 function handleRemoveElemConfirmation() {
@@ -107,43 +113,12 @@ function handleRemoveButtonClicked(id, type) {
     emits('fileRemoved', id)
 }
 
-async function handleFileUploaded(event) {
-    const selectedFiles = event.target.files;
-    for (let i = 0; i < selectedFiles.length; i++) {
-        attachments.value.push(selectedFiles[i]);
-    }
-
-    const formData = new FormData();
-    for (let i = 0; i < attachments.value.length; i++) {
-        formData.append('files[]', attachments.value[i]);
-    }
-
-    try {
-        const response = await axios.post(route('file.upload'), formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        });
-
-        response.data.files.forEach(item => {
-            localAttachments.value.push(item)
-        })
-        emits('filesUploaded', response.data.files.map(item => item.id));
-        attachments.value = [];
-        // filesIds.value.push(response.data.id);
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-
 </script>
 
 <template>
     <div class="mt-8">
         <div class="flex justify-between items-center">
             <h2 class="text-[24px] heading-[32px] font-bold">Załączniki do lekcji:</h2>
-<!--            <input type="file" multiple @input="handleFileUploaded" v-if="userType === 'teacher'">-->
             <Btn class="w-max" @click="isAttachmentModal=true">Dodaj pliki</Btn>
         </div>
         <div class="mt-4 border border-textfield-border rounded-lg p-4">
@@ -177,7 +152,7 @@ async function handleFileUploaded(event) {
         </div>
         <ModalConfirmation desc="Czy na pewno chcesz usunąć zadanie domowe?" v-if="isRemoveModal" @close="handleModalClose" @confirm="handleRemoveElemConfirmation"/>
 
-        <AttachmentsModal topBarDesc="Wszystkie pliki" v-if="isAttachmentModal" @close="isAttachmentModal=false" :teacherAttachments="teacherAttachments"/>
+        <AttachmentsModal topBarDesc="Wszystkie pliki" v-if="isAttachmentModal" @close="isAttachmentModal=false" :teacherAttachments="teacherAttachments" v-model="attachments" @addFile="handleAddFile"/>
     </div>
 </template>
 
