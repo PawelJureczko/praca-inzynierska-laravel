@@ -5,6 +5,7 @@ import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
 import {onBeforeMount, onMounted, ref} from "vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import {useMainStore} from "@/Store/mainStore.js";
+import AttachmentsModal from "@/Components/Modals/AttachmentsModal.vue";
 
 const emits = defineEmits(['filesUploaded', 'fileRemoved'])
 const props = defineProps({
@@ -54,7 +55,6 @@ function handleRemoveElemConfirmation() {
 }
 
 function handleDownloadButtonClicked(id) {
-    console.log(id);
     if (store.getIsLock === false) {
         store.setIsLock(true);
         store.clearErrors();
@@ -143,8 +143,8 @@ async function handleFileUploaded(event) {
     <div class="mt-8">
         <div class="flex justify-between items-center">
             <h2 class="text-[24px] heading-[32px] font-bold">Załączniki do lekcji:</h2>
-            <input type="file" multiple @input="handleFileUploaded" v-if="userType === 'teacher'">
-<!--            <Btn class="w-max">Dodaj pliki</Btn>-->
+<!--            <input type="file" multiple @input="handleFileUploaded" v-if="userType === 'teacher'">-->
+            <Btn class="w-max" @click="isAttachmentModal=true">Dodaj pliki</Btn>
         </div>
         <div class="mt-4 border border-textfield-border rounded-lg p-4">
             <p v-if="(localAttachments.length === 0 && lessonAttachments.length === 0) || filesIds.length === 0">
@@ -175,8 +175,9 @@ async function handleFileUploaded(event) {
                 </div>
             </template>
         </div>
-        <ModalConfirmation desc="Czy na pewno chcesz usunąć zadanie domowe?" v-if="isRemoveModal" @close="handleModalClose"
-                           @confirm="handleRemoveElemConfirmation"/>
+        <ModalConfirmation desc="Czy na pewno chcesz usunąć zadanie domowe?" v-if="isRemoveModal" @close="handleModalClose" @confirm="handleRemoveElemConfirmation"/>
+
+        <AttachmentsModal topBarDesc="Wszystkie pliki" v-if="isAttachmentModal" @close="isAttachmentModal=false" :teacherAttachments="teacherAttachments"/>
     </div>
 </template>
 

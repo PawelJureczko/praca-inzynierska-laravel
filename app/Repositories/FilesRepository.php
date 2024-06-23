@@ -56,4 +56,21 @@ class FilesRepository
         }
         return response()->json(['message' => 'Wystąpił niespodziewany błąd.'], 500);
     }
+
+    public function removeFile($id) {
+        try {
+            $affectedRows = DB::table('files')
+                ->where('id', $id)
+                ->update(['deleted_at' => now()]);
+
+            if ($affectedRows > 0) {
+                return response()->json(['status' => 'ok'], 200);
+            } else {
+                return response()->json(['message' => 'Plik nie znaleziony'], 404);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Ups, coś poszło nie tak'], 500);
+        }
+    }
+
 }

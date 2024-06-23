@@ -89,6 +89,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/files', [\App\Http\Controllers\FilesController::class, 'upload'])->name('file.upload');
     Route::get('/files/{id}', [\App\Http\Controllers\FilesController::class, 'download'])->name('file.download');
+    Route::put('/files/{id}', [\App\Http\Controllers\FilesController::class, 'delete'])->name('file.delete');
 });
 
 

@@ -19,4 +19,9 @@ class FilesController extends Controller
         $fileId = $request->route('id');
         return $this->filesRepository->downloadFile($fileId);
     }
+
+    public function delete(Request $request) {
+        $fileId = $request->route('id');
+        return $this->filesRepository->removeFile($fileId);
+    }
 }
