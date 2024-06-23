@@ -4,7 +4,7 @@ import TitleComponent from "@/Components/Views/TitleComponent.vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import {router} from "@inertiajs/vue3";
 import {useMainStore} from "@/Store/mainStore.js";
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 import AbsenceModal from "@/Components/Modals/AbsenceModal.vue";
 import LessonMainForm from "@/Components/Views/Lesson/LessonMainForm.vue";
 import LessonButtons from "@/Components/Views/Lesson/LessonButtons.vue";
@@ -40,6 +40,12 @@ const props = defineProps({
             return []
         }
     },
+    lessonAttachments: {
+        type: Array,
+        default(){
+            return []
+        }
+    },
     lessonData: {
         type: Object,
         default() {
@@ -56,12 +62,32 @@ const props = defineProps({
             return null
         }
     },
+    teacherAttachments: {
+        type: Array,
+        default(){
+            return []
+        }
+    },
 })
 
 
 const store = useMainStore();
 const isBtnLoader = ref(false);
 const isAbsenceModal = ref(false);
+const filesIds = ref([]);
+
+onMounted(() => {
+    filesIds.value = props.lessonAttachments.map(item => item.id);
+})
+
+function handleFilesUploaded(val) {
+    val.forEach(item => {
+        if (!filesIds.value.includes(item)) {
+            filesIds.value.push(item);
+        }
+    })
+    console.log(filesIds.value)
+}
 
 const lesson = ref({
     topic: props.lessonData ? props.lessonData.topic : '',
@@ -93,7 +119,8 @@ function save() {
             schedule_id: props.scheduleData.id,
             lessonDate: props.lessonDate,
             grades: lesson.value.grades,
-            homeworks: lesson.value.homeworks
+            homeworks: lesson.value.homeworks,
+            filesIds: filesIds.value
         })
             .then(response => {
                 if (response.data.status === 'ok') {
@@ -179,7 +206,7 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
             <LessonHomeworks :userType="userType" v-model="lesson.homeworks"
                              :lessonId="lessonData ? lessonData.id : null"/>
 
-            <LessonAttachments :userType="userType" v-model="lesson.attachments"/>
+            <LessonAttachments :userType="userType" v-model="lesson.attachments" :filesIds=filesIds :lessonAttachments="lessonAttachments" :teacherAttachments="teacherAttachments" @filesUploaded="handleFilesUploaded"/>
 
             <LessonButtons :userType="userType" :type="type" :lesson="lesson" @save="save" @update="update"/>
 

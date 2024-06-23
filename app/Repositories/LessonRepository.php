@@ -104,7 +104,7 @@ class LessonRepository
         ]);
     }
 
-    public function saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades, $homeworks):int
+    public function saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades, $homeworks, $filesIds):int
     {
         $newLessonId = DB::table('lessons')->insertGetId([
             'date' => $lessonDate,
@@ -136,6 +136,16 @@ class LessonRepository
                 'lesson_id' => $newLessonId,
                 'desc' => $desc,
                 'date' => $homework['date'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        foreach ($filesIds as $fileId) {
+
+            DB::table('files_lessons_pivot')->insert([
+                'lesson_id' => $newLessonId,
+                'files_id' => $fileId,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
@@ -209,6 +219,20 @@ class LessonRepository
     }
 
     public function getLessonAttachments($lessonId):array {
-        return DB::select('SELECT * FROM files_lessons_pivot WHERE lesson_id = ? AND deleted_at IS NULL', [$lessonId]);
+        $fileIds = DB::table('files_lessons_pivot')
+            ->where('lesson_id', $lessonId)
+            ->whereNull('deleted_at')
+            ->pluck('files_id');
+
+        if ($fileIds->isEmpty()) {
+            return [];
+        }
+
+        // Pobierz szczegóły plików z tabeli files na podstawie files_id
+        $files = DB::table('files')
+            ->whereIn('id', $fileIds)
+            ->get();
+
+        return $files->toArray();
     }
 }

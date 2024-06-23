@@ -75,6 +75,7 @@ class LessonController extends Controller
         $lessonDate = $request->input('lessonDate');
         $grades = $request->input('grades');
         $homeworks = $request->input('homeworks');
+        $filesIds = $request->input('filesIds');
 
         $errors = [];
         $errors += $this->scheduleRepository->checkIsNull($request->all());
@@ -84,7 +85,7 @@ class LessonController extends Controller
                 'errors' => $errors,
             ], 422);
         } else {
-            $lessonId = $this->lessonRepository->saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades, $homeworks);
+            $lessonId = $this->lessonRepository->saveNewLesson($topic, $notes, $scheduleId, $lessonDate, $grades, $homeworks, $filesIds);
 
             return response()->json([
                 'status' => 'ok',

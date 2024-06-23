@@ -9,6 +9,7 @@ class FilesRepository
     public function uploadFile($request) {
         if ($request->hasFile('files')) {
             $files = $request->file('files');
+            $filesData = [];
             foreach ($files as $file) {
                 // Zapisz plik
                 $hashedName = $file->hashName();
@@ -23,10 +24,14 @@ class FilesRepository
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
+                $filesData[] = [
+                    'id' => $fileId,
+                    'filename' => $file->getClientOriginalName(),
+                ];
             }
             return response()->json([
                 'status' => 'ok',
-                'id' => $fileId,
+                'files' => $filesData,
                 'message' => 'Pliki zostały pomyślnie przesłane.']);
         }
         return response()->json(['message' => 'Wystąpił niespodziewany błąd.'], 500);
