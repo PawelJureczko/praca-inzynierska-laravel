@@ -2,11 +2,11 @@
 
 import BorderBottomBtn from "@/Components/Buttons/BorderBottomBtn.vue";
 import ModalConfirmation from "@/Components/Modals/ModalConfirmation.vue";
-import {onMounted, ref} from "vue";
+import {onBeforeMount, onMounted, ref} from "vue";
 import Btn from "@/Components/Buttons/Btn.vue";
 import {useMainStore} from "@/Store/mainStore.js";
 
-const emits = defineEmits(['filesUploaded'])
+const emits = defineEmits(['filesUploaded', 'fileRemoved'])
 const props = defineProps({
     filesIds: {
         type: Array,
@@ -50,54 +50,8 @@ function handleModalClose() {
 }
 
 function handleRemoveElemConfirmation() {
-    //@TODO
-    alert('remove');
     handleModalClose();
 }
-
-// function handleDownloadButtonClicked(id) {
-//     console.log(id)
-//     if (store.getIsLock === false) {
-//         store.setIsLock(true);
-//         store.clearErrors();
-//         axios.get(route('file.download', {id: id}))
-//             .then(response => {
-//                 console.log(response)
-//
-//                 const url = window.URL.createObjectURL(new Blob([response.data]));
-//                 const link = document.createElement('a');
-//                 link.href = url;
-//
-//                 // Pobierz nazwę pliku z nagłówków odpowiedzi
-//                 const contentDisposition = response.headers['content-disposition'];
-//                 let fileName = 'downloaded_file';
-//                 if (contentDisposition) {
-//                     const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
-//                     if (fileNameMatch.length === 2) {
-//                         fileName = fileNameMatch[1];
-//                     }
-//                 }
-//
-//                 link.setAttribute('download', fileName); // Określ nazwę pliku
-//                 document.body.appendChild(link);
-//                 link.click();
-//
-//                 // Usuń element po kliknięciu
-//                 document.body.removeChild(link);
-//             })
-//             .catch(error => {
-//                 // Obsługa błędu
-//                 console.log(error)
-//                 if (error.response.status === 422) {
-//                     store.setErrors(error.response.data.errors);
-//                 } else {
-//                     console.log(error)
-//                 }
-//             }).finally(() => {
-//             store.setIsLock(false);
-//         })
-//     }
-// }
 
 function handleDownloadButtonClicked(id) {
     console.log(id);
@@ -111,8 +65,6 @@ function handleDownloadButtonClicked(id) {
             responseType: 'blob', // Oczekujemy binarnego strumienia danych
         })
             .then(response => {
-                console.log(response);
-
                 // Utwórz URL dla pliku
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -151,9 +103,8 @@ function handleDownloadButtonClicked(id) {
 }
 
 
-function handleRemoveButtonClicked() {
-    //@TODO
-    alert('remove');
+function handleRemoveButtonClicked(id, type) {
+    emits('fileRemoved', id)
 }
 
 async function handleFileUploaded(event) {
@@ -192,31 +143,35 @@ async function handleFileUploaded(event) {
     <div class="mt-8">
         <div class="flex justify-between items-center">
             <h2 class="text-[24px] heading-[32px] font-bold">Załączniki do lekcji:</h2>
-            <input type="file" multiple @input="handleFileUploaded">
+            <input type="file" multiple @input="handleFileUploaded" v-if="userType === 'teacher'">
 <!--            <Btn class="w-max">Dodaj pliki</Btn>-->
         </div>
         <div class="mt-4 border border-textfield-border rounded-lg p-4">
-            <p v-if="localAttachments.length === 0 && lessonAttachments.length === 0 ">
+            <p v-if="(localAttachments.length === 0 && lessonAttachments.length === 0) || filesIds.length === 0">
                 Brak załączników dla tej lekcji.
             </p>
             <template v-else>
-                <div v-for="(attachment, index) in localAttachments" class="flex gap-4 items-center justify-between">
-                    <div class="flex items-center gap-2 py-2">
-                        <p>{{attachment.filename}}</p>
-                    </div>
-                    <div class="flex gap-4 w-[120px]" :class="userType==='teacher' ? 'w-[120px]' : 'w-[200px]'">
+                <div v-for="(attachment) in localAttachments" class="flex gap-4 items-center justify-between">
+                    <template v-if="filesIds.includes(attachment.id)">
+                        <div class="flex items-center gap-2 py-2">
+                            <p>{{attachment.filename}}</p>
+                        </div>
+                        <div class="flex gap-4 w-[120px]" :class="userType==='teacher' ? 'w-[120px]' : 'w-[200px]'">
                             <BorderBottomBtn @click="handleDownloadButtonClicked(attachment.id)">Pobierz</BorderBottomBtn>
-                            <BorderBottomBtn @click="handleRemoveButtonClicked" v-if="userType==='teacher'">Usuń</BorderBottomBtn>
-                    </div>
+                            <BorderBottomBtn @click="handleRemoveButtonClicked(attachment.id, 'local')" v-if="userType==='teacher'">Usuń</BorderBottomBtn>
+                        </div>
+                    </template>
                 </div>
-                <div v-for="(attachment, index) in lessonAttachments" class="flex gap-4 items-center justify-between">
-                    <div class="flex items-center gap-2 py-2">
-                        <p>{{attachment.filename}}</p>
-                    </div>
-                    <div class="flex gap-4 w-[120px]" :class="userType==='teacher' ? 'w-[120px]' : 'w-[200px]'">
-                        <BorderBottomBtn @click="handleDownloadButtonClicked(attachment.id)">Pobierz</BorderBottomBtn>
-                        <BorderBottomBtn @click="handleRemoveButtonClicked" v-if="userType==='teacher'">Usuń</BorderBottomBtn>
-                    </div>
+                <div v-for="(attachment) in lessonAttachments" class="flex gap-4 items-center justify-between">
+                    <template v-if="filesIds.includes(attachment.id)">
+                        <div class="flex items-center gap-2 py-2">
+                            <p>{{attachment.filename}}</p>
+                        </div>
+                        <div class="flex gap-4 w-[120px]" :class="userType==='teacher' ? 'w-[120px]' : 'w-[200px]'">
+                            <BorderBottomBtn @click="handleDownloadButtonClicked(attachment.id)">Pobierz</BorderBottomBtn>
+                            <BorderBottomBtn @click="handleRemoveButtonClicked(attachment.id, 'lesson')" v-if="userType==='teacher'">Usuń</BorderBottomBtn>
+                        </div>
+                    </template>
                 </div>
             </template>
         </div>

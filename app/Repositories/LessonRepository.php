@@ -154,7 +154,7 @@ class LessonRepository
         return $newLessonId;
     }
 
-    public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades, $homeworks, $filesIds): int
+    public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades, $homeworks, $filesIds, $defaultPivotIds): int
     {
         //ustawia deleted_at dla wszystkich ocen dla tej lekcji
         DB::table('grades')
@@ -194,8 +194,15 @@ class LessonRepository
             ]);
         }
 
-        foreach ($filesIds as $fileId) {
+        foreach ($defaultPivotIds as $defaultPivotId) {
+            DB::table('files_lessons_pivot')
+                ->where('id', $defaultPivotId)
+                ->update([
+                    'deleted_at' => now()
+                ]);
+        }
 
+        foreach ($filesIds as $fileId) {
             DB::table('files_lessons_pivot')->insert([
                 'lesson_id' => $lessonId,
                 'files_id' => $fileId,
@@ -228,21 +235,53 @@ class LessonRepository
         return DB::select('SELECT * FROM files WHERE uploaded_by = ? AND deleted_at IS NULL', [$teacherId]);
     }
 
-    public function getLessonAttachments($lessonId):array {
-        $fileIds = DB::table('files_lessons_pivot')
+//    public function getLessonAttachments($lessonId):array {
+//        $fileIds = DB::table('files_lessons_pivot')
+//            ->where('lesson_id', $lessonId)
+//            ->whereNull('deleted_at')
+//            ->pluck('files_id');
+//
+//        if ($fileIds->isEmpty()) {
+//            return [];
+//        }
+//
+//        // Pobierz szczegóły plików z tabeli files na podstawie files_id
+//        $files = DB::table('files')
+//            ->whereIn('id', $fileIds)
+//            ->get();
+//
+//        return $files->toArray();
+//    }
+
+    public function getLessonAttachments($lessonId): array {
+        // Pobierz dane z tabeli files_lessons_pivot
+        $filePivotDetails = DB::table('files_lessons_pivot')
             ->where('lesson_id', $lessonId)
             ->whereNull('deleted_at')
-            ->pluck('files_id');
+            ->get(['id', 'files_id']);
 
-        if ($fileIds->isEmpty()) {
+        if ($filePivotDetails->isEmpty()) {
             return [];
         }
+
+        // Pobierz ID plików
+        $fileIds = $filePivotDetails->pluck('files_id');
 
         // Pobierz szczegóły plików z tabeli files na podstawie files_id
         $files = DB::table('files')
             ->whereIn('id', $fileIds)
             ->get();
 
-        return $files->toArray();
+        // Mapowanie szczegółów plików z id z tabeli files_lessons_pivot
+        $result = $filePivotDetails->map(function($pivot) use ($files) {
+            $file = $files->firstWhere('id', $pivot->files_id);
+            return [
+                'pivot_id' => $pivot->id,
+                'id' => $file->id,
+                'filename' => $file->filename,
+            ];
+        });
+
+        return $result->toArray();
     }
 }

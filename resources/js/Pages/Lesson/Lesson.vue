@@ -75,9 +75,13 @@ const store = useMainStore();
 const isBtnLoader = ref(false);
 const isAbsenceModal = ref(false);
 const filesIds = ref([]);
+const defaultPivotIds = ref([]);
 
 onMounted(() => {
     filesIds.value = props.lessonAttachments.map(item => item.id);
+    setTimeout(() => {
+        defaultPivotIds.value = props.lessonAttachments.map(item => item.pivot_id);
+    }, 1)
 })
 
 function handleFilesUploaded(val) {
@@ -86,7 +90,12 @@ function handleFilesUploaded(val) {
             filesIds.value.push(item);
         }
     })
-    console.log(filesIds.value)
+}
+
+function handleFileRemoved(val) {
+    filesIds.value = filesIds.value.filter(item => item !== val);
+
+    //@TODO zeby nie bylo fuckupow, to przy zapisywaniu trzeba wszystkie wczesniejsze usunac i zapisac tylko te nowe, poza tym trzeba przefiltrować tablice tak, zeby front tez sie zaktualizowal
 }
 
 const lesson = ref({
@@ -158,7 +167,8 @@ function update() {
             absenceReason: (lesson.value.canceled_by_student || lesson.value.canceled_by_teacher) ? props.lessonData.absence_reason : null,
             grades: lesson.value.grades,
             homeworks: lesson.value.homeworks,
-            filesIds: filesIds.value
+            filesIds: filesIds.value,
+            defaultPivotIds: defaultPivotIds.value
         })
             .then(response => {
                 if (response.data.status === 'ok') {
@@ -207,7 +217,7 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
             <LessonHomeworks :userType="userType" v-model="lesson.homeworks"
                              :lessonId="lessonData ? lessonData.id : null"/>
 
-            <LessonAttachments :userType="userType" v-model="lesson.attachments" :filesIds=filesIds :lessonAttachments="lessonAttachments" :teacherAttachments="teacherAttachments" @filesUploaded="handleFilesUploaded"/>
+            <LessonAttachments :userType="userType" v-model="lesson.attachments" :filesIds=filesIds :lessonAttachments="lessonAttachments" :teacherAttachments="teacherAttachments" @filesUploaded="handleFilesUploaded" @fileRemoved="handleFileRemoved"/>
 
             <LessonButtons :userType="userType" :type="type" :lesson="lesson" @save="save" @update="update"/>
 
