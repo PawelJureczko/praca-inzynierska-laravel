@@ -87,7 +87,7 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::post('/profile', [\App\Http\Controllers\FilesController::class, 'upload'])->name('file.upload');
+    Route::post('/files', [\App\Http\Controllers\FilesController::class, 'upload'])->name('file.upload');
 });
 
 

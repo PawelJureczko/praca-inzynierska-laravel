@@ -18,6 +18,7 @@ const props = defineProps({
 
 const isAttachmentModal = ref(false);
 const isRemoveModal = ref(false);
+const filesIds = ref([]);
 
 const attachments = defineModel();
 const chosenElem = ref(null);
@@ -38,6 +39,11 @@ function handleDownloadButtonClicked() {
     alert('download');
 }
 
+function handleRemoveButtonClicked() {
+    //@TODO
+    alert('remove');
+}
+
 async function handleFileUploaded(event) {
     const selectedFiles = event.target.files;
     for (let i = 0; i < selectedFiles.length; i++) {
@@ -55,6 +61,8 @@ async function handleFileUploaded(event) {
                 'Content-Type': 'multipart/form-data'
             }
         });
+
+        filesIds.value.push(response.data.id);
         console.log(response.data);
     } catch (error) {
         console.error(error);

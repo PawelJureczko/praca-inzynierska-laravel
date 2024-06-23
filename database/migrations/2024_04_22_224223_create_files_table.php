@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('path');
             $table->unsignedBigInteger('uploaded_by');
             $table->foreign('uploaded_by')->references('id')->on('users')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

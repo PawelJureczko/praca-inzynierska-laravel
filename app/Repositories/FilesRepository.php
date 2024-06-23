@@ -15,7 +15,7 @@ class FilesRepository
                 $path = $file->storeAs('public/uploads', $hashedName);
 
                 // Zapisz informacje o pliku w bazie danych
-                DB::table('files')->insert([
+                $fileId = DB::table('files')->insertGetId([
                     'filename' => $file->getClientOriginalName(),
                     'hashed_filename' => $hashedName,
                     'path' => $path,
@@ -26,6 +26,7 @@ class FilesRepository
             }
             return response()->json([
                 'status' => 'ok',
+                'id' => $fileId,
                 'message' => 'Pliki zostały pomyślnie przesłane.']);
         }
         return response()->json(['message' => 'Wystąpił niespodziewany błąd.'], 500);

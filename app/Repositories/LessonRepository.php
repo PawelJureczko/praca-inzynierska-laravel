@@ -203,4 +203,12 @@ class LessonRepository
             ->where('id', $homeworkId)
             ->update(['completed_at' => now()]);
     }
+
+    public function getTeacherAttachments($teacherId):array{
+        return DB::select('SELECT * FROM files WHERE uploaded_by = ? AND deleted_at IS NULL', [$teacherId]);
+    }
+
+    public function getLessonAttachments($lessonId):array {
+        return DB::select('SELECT * FROM files_lessons_pivot WHERE lesson_id = ? AND deleted_at IS NULL', [$lessonId]);
+    }
 }

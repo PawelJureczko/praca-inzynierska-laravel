@@ -21,6 +21,8 @@ class LessonController extends Controller
         $lessonDate = $request->query('date');
         $this->lessonRepository->isProperLessonDate($scheduleId, $lessonDate);
         $scheduleData = $this->lessonRepository->getScheduleData($scheduleId);
+        $teacherId = $scheduleData[0]->teacher_id;
+        $teacherAttachments = $this->lessonRepository->getTeacherAttachments($teacherId);
         $this->lessonRepository->isProperLessonDate($scheduleId, $lessonDate);
         if ($this->lessonRepository->isProperLessonDate($scheduleId, $lessonDate) === false) {
             abort(404);
@@ -29,6 +31,7 @@ class LessonController extends Controller
             'type' => 'new',
             'lessonDate' => $lessonDate,
             'scheduleData' => $scheduleData[0],
+            'teacherAttachments' => $teacherAttachments
         ]);
     }
 
@@ -38,12 +41,17 @@ class LessonController extends Controller
         $lessonData = $this->lessonRepository->getLessonData($lessonId);
         $grades = $this->lessonRepository->getGradesForLesson($lessonId);
         $homeworks = $this->lessonRepository->getHomeworksForLesson($lessonId);
+        $teacherId = $lessonData[0]->teacher_id;
+        $teacherAttachments = $this->lessonRepository->getTeacherAttachments($teacherId);
+        $lessonAttachments = $this->lessonRepository->getLessonAttachments($lessonId);
 
         return inertia('Lesson/Lesson', [
             'type' => 'edit',
             'lessonData' => $lessonData[0],
             'grades'=>$grades,
-            'homeworks'=>$homeworks
+            'homeworks'=>$homeworks,
+            'teacherAttachments'=>$teacherAttachments,
+            'lessonAttachments'=>$lessonAttachments
         ]);
     }
 
