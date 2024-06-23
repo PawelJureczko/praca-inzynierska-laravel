@@ -49,7 +49,6 @@ function prepareGrades() {
         }
     })
 
-    console.log(grades)
     preparedGradesData.value.gradesAmount = grades.length;
 
     let sum = grades.reduce((accumulator, currentValue) => {
@@ -66,9 +65,16 @@ function prepareGrades() {
 }
 
 onBeforeMount(() => {
-    console.log(props.data)
     prepareGrades();
 })
+
+function showProperResult(val) {
+    if (isNaN(val)) {
+        return '-'
+    } else {
+        return val;
+    }
+}
 
 
 </script>
@@ -82,14 +88,14 @@ onBeforeMount(() => {
 
         <p class="mt-4 text-[18px] leading-[22px] font-bold">Frekwencja:</p>
         <p>Łączna liczba lekcji:<span class="font-bold"> {{preparedPresenceData.lessonAmount}}</span></p>
-        <p>Liczba lekcji odbytych: <span class="font-bold text-[green]">{{preparedPresenceData.lessonTaken}}</span> ({{Math.floor((preparedPresenceData.lessonTaken/preparedPresenceData.lessonAmount)*100)}}%)</p>
+        <p>Liczba lekcji odbytych: <span class="font-bold text-[green]">{{showProperResult(preparedPresenceData.lessonTaken)}}</span> ({{showProperResult(Math.floor((preparedPresenceData.lessonTaken/preparedPresenceData.lessonAmount)*100))}}%)</p>
         <p>Liczba nieobecności z winy ucznia: <span class="font-bold text-[red]">{{preparedPresenceData.lessonMissedByStudent}}</span></p>
         <p>Liczba nieobecności z winy nauczyciela: <span class="font-bold text-[red]">{{preparedPresenceData.lessonMissedByTeacher}}</span></p>
 
 
         <p class="mt-4 text-[18px] leading-[22px] font-bold">Oceny:</p>
         <p>Łączna liczba wystawionych ocen: <span class="font-bold">{{preparedGradesData.gradesAmount}}</span></p>
-        <p>Średnia arytmetyczna z wystawionych ocen: <span class="font-bold">{{preparedGradesData.arithmeticMean}}</span></p>
+        <p>Średnia arytmetyczna z wystawionych ocen: <span class="font-bold">{{showProperResult(preparedGradesData.arithmeticMean)}}</span></p>
 
     </div>
 </ModalWrapper>
