@@ -23,7 +23,7 @@
                 </div>
             </template>
 
-            <template v-if="type==='homeworks' && homeworks.length>0">
+            <template v-else-if="type==='homeworks' && homeworks.length>0">
                 <div v-for="(homework, index) in homeworks" class="p-4 flex flex-col gap-2 lg:gap-0 lg:flex-row lg:items-center" :class="[index%2===0 ? 'bg-[#f7f6f2]' : 'bg-[#FFFFFF]']">
                     <div class="flex lg:justify-center xl:px-4 lg:py-2" :class="pageType[type].dimensions[0]">
                         <p class="text-[12px] xl:text-base leading-[16px]"><span class="font-bold lg:hidden">{{pageType[type].headers[0]}}: </span>{{  getStringFromDate(new Date(homework.created_at))}}</p>
@@ -92,7 +92,7 @@ const pageType = {
     'homeworks': {
         'title': 'Zadania domowe',
         'btnDesc': 'Oznacz jako wykonane',
-        'headers': ['Wystawiono', 'Termin zadania', 'Przez', 'Treść', 'Oznacz jako wykonane'],
+        'headers': ['Wystawiono', 'Termin realizacji zadania', 'Przez', 'Treść', 'Oznacz jako wykonane'],
         'dimensions': ['lg:w-[10%]', 'lg:w-[15%]', 'lg:w-[10%]', 'lg:w-[50%]', 'lg:w-[15%]'],
         'emptyStateDesc': 'Brak zadań domowych'
     }

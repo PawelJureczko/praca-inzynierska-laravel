@@ -16,7 +16,7 @@
             </div>
 
             <div>
-                <p>Data zakończenia zajęć (opcjonalnie):</p>
+                <p>Data zakończenia zajęć:</p>
                 <Datepicker v-model="form.date_end" :enableTimePicker="false" :minDate="minEndDateCp" errorName="date_end" />
 
             </div>
@@ -82,9 +82,9 @@ const dateBeginCp = computed(() => {
 })
 
 watch(dateBeginCp, () => {
-    if (form.value.date_end && (form.value.date_begin > form.value.date_end)) {
+    if (form.value.date_end && (form.value.date_begin >= form.value.date_end)) {
         const date = getDateFromString(getStringFromDate(form.value.date_begin));
-        date.setDate(date.getDate() + 1);
+        date.setDate(date.getDate() + 7);
         form.value.date_end = date;
     }
 })

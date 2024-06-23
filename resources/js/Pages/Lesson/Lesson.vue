@@ -13,8 +13,15 @@ import LessonAbsenceBox from "@/Components/Views/Lesson/LessonAbsenceBox.vue";
 import LessonGrades from "@/Components/Views/Lesson/LessonGrades.vue";
 import LessonHomeworks from "@/Components/Views/Lesson/LessonHomeworks.vue";
 import LessonResign from "@/Components/Views/Lesson/LessonResign.vue";
+import LessonAttachments from "@/Components/Views/Lesson/LessonAttachments.vue";
 
 const props = defineProps({
+    attachments: {
+        type: Array,
+        default() {
+            return []
+        }
+    },
     auth: {
         type: Object,
         default() {
@@ -63,6 +70,7 @@ const lesson = ref({
     canceled_by_student: props.lessonData ? props.lessonData.canceled_by_student === 1 : false,
     grades: props.grades,
     homeworks: props.homeworks,
+    attachments: props.attachments
 })
 
 
@@ -122,7 +130,7 @@ function update() {
             canceledByTeacher: lesson.value.canceled_by_teacher,
             absenceReason: (lesson.value.canceled_by_student || lesson.value.canceled_by_teacher) ? props.lessonData.absence_reason : null,
             grades: lesson.value.grades,
-            homeworks: lesson.value.homeworks
+            homeworks: lesson.value.homeworks,
         })
             .then(response => {
                 if (response.data.status === 'ok') {
@@ -162,7 +170,7 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
                               @undoAbsence="undoAbsence"/>
 
             <LessonDataBox :currentData="currentData" :lessonData="lessonData" :lessonDate="lessonDate"
-                           :scheduleData="scheduleData"/>
+                           :scheduleData="scheduleData" :userType="auth.user.role"/>
 
             <LessonMainForm :userType="userType" v-model="lesson"/>
 
@@ -171,7 +179,10 @@ const currentData = ref(props.lessonData ? props.lessonData : props.scheduleData
             <LessonHomeworks :userType="userType" v-model="lesson.homeworks"
                              :lessonId="lessonData ? lessonData.id : null"/>
 
+            <LessonAttachments :userType="userType" v-model="lesson.attachments"/>
+
             <LessonButtons :userType="userType" :type="type" :lesson="lesson" @save="save" @update="update"/>
+
 
             <LessonResign :userType="userType"
                           :scheduleId="currentData.schedule_id ? currentData.schedule_id : scheduleData.id"

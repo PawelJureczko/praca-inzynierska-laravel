@@ -68,14 +68,14 @@ function submit() {
     <Layout :isLogged="$page.props.auth.user!==null">
         <div class="max-w-[500px] mx-auto">
             <TitleComponent desc="Zmiana hasła" :isSearch="false" />
-            <div>
-                <TextField
-                    type="text"
-                    errorName="email"
-                    v-model="form.email"
-                    label="Email"
-                />
-            </div>
+<!--            <div>-->
+<!--                <TextField-->
+<!--                    type="text"-->
+<!--                    errorName="email"-->
+<!--                    v-model="form.email"-->
+<!--                    label="Email"-->
+<!--                />-->
+<!--            </div>-->
             <input type="password" class="w-0 h-0 p-0 absolute pointer-events-none opacity-0" tabindex="-1"/>
             <div class="mt-4">
                 <TextField
