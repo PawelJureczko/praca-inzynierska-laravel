@@ -154,7 +154,7 @@ class LessonRepository
         return $newLessonId;
     }
 
-    public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades, $homeworks): int
+    public function updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades, $homeworks, $filesIds): int
     {
         //ustawia deleted_at dla wszystkich ocen dla tej lekcji
         DB::table('grades')
@@ -189,6 +189,16 @@ class LessonRepository
                 'desc' => $desc,
                 'completed_at' => isset($homework->completed_at) ? $homework->completed_at : null,
                 'date' => $homework['date'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
+
+        foreach ($filesIds as $fileId) {
+
+            DB::table('files_lessons_pivot')->insert([
+                'lesson_id' => $lessonId,
+                'files_id' => $fileId,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

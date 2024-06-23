@@ -158,6 +158,7 @@ function update() {
             absenceReason: (lesson.value.canceled_by_student || lesson.value.canceled_by_teacher) ? props.lessonData.absence_reason : null,
             grades: lesson.value.grades,
             homeworks: lesson.value.homeworks,
+            filesIds: filesIds.value
         })
             .then(response => {
                 if (response.data.status === 'ok') {

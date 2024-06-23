@@ -106,6 +106,7 @@ class LessonController extends Controller
         $absenceReason = $request->input('absenceReason');
         $grades = $request->input('grades');
         $homeworks = $request->input('homeworks');
+        $filesIds = $request->input('filesIds');
 
         $errors = [];
         $errors += $this->scheduleRepository->checkIsNull($request->only(['topic', 'notes']));
@@ -115,7 +116,7 @@ class LessonController extends Controller
                 'errors' => $errors,
             ], 422);
         } else {
-            $lessonId = $this->lessonRepository->updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades, $homeworks);
+            $lessonId = $this->lessonRepository->updateLesson($topic, $notes, $lessonId, $lessonDate, $canceledByStudent, $canceledByTeacher, $absenceReason, $grades, $homeworks, $filesIds);
 
             return response()->json([
                 'status' => 'ok',
